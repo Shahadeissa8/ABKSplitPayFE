@@ -1,17 +1,3 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-
-// const EditProfileScreen = () => {
-//   return (
-//     <View>
-//       <Text>EditProfileScreen</Text>
-//     </View>
-//   )
-// }
-
-// export default EditProfileScreen
-
-// const styles = StyleSheet.create({})
 import {
   StyleSheet,
   Text,
@@ -33,23 +19,28 @@ import { BlurView } from "expo-blur";
 
 const { width } = Dimensions.get("window");
 
-const EditProfileScreen = () => {
-  const navigation = useNavigation();
-  const [userData, setUserData] = useState({
-    username: "Ahmad Ali",
-    password: "••••••••••••",
-    phoneNumber: "+971050600798",
-    profilePicture: "https://via.placeholder.com/100",
-  });
+const EditProfileScreen = ({ route, navigation }) => {
+  // Get user data from navigation params
+  const { userData: initialUserData } = route.params || {
+    userData: {
+      username: "Ahmad Ali",
+      password: "••••••••••••",
+      phoneNumber: "+971050600798",
+      profilePicture: "https://via.placeholder.com/100",
+    },
+  };
 
+  const [userData, setUserData] = useState(initialUserData);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const buttonScale = useRef(new Animated.Value(1)).current;
+  const imageScale = useRef(new Animated.Value(0.3)).current;
 
   React.useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000,
+        duration: 800,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
@@ -57,8 +48,24 @@ const EditProfileScreen = () => {
         duration: 800,
         useNativeDriver: true,
       }),
+      Animated.spring(imageScale, {
+        toValue: 1,
+        tension: 20,
+        friction: 7,
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []);
+
+  // Listen for navigation updates
+  React.useEffect(() => {
+    if (route.params?.updatedPassword) {
+      setUserData((prev) => ({
+        ...prev,
+        password: "••••••••••••", // Show dots for security
+      }));
+    }
+  }, [route.params?.updatedPassword]);
 
   const handleBack = () => {
     Animated.parallel([
@@ -75,20 +82,41 @@ const EditProfileScreen = () => {
     ]).start(() => navigation.goBack());
   };
 
+  const handlePressIn = () => {
+    Animated.spring(buttonScale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(buttonScale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleSave = () => {
+    // Save the updated user data
+    console.log("Saving changes:", userData);
+    handleBack();
+  };
+
+  const handleInputChange = (field, value) => {
+    setUserData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   const handleEditPicture = () => {
     // Implement image picker functionality here
     console.log("Edit picture pressed");
   };
 
-  const handleSave = () => {
-    // Implement save functionality here
-    console.log("Save changes");
-    handleBack();
-  };
-
   const renderHeader = () => (
     <LinearGradient
-      colors={["#2E3192", "#1BFFFF"]}
+      colors={["#26589c", "#9cb2d8"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.header}
@@ -98,18 +126,8 @@ const EditProfileScreen = () => {
           <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
-        <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
-          <LinearGradient
-            colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.saveGradient}
-          >
-            <Text style={styles.saveButtonText}>Save</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <View style={{ width: 40 }} />
       </View>
-      <Text style={styles.civilId}>Civil Id: 571050600798</Text>
     </LinearGradient>
   );
 
@@ -119,12 +137,12 @@ const EditProfileScreen = () => {
         styles.profilePictureContainer,
         {
           opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
+          transform: [{ translateY: slideAnim }, { scale: imageScale }],
         },
       ]}
     >
       <LinearGradient
-        colors={["#2E3192", "#1BFFFF"]}
+        colors={["#26589c", "#9cb2d8"]}
         style={styles.profilePictureBorder}
       >
         <View style={styles.profilePictureInner}>
@@ -139,7 +157,7 @@ const EditProfileScreen = () => {
         onPress={handleEditPicture}
       >
         <LinearGradient
-          colors={["#2E3192", "#1BFFFF"]}
+          colors={["#26589c", "#9cb2d8"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.editPictureGradient}
@@ -156,7 +174,8 @@ const EditProfileScreen = () => {
     value,
     icon,
     onPress = null,
-    isPassword = false
+    isPassword = false,
+    field = null
   ) => (
     <Animated.View
       style={{
@@ -171,7 +190,7 @@ const EditProfileScreen = () => {
         activeOpacity={0.8}
       >
         <LinearGradient
-          colors={["#2E3192", "#1BFFFF"]}
+          colors={["#26589c", "#9cb2d8"]}
           style={styles.inputIconContainer}
         >
           <Ionicons name={icon} size={20} color="#fff" />
@@ -181,6 +200,7 @@ const EditProfileScreen = () => {
           <TextInput
             style={styles.input}
             value={value}
+            onChangeText={(text) => field && handleInputChange(field, text)}
             secureTextEntry={isPassword}
             editable={!onPress}
             placeholderTextColor="#999"
@@ -188,7 +208,7 @@ const EditProfileScreen = () => {
         </View>
         {onPress && (
           <View style={styles.arrowContainer}>
-            <Ionicons name="chevron-forward" size={24} color="#2E3192" />
+            <Ionicons name="chevron-forward" size={24} color="#26589c" />
           </View>
         )}
       </TouchableOpacity>
@@ -197,26 +217,58 @@ const EditProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
+      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       {renderHeader()}
 
       <View style={styles.content}>
-        {renderProfilePicture()}
+        <View>
+          {renderProfilePicture()}
+          <View style={styles.formContainer}>
+            {renderInputField(
+              "User name",
+              userData.username,
+              "person-outline",
+              null,
+              false,
+              "username"
+            )}
+            {renderInputField(
+              "Password",
+              userData.password,
+              "lock-closed-outline",
+              () => navigation.navigate("ConfirmPasswordScreen"),
+              true
+            )}
+            {renderInputField(
+              "Phone number",
+              userData.phoneNumber,
+              "phone-portrait-outline",
+              null,
+              false,
+              "phoneNumber"
+            )}
+          </View>
+        </View>
 
-        <View style={styles.formContainer}>
-          {renderInputField("User name", userData.username, "person-outline")}
-          {renderInputField(
-            "Password",
-            userData.password,
-            "lock-closed-outline",
-            () => console.log("Navigate to password change"),
-            true
-          )}
-          {renderInputField(
-            "Phone number",
-            userData.phoneNumber,
-            "phone-portrait-outline"
-          )}
+        <View style={styles.bottomContainer}>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSave}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            activeOpacity={0.9}
+          >
+            <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+              <LinearGradient
+                colors={["#26589c", "#9cb2d8"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.saveGradient}
+              >
+                <Text style={styles.saveButtonText}>Save Changes</Text>
+              </LinearGradient>
+            </Animated.View>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -232,19 +284,19 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 35,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
+        shadowColor: "#26589c",
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
-        shadowRadius: 10,
+        shadowRadius: 15,
       },
       android: {
-        elevation: 8,
+        elevation: 10,
       },
     }),
   },
@@ -252,102 +304,94 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
   },
   backButton: {
-    padding: 8,
-    marginLeft: -8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: "700",
     color: "#fff",
-  },
-  saveButton: {
-    overflow: "hidden",
-    borderRadius: 20,
-  },
-  saveGradient: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  civilId: {
-    fontSize: 14,
-    color: "rgba(255, 255, 255, 0.8)",
-    marginTop: 4,
+    textAlign: "center",
+    flex: 1,
+    marginHorizontal: 16,
   },
   content: {
     flex: 1,
     backgroundColor: "#fff",
+    justifyContent: "space-between",
   },
   profilePictureContainer: {
     alignItems: "center",
-    marginTop: -50,
+    marginTop: -30,
+    marginBottom: 20,
   },
   profilePictureBorder: {
     padding: 4,
-    borderRadius: 65,
+    borderRadius: 75,
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
+        shadowColor: "#26589c",
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
-        shadowRadius: 12,
+        shadowRadius: 15,
       },
       android: {
-        elevation: 8,
+        elevation: 10,
       },
     }),
   },
   profilePictureInner: {
     padding: 3,
-    borderRadius: 61,
+    borderRadius: 71,
     backgroundColor: "#fff",
+    overflow: "hidden",
   },
   profilePicture: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
   },
   editPictureButton: {
     marginTop: 16,
     overflow: "hidden",
     borderRadius: 25,
+    transform: [{ scale: 1 }],
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
+        shadowColor: "#26589c",
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
       },
       android: {
-        elevation: 4,
+        elevation: 5,
       },
     }),
   },
   editPictureGradient: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 25,
   },
   editPictureText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
-    marginLeft: 8,
+    marginLeft: 10,
+    letterSpacing: 0.5,
   },
   formContainer: {
-    paddingHorizontal: 16,
-    marginTop: 32,
-    gap: 16,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    gap: 20,
   },
   inputContainer: {
     flexDirection: "row",
@@ -357,21 +401,23 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
+        shadowColor: "#26589c",
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
-        shadowRadius: 8,
+        shadowRadius: 10,
       },
       android: {
-        elevation: 2,
+        elevation: 3,
       },
     }),
     paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "rgba(38, 88, 156, 0.1)",
   },
   inputIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -380,10 +426,11 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   inputLabel: {
-    fontSize: 13,
-    color: "#666",
+    fontSize: 14,
+    color: "#26589c",
     marginBottom: 4,
-    fontWeight: "500",
+    fontWeight: "600",
+    opacity: 0.8,
   },
   input: {
     fontSize: 16,
@@ -392,11 +439,48 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   arrowContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(46, 49, 146, 0.1)",
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(38, 88, 156, 0.1)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  bottomContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: Platform.OS === "ios" ? 40 : 20,
+    paddingTop: 20,
+    backgroundColor: "#fff",
+    width: "100%",
+    borderTopWidth: 1,
+    borderTopColor: "rgba(38, 88, 156, 0.05)",
+  },
+  saveButton: {
+    borderRadius: 16,
+    overflow: "hidden",
+    width: "100%",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#26589c",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.35,
+        shadowRadius: 15,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
+  },
+  saveGradient: {
+    paddingVertical: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
 });

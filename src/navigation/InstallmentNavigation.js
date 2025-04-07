@@ -8,7 +8,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Stack = createNativeStackNavigator();
 const InstallmentNavigation = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
@@ -20,7 +19,6 @@ const InstallmentNavigation = () => {
         component={SingleInstallmentScreen}
       />
     </Stack.Navigator>
-    </SafeAreaView>
   );
 };
 

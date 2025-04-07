@@ -1,17 +1,3 @@
-// import { StyleSheet, Text, View } from "react-native";
-// import React from "react";
-
-// const Savedaddresses = () => {
-//   return (
-//     <View>
-//       <Text>Savedaddresses</Text>
-//     </View>
-//   );
-// };
-
-// export default Savedaddresses;
-
-// const styles = StyleSheet.create({});
 import {
   StyleSheet,
   Text,

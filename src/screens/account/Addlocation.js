@@ -1,17 +1,3 @@
-// import { StyleSheet, Text, View } from "react-native";
-// import React from "react";
-
-// const Addlocation = () => {
-//   return (
-//     <View>
-//       <Text>Addlocation</Text>
-//     </View>
-//   );
-// };
-
-// export default Addlocation;
-
-// const styles = StyleSheet.create({});
 import {
   StyleSheet,
   Text,

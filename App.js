@@ -1,17 +1,32 @@
 // import { StatusBar, View, Button } from "expo-status-bar";
-import { StyleSheet, Text, Button, StatusBar, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Button,
+  StatusBar,
+  View,
+  FlatList,
+} from "react-native";
 import { useState } from "react";
 import ShoppingNavigation from "./src/navigation/ShoppingNavigation";
 import { NavigationContainer } from "@react-navigation/native";
 import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
+import SplashScreen from "./src/screens/SplashScreen";
 
 export default function App() {
   // const [isStatusBarVisible, setIsStatusBarVisible] = useState(false);
+  // const [loading, setLoading] = useState(true);
+
+  // if (loading) {
+  //   return <SplashScreen onFinish={() => setLoading(false)} />;
+  // }
+
   return (
     <NavigationContainer>
       {/* <ShoppingNavigation /> */}
-      <MainBottomNavigation/>
+      <MainBottomNavigation />
     </NavigationContainer>
+
     //   <View style={styles.container}>
     //     <Button
     //       title="Hide /Show StatusBar"

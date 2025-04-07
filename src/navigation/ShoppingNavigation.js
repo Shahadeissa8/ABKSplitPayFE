@@ -10,18 +10,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Stack = createNativeStackNavigator();
 const ShoppingNavigation = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="ShopScreen" component={ShopScreen} />
-        <Stack.Screen name="ProductsScreen" component={ProductsScreen} />
-        <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
-        <Stack.Screen name="ShopDetailsScreen" component={ShopDetailsScreen} />
-      </Stack.Navigator>
-    </SafeAreaView>
+    // <SafeAreaView style={{ flex: 1 }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="ShopScreen" component={ShopScreen} />
+      <Stack.Screen name="ProductsScreen" component={ProductsScreen} />
+      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="ShopDetailsScreen" component={ShopDetailsScreen} />
+    </Stack.Navigator>
+    // </SafeAreaView>
   );
 };
 

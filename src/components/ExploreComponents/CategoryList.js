@@ -19,10 +19,9 @@ const CategoryList = () => {
 export default CategoryList;
 const styles = StyleSheet.create({
   container: {
-    marginTop: 35,
+    marginTop: -15,
   },
   Text: {
-    marginTop: 40,
     marginLeft: 20,
     fontSize: 30,
     fontWeight: "bold",

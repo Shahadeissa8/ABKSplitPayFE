@@ -8,8 +8,8 @@ import AuthNavigation from "./AuthNavigation";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AccountNavigation from "./AccountNavigation";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import ExploreNavigator from "./ExploreNavigator";
+import ExploreScreen from "../screens/shopping/ExploreScreen";
 
 const Tab = createBottomTabNavigator();
 const MainBottomNavigation = () => {
@@ -24,11 +24,11 @@ const MainBottomNavigation = () => {
     >
       <Tab.Screen
         name="Explore"
-        component={ExploreNavigator}
+        component={ExploreScreen}
         options={{
           //   tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="manage-search" size={24} color={color} />
+            <Ionicons name="compass-outline" size={24} color={color} />
           ),
         }}
       />

@@ -1,0 +1,31 @@
+=> for the categories to blur out the imahes we willl use blurRadius:
+<I
+
+/>
+
+=> there are many on presses so we can use on long press for example for whatever reason:
+onPress, onLongPress..
+
+=> for alerts, login successful or register successful:
+import Alert (if you want to change the title f the alert)
+onPress={()=> Alert.alert("whatever tittle", "whatever message", [text:"yeaa", text: naah"])} //if we want to put options
+//or we can use Alert.prompt if we want an answer
+
+=> for android there are too many screen sizes to insure that safe area is there in styles we put:
+const styles = StyleSheet.creatte({
+    container:{
+        flex....
+        paddingTop : Platfor.OS === "android" ? 20: 0   
+        //or for more accuracy instead of guesses (recommended) 
+        paddingTop : Platform.OS === "android" ? StatusBar.currentHeight
+    }
+})
+
+=> to resize image to its og size:
+<Image resizeMode="contain"
+style...
+source...
+/>
+
+=> 
+

@@ -12,6 +12,7 @@ import CategoryList from "../../components/ExploreComponents/CategoryList";
 import InstructionsCard from "../../components/ExploreComponents/InstructionsCard";
 import DealsList from "../../components/ExploreComponents/DealsList";
 import { LinearGradient } from "expo-linear-gradient";
+import ProductList from "../../components/ExploreComponents/ProductList";
 
 const ExploreScreen = () => {
   return (
@@ -28,11 +29,15 @@ const ExploreScreen = () => {
           <View style={styles.instructionsContainer}>
             <InstructionsCard />
           </View>
+
+          <View style={styles.contentContainer}>
+            <DealsList />
+          </View>
           <View style={styles.CategoryContainer}>
             <CategoryList />
           </View>
-          <View style={styles.contentContainer}>
-            <DealsList />
+          <View style={styles.CategoryContainer}>
+            <ProductList />
           </View>
         </LinearGradient>
       </ScrollView>

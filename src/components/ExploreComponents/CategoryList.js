@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import CategoryCard from "./CategoryCard";
 import { BlurView } from "expo-blur";
@@ -8,7 +8,8 @@ import { BlurView } from "expo-blur";
 
 const CategoryList = () => {
   return (
-    <View style={{ margin: 10 }}>
+    <View style={styles.container}>
+      <Text style={styles.Text}>Categories</Text>
       {/* <Text>CategoryList</Text> */}
       <CategoryCard />
     </View>
@@ -16,3 +17,14 @@ const CategoryList = () => {
 };
 
 export default CategoryList;
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 35,
+  },
+  Text: {
+    marginTop: 40,
+    marginLeft: 20,
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+});

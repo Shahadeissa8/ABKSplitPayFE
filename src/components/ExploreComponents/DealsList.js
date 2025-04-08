@@ -14,24 +14,10 @@ const DealsList = () => {
 export default DealsList;
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
   Text: {
-    fontSize: 18,
+    marginTop: -40,
+    marginLeft: 20,
+    fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 10,
   },
 });

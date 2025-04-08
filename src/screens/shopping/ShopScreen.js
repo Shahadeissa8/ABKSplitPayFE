@@ -53,7 +53,7 @@ const ShopScreen = ({ navigation }) => {
 
   const handleProductPress = useCallback(
     (product) => {
-      navigation.navigate("ProductDetails", { product });
+      navigation.navigate("ShopLinkScreen", { product });
     },
     [navigation]
   );

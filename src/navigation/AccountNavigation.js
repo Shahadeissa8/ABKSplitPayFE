@@ -10,21 +10,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 const AccountNavigation = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="MainAccPageScreen" component={MainAccPageScreen} />
-        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-        <Stack.Screen
-          name="ConfirmPasswordScreen"
-          component={ConfirmPasswordScreen}
-        />
-        <Stack.Screen name="WishListScreen" component={WishListScreen} />
-      </Stack.Navigator>
-    </SafeAreaView>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="MainAccPageScreen" component={MainAccPageScreen} />
+      <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+      <Stack.Screen
+        name="ConfirmPasswordScreen"
+        component={ConfirmPasswordScreen}
+      />
+      <Stack.Screen name="WishListScreen" component={WishListScreen} />
+    </Stack.Navigator>
   );
 };
 

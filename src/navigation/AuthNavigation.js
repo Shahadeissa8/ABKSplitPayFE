@@ -11,19 +11,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Stack = createNativeStackNavigator();
 const AuthNavigation = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        {/* <Stack.Screen name="SplashScreen" component={SplashScreen} />*/}
-        <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} />
-        <Stack.Screen name="LocationScreen" component={LocationScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-      </Stack.Navigator>
-    </SafeAreaView>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      {/* <Stack.Screen name="SplashScreen" component={SplashScreen} />*/}
+      <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} />
+      <Stack.Screen name="LocationScreen" component={LocationScreen} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+    </Stack.Navigator>
   );
 };
 

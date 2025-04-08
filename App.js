@@ -10,7 +10,7 @@ export default function App() {
   return (
     <NavigationContainer>
       {/* <ShoppingNavigation /> */}
-      <MainBottomNavigation/>
+      <MainBottomNavigation />
     </NavigationContainer>
     //   <View style={styles.container}>
     //     <Button

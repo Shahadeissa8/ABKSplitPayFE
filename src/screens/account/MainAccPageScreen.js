@@ -1,18 +1,4 @@
-// import { StyleSheet, Text, View } from "react-native";
-// import React from "react";
-
-// const MainAccPageScreen = () => {
-//   return (
-//     <View>
-//       <Text>MainAccPageScreen</Text>
-//     </View>
-//   );
-// };
-
-// export default MainAccPageScreen;
-
-// const styles = StyleSheet.create({});
-
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -26,7 +12,6 @@ import {
   Dimensions,
   RefreshControl,
 } from "react-native";
-import React, { useRef, useEffect, useState, useCallback } from "react";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -35,217 +20,181 @@ const { width } = Dimensions.get("window");
 
 const MainAccPageScreen = () => {
   const navigation = useNavigation();
+  const scrollViewRef = useRef(null);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(50)).current;
   const [refreshing, setRefreshing] = useState(false);
-
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [
-      Platform.OS === "android" ? 90 : 70,
-      Platform.OS === "android" ? 60 : 40,
-    ],
-    extrapolate: "clamp",
-  });
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
 
   const menuItems = [
     {
       id: 1,
       title: "Edit profile",
       icon: "person-outline",
-      color: "#2E3192",
+      color: "#26589c",
       screen: "EditProfile",
     },
-    {
-      id: 2,
-      title: "Tiers & Rewards",
-      icon: "star-outline",
-      color: "#1BFFFF",
-      screen: "Rewards",
-    },
+    // {
+    //   id: 2,
+    //   title: "Change Password",
+    //   icon: "lock-closed-outline",
+    //   color: "#9cb2d8",
+    //   screen: "ConfirmPassword",
+    // },
     {
       id: 3,
-      title: "Saved Addresses",
-      icon: "location-outline",
-      color: "#2E3192",
-      screen: "Addresses",
+      title: "Tiers & Rewards",
+      icon: "star-outline",
+      color: "#9cb2d8",
+      screen: "Rewards",
     },
+    // {
+    //   id: 4,
+    //   title: "Saved Addresses",
+    //   icon: "location-outline",
+    //   color: "#26589c",
+    //   screen: "Addresses",
+    // },
     {
       id: 4,
-      title: "Payment Methods",
-      icon: "card-outline",
-      color: "#1BFFFF",
-      screen: "Payments",
+      title: "Saved Addresses",
+      icon: "location-outline",
+      color: "#26589c",
+      screen: "Savedaddresses",
     },
     {
       id: 5,
-      title: "Wishlist",
-      icon: "heart-outline",
-      color: "#2E3192",
-      screen: "Wishlist",
+      title: "Payment Methods",
+      icon: "card-outline",
+      color: "#9cb2d8",
+      screen: "Payments",
     },
     {
       id: 6,
-      title: "Help Center",
-      icon: "help-circle-outline",
-      color: "#1BFFFF",
-      screen: "Help",
+      title: "Wishlist",
+      icon: "heart-outline",
+      color: "#26589c",
+      screen: "Wishlist",
     },
     {
       id: 7,
-      title: "Feedback",
-      icon: "chatbox-outline",
-      color: "#2E3192",
-      screen: "Feedback",
+      title: "Help Center",
+      icon: "help-circle-outline",
+      color: "#9cb2d8",
+      screen: "Help",
     },
     {
       id: 8,
+      title: "Feedback",
+      icon: "chatbox-outline",
+      color: "#26589c",
+      screen: "Feedback",
+    },
+    {
+      id: 9,
       title: "Settings",
       icon: "settings-outline",
-      color: "#1BFFFF",
+      color: "#9cb2d8",
       screen: "Settings",
     },
   ];
 
-  const handleLogout = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 50,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      // Add your logout logic here
-      console.log("Logging out...");
-    });
-  };
-
-  const handleRefresh = useCallback(() => {
-    setRefreshing(true);
-    // Add your refresh logic here
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
-
-  const scrollViewRef = useRef(null);
-  const lastOffset = useRef(0);
-  const scrollDirection = useRef(new Animated.Value(1)).current;
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [
+      Platform.OS === "android" ? 60 : 50,
+      Platform.OS === "android" ? 45 : 35,
+    ],
+    extrapolate: "clamp",
+  });
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      useNativeDriver: false,
-      listener: (event) => {
-        const currentOffset = event.nativeEvent.contentOffset.y;
-        const direction = currentOffset > lastOffset.current ? 0 : 1;
-        if (direction !== scrollDirection._value) {
-          Animated.spring(scrollDirection, {
-            toValue: direction,
-            useNativeDriver: true,
-            bounciness: 0,
-          }).start();
-        }
-        lastOffset.current = currentOffset;
-      },
-    }
+    { useNativeDriver: false }
   );
 
-  const MenuItem = ({ title, icon, color, screen, style }) => (
-    <Animated.View
-      style={[
-        {
-          opacity: fadeAnim,
-          transform: [{ translateX: slideAnim }],
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // Add your refresh logic here
+    setTimeout(() => setRefreshing(false), 2000);
+  };
+
+  const handleMenuPress = (screen) => {
+    if (screen === "EditProfile") {
+      navigation.navigate("EditProfileScreen", {
+        userData: {
+          username: "John Doe",
+          email: "john.doe@example.com",
+          phoneNumber: "+971050600798",
+          profilePicture: "https://via.placeholder.com/100",
         },
-        style,
-      ]}
+      });
+    } else if (screen === "ConfirmPassword") {
+      navigation.navigate("ConfirmPasswordScreen", {
+        onSuccess: () => {
+          navigation.navigate("EditPasswordScreen");
+        },
+      });
+    } else {
+      navigation.navigate(screen);
+    }
+  };
+
+  const handleLogout = () => {
+    // Add your logout logic here
+    navigation.navigate("Login");
+  };
+
+  const renderMenuItem = ({ id, title, icon, color, screen }) => (
+    <TouchableOpacity
+      key={id}
+      style={styles.menuItem}
+      onPress={() => handleMenuPress(screen)}
     >
-      <TouchableOpacity
-        style={styles.menuItem}
-        activeOpacity={0.7}
-        onPress={() => navigation.navigate(screen)}
-      >
-        <View style={styles.menuItemLeft}>
-          <LinearGradient
-            colors={[color, color === "#2E3192" ? "#1BFFFF" : "#2E3192"]}
-            style={styles.iconContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name={icon} size={22} color="#fff" />
-          </LinearGradient>
-          <Text style={styles.menuItemText}>{title}</Text>
-        </View>
-        <View style={styles.arrowContainer}>
-          <Ionicons name="chevron-forward" size={22} color="#2E3192" />
-        </View>
-      </TouchableOpacity>
-    </Animated.View>
+      <View style={styles.menuItemLeft}>
+        <LinearGradient
+          colors={[color, color === "#26589c" ? "#9cb2d8" : "#26589c"]}
+          style={styles.iconContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Ionicons name={icon} size={24} color="#fff" />
+        </LinearGradient>
+        <Text style={styles.menuItemText}>{title}</Text>
+      </View>
+      <View style={styles.arrowContainer}>
+        <Ionicons name="chevron-forward" size={22} color="#26589c" />
+      </View>
+    </TouchableOpacity>
   );
 
   const renderHeader = () => (
-    <Animated.View style={[styles.header, { height: headerHeight }]}>
-      <LinearGradient
-        colors={["#2E3192", "#1BFFFF"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Profile</Text>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => navigation.navigate("Notifications")}
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.header}
+    >
+      <View style={styles.headerContent}>
+        <Text style={styles.headerTitle}>Profile</Text>
+        <TouchableOpacity style={styles.notificationButton}>
+          <LinearGradient
+            colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.notificationGradient}
           >
-            <LinearGradient
-              colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.notificationButton}
-            >
-              <Ionicons name="notifications-outline" size={24} color="#fff" />
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </Animated.View>
+            <Ionicons name="notifications-outline" size={24} color="#fff" />
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.civilId}>Civil Id: 571050600798</Text>
+    </LinearGradient>
   );
 
   const renderProfileSection = () => (
-    <Animated.View
-      style={[
-        styles.profileSection,
-        {
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        },
-      ]}
-    >
+    <View style={styles.profileSection}>
       <View style={styles.profileImageContainer}>
         <LinearGradient
-          colors={["#2E3192", "#1BFFFF"]}
+          colors={["#26589c", "#9cb2d8"]}
           style={styles.profileImageBorder}
         >
           <View style={styles.profileImageInner}>
@@ -257,143 +206,88 @@ const MainAccPageScreen = () => {
         </LinearGradient>
         <TouchableOpacity
           style={styles.editProfileButton}
-          onPress={() => navigation.navigate("EditProfile")}
+          onPress={() => handleMenuPress("EditProfile")}
         >
           <LinearGradient
-            colors={["#2E3192", "#1BFFFF"]}
+            colors={["#26589c", "#9cb2d8"]}
             style={styles.editButtonGradient}
           >
-            <Ionicons name="pencil" size={16} color="#fff" />
+            <Ionicons name="pencil" size={18} color="#fff" />
           </LinearGradient>
         </TouchableOpacity>
       </View>
       <Text style={styles.nameText}>John Doe</Text>
       <Text style={styles.emailText}>john.doe@example.com</Text>
       <LinearGradient
-        colors={["#2E3192", "#1BFFFF"]}
+        colors={["#26589c", "#9cb2d8"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.membershipBadge}
       >
-        <Ionicons name="star" size={16} color="#fff" />
+        <Ionicons name="star" size={18} color="#fff" />
         <Text style={styles.membershipText}>Premium Member</Text>
       </LinearGradient>
-    </Animated.View>
+    </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
+    <SafeAreaView
+      style={[
+        styles.container,
+        { marginTop: Platform.OS === "android" ? -35 : 0 },
+      ]}
+    >
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#26589c"
+        translucent={true}
+      />
       {renderHeader()}
 
       <Animated.ScrollView
         ref={scrollViewRef}
         style={styles.content}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { marginTop: -10 }]}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        bounces={true}
-        overScrollMode="always"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#2E3192"
-            colors={["#2E3192", "#1BFFFF"]}
+            tintColor="#26589c"
+            colors={["#26589c", "#9cb2d8"]}
             progressBackgroundColor="#fff"
             progressViewOffset={Platform.OS === "android" ? 80 : 0}
             size={Platform.OS === "ios" ? "large" : 40}
           />
         }
-        decelerationRate="normal"
-        fadingEdgeLength={2}
-        onMomentumScrollEnd={() => {
-          const offset = lastOffset.current;
-          const snapPoint = Math.round(offset / 100) * 100;
-          scrollViewRef.current?.scrollTo({
-            y: snapPoint,
-            animated: true,
-          });
-        }}
       >
-        <Animated.View
-          style={{
-            opacity: fadeAnim,
-            transform: [
-              {
-                translateY: scrollY.interpolate({
-                  inputRange: [-100, 0, 100],
-                  outputRange: [-50, 0, 50],
-                  extrapolate: "clamp",
-                }),
-              },
-            ],
-          }}
-        >
-          {renderProfileSection()}
+        {renderProfileSection()}
 
-          <View style={styles.menuContainer}>
-            {menuItems.map((item, index) => (
-              <MenuItem
-                key={item.id}
-                title={item.title}
-                icon={item.icon}
-                color={item.color}
-                screen={item.screen}
-                style={{
-                  transform: [
-                    {
-                      translateX: scrollY.interpolate({
-                        inputRange: [100 * index, 100 * (index + 1)],
-                        outputRange: [0, -10],
-                        extrapolate: "clamp",
-                      }),
-                    },
-                  ],
-                }}
-              />
-            ))}
-          </View>
+        <View style={styles.menuContainer}>
+          {menuItems.map(renderMenuItem)}
+        </View>
 
-          <TouchableOpacity
-            style={[
-              styles.logoutButton,
-              {
-                transform: [
-                  {
-                    scale: scrollDirection.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0.95, 1],
-                    }),
-                  },
-                ],
-              },
-            ]}
-            activeOpacity={0.8}
-            onPress={handleLogout}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <LinearGradient
+            colors={["#26589c", "#9cb2d8"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.logoutGradient}
           >
-            <LinearGradient
-              colors={["#2E3192", "#1BFFFF"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.logoutGradient}
-            >
-              <Ionicons name="log-out-outline" size={20} color="#fff" />
-              <Text style={styles.logoutText}>Log Out</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+            <Ionicons name="log-out-outline" size={24} color="#fff" />
+            <Text style={styles.logoutText}>Logout</Text>
+          </LinearGradient>
+        </TouchableOpacity>
 
-          <View style={styles.versionContainer}>
-            <Text style={styles.versionText}>Version 1.0.0</Text>
-          </View>
-        </Animated.View>
+        <View style={styles.versionContainer}>
+          <Text style={styles.versionText}>Version 1.0.0</Text>
+        </View>
       </Animated.ScrollView>
     </SafeAreaView>
   );
 };
-
-export default MainAccPageScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -401,48 +295,46 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
   },
   header: {
-    backgroundColor: "#2E3192",
-    zIndex: 1000,
-  },
-  headerGradient: {
-    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
-        shadowOffset: { width: 0, height: 4 },
+        shadowColor: "#26589c",
+        shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
-        shadowRadius: 12,
+        shadowRadius: 10,
       },
       android: {
-        elevation: 12,
+        elevation: 8,
       },
     }),
   },
   headerContent: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    marginBottom: 8,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "700",
     color: "#fff",
   },
-  settingsButton: {
+  notificationButton: {
     overflow: "hidden",
     borderRadius: 20,
   },
-  notificationButton: {
-    width: 40,
-    height: 40,
+  notificationGradient: {
+    padding: 8,
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  civilId: {
+    fontSize: 14,
+    color: "rgba(255, 255, 255, 0.8)",
+    marginTop: 4,
   },
   content: {
     flex: 1,
@@ -452,21 +344,21 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     alignItems: "center",
-    padding: 20,
-    marginTop: 10,
+    padding: 15,
+    marginTop: 0,
   },
   profileImageContainer: {
     position: "relative",
-    marginBottom: 15,
+    marginBottom: 12,
   },
   profileImageBorder: {
     width: 110,
     height: 110,
     borderRadius: 55,
-    padding: 4,
+    padding: 3,
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
+        shadowColor: "#26589c",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -477,21 +369,14 @@ const styles = StyleSheet.create({
     }),
   },
   profileImageInner: {
-    padding: 3,
-    borderRadius: 51,
+    padding: 2,
+    borderRadius: 52,
     backgroundColor: "#fff",
   },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
-  },
-  editButtonGradient: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
   },
   editProfileButton: {
     position: "absolute",
@@ -503,39 +388,33 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "#fff",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#2E3192",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+  },
+  editButtonGradient: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   nameText: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
     color: "#333",
     marginBottom: 4,
   },
   emailText: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#666",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   membershipBadge: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 18,
     marginTop: 4,
   },
   membershipText: {
-    marginLeft: 6,
+    marginLeft: 8,
     color: "#fff",
     fontWeight: "600",
     fontSize: 14,
@@ -544,10 +423,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     marginHorizontal: 15,
-    padding: 5,
+    padding: 4,
+    marginTop: 10,
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
+        shadowColor: "#26589c",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.15,
         shadowRadius: 8,
@@ -561,11 +441,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 16,
+    paddingVertical: 14,
     paddingHorizontal: 15,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0,0,0,0.05)",
-    marginHorizontal: 5,
+    marginHorizontal: 4,
   },
   menuItemLeft: {
     flexDirection: "row",
@@ -588,18 +468,18 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(46, 49, 146, 0.1)",
+    backgroundColor: "rgba(38, 88, 156, 0.1)",
     justifyContent: "center",
     alignItems: "center",
   },
   logoutButton: {
-    margin: 20,
-    marginTop: 30,
+    margin: 15,
+    marginTop: 20,
     borderRadius: 16,
     overflow: "hidden",
     ...Platform.select({
       ios: {
-        shadowColor: "#2E3192",
+        shadowColor: "#26589c",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,
@@ -623,11 +503,13 @@ const styles = StyleSheet.create({
   },
   versionContainer: {
     alignItems: "center",
-    padding: 20,
-    paddingBottom: 30,
+    padding: 16,
+    paddingBottom: 24,
   },
   versionText: {
     fontSize: 12,
     color: "#999",
   },
 });
+
+export default MainAccPageScreen;

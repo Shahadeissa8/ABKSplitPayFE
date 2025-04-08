@@ -1,17 +1,3 @@
-// import { StyleSheet, Text, View } from "react-native";
-// import React from "react";
-
-// const Addlocation = () => {
-//   return (
-//     <View>
-//       <Text>Addlocation</Text>
-//     </View>
-//   );
-// };
-
-// export default Addlocation;
-
-// const styles = StyleSheet.create({});
 import {
   StyleSheet,
   Text,
@@ -21,11 +7,11 @@ import {
   StatusBar,
   TextInput,
   Platform,
-  Modal,
   ScrollView,
   Dimensions,
   Alert,
   Animated,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -38,14 +24,17 @@ const ADDRESSES_STORAGE_KEY = "@saved_addresses";
 
 const Addlocation = ({ route }) => {
   const navigation = useNavigation();
-  const [zone, setZone] = useState("");
-  const [area, setArea] = useState("");
-  const [isZoneModalVisible, setIsZoneModalVisible] = useState(false);
+  const [addressDetails, setAddressDetails] = useState({
+    area: "",
+    block: "",
+    street: "",
+    house: "",
+    extra: "",
+  });
   const [isSaving, setIsSaving] = useState(false);
   const fadeAnim = new Animated.Value(0);
   const slideAnim = new Animated.Value(50);
-
-  const zones = ["Salmiya", "Kuwait City", "Hawally", "Farwaniya", "Jahra"];
+  const scaleAnim = new Animated.Value(0.95);
 
   useEffect(() => {
     Animated.parallel([
@@ -59,13 +48,18 @@ const Addlocation = ({ route }) => {
         duration: 800,
         useNativeDriver: true,
       }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 20,
+        friction: 7,
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []);
 
   const saveAddress = async (newAddress) => {
     try {
       setIsSaving(true);
-      // Get existing addresses
       const existingAddressesJson = await AsyncStorage.getItem(
         ADDRESSES_STORAGE_KEY
       );
@@ -73,23 +67,30 @@ const Addlocation = ({ route }) => {
         ? JSON.parse(existingAddressesJson)
         : [];
 
-      // Add new address
-      const updatedAddresses = [...existingAddresses, newAddress];
+      const isFirstAddress = existingAddresses.length === 0;
+      const addressToSave = {
+        ...newAddress,
+        isDefault: isFirstAddress,
+        isSelected: false,
+      };
 
-      // Save back to storage
+      const updatedAddresses = [...existingAddresses, addressToSave];
       await AsyncStorage.setItem(
         ADDRESSES_STORAGE_KEY,
         JSON.stringify(updatedAddresses)
       );
 
-      // Navigate back with the new address
-      navigation.navigate("Savedaddresses", {
-        newAddress,
-        addresses: updatedAddresses,
-      });
+      Alert.alert("Success", "Address saved successfully", [
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.navigate("Savedaddresses", { refresh: Date.now() });
+          },
+        },
+      ]);
     } catch (error) {
       Alert.alert("Error", "Failed to save address. Please try again.", [
-        { text: "OK", style: "default" },
+        { text: "OK" },
       ]);
     } finally {
       setIsSaving(false);
@@ -97,120 +98,131 @@ const Addlocation = ({ route }) => {
   };
 
   const handleSubmit = async () => {
-    if (!zone || !area) {
+    const { area, block, street, house } = addressDetails;
+
+    if (!area.trim() || !block.trim() || !street.trim() || !house.trim()) {
       Alert.alert(
         "Missing Information",
-        "Please select your zone and enter your area details.",
-        [{ text: "OK", style: "default" }]
+        "Please fill in all required address fields",
+        [{ text: "OK" }]
       );
       return;
     }
 
+    const formattedAddress = `Area: ${area}, Block: ${block}, Street: ${street}, House: ${house}${
+      addressDetails.extra ? `, ${addressDetails.extra}` : ""
+    }`;
+
     const newAddress = {
       id: Date.now().toString(),
       title: `Address ${Math.floor(Math.random() * 1000) + 1}`,
-      location: zone,
-      details: area,
+      location: formattedAddress,
+      details: formattedAddress,
       createdAt: new Date().toISOString(),
+      type: "home",
+      coordinates: null,
+      area,
+      block,
+      street,
+      house,
+      extra: addressDetails.extra,
     };
 
     await saveAddress(newAddress);
   };
 
-  const renderZoneItem = (item) => (
-    <TouchableOpacity
-      key={item}
-      style={styles.zoneItem}
-      onPress={() => {
-        setZone(item);
-        setIsZoneModalVisible(false);
-      }}
-    >
-      <LinearGradient
-        colors={["rgba(46, 49, 146, 0.05)", "rgba(27, 255, 255, 0.05)"]}
-        style={styles.zoneItemGradient}
-      >
-        <Text style={styles.zoneItemText}>{item}</Text>
-        <Ionicons name="chevron-forward" size={20} color="#2E3192" />
-      </LinearGradient>
-    </TouchableOpacity>
+  const renderInputField = (label, placeholder, key, required = true) => (
+    <View style={styles.inputField}>
+      <Text style={styles.inputLabel}>
+        {label} {required && <Text style={styles.requiredStar}>*</Text>}
+      </Text>
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          value={addressDetails[key]}
+          onChangeText={(text) =>
+            setAddressDetails((prev) => ({ ...prev, [key]: text }))
+          }
+          placeholderTextColor="#999"
+        />
+      </View>
+    </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
-
-      <LinearGradient colors={["#2E3192", "#1BFFFF"]} style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Select Location</Text>
-        <View style={styles.placeholder} />
-      </LinearGradient>
-
-      <Animated.View
-        style={[
-          styles.content,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
+      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
       >
-        <View style={styles.imageContainer}>
-          <LinearGradient
-            colors={["rgba(46, 49, 146, 0.1)", "rgba(27, 255, 255, 0.1)"]}
-            style={styles.gradientOverlay}
+        <LinearGradient
+          colors={["#26589c", "#9cb2d8"]}
+          style={styles.header}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        >
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
           >
-            <Animated.View
-              style={[
-                styles.locationIcon,
-                { transform: [{ scale: fadeAnim }] },
-              ]}
-            >
-              <Ionicons name="location" size={48} color="#2E3192" />
-            </Animated.View>
-          </LinearGradient>
-        </View>
+            <Ionicons name="chevron-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Add Location</Text>
+          <View style={styles.placeholder} />
+        </LinearGradient>
 
-        <View style={styles.infoContainer}>
-          <Text style={styles.locationTitle}>Select Your Address Location</Text>
-          <Text style={styles.locationSubtitle}>
-            Switch on your location to stay in tune with what's happening in
-            your area
-          </Text>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Your Zone</Text>
-            <TouchableOpacity
-              style={styles.dropdown}
-              onPress={() => setIsZoneModalVisible(true)}
-            >
-              <Text
-                style={[styles.dropdownText, !zone && styles.placeholderText]}
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <Animated.View
+            style={[
+              styles.content,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+              },
+            ]}
+          >
+            <View style={styles.imageContainer}>
+              <LinearGradient
+                colors={["rgba(38, 88, 156, 0.1)", "rgba(156, 178, 216, 0.1)"]}
+                style={styles.gradientOverlay}
               >
-                {zone || "Select zone"}
-              </Text>
-              <Ionicons name="chevron-down" size={20} color="#2E3192" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Your Area</Text>
-            <View style={styles.dropdown}>
-              <TextInput
-                style={styles.areaInput}
-                placeholder="Type your area"
-                value={area}
-                onChangeText={setArea}
-                placeholderTextColor="#999"
-              />
+                <Animated.View
+                  style={[
+                    styles.locationIcon,
+                    { transform: [{ scale: fadeAnim }] },
+                  ]}
+                >
+                  <Ionicons name="location" size={48} color="#26589c" />
+                </Animated.View>
+              </LinearGradient>
             </View>
-          </View>
 
+            <View style={styles.formContainer}>
+              <Text style={styles.formTitle}>Address Details</Text>
+              <Text style={styles.formSubtitle}>
+                Please fill in your address information
+              </Text>
+
+              {renderInputField("Area", "Enter area name", "area")}
+              {renderInputField("Block", "Enter block number", "block")}
+              {renderInputField("Street", "Enter street name/number", "street")}
+              {renderInputField("House", "Enter house number", "house")}
+              {renderInputField(
+                "Additional Details",
+                "Apartment number, floor, etc. (optional)",
+                "extra",
+                false
+              )}
+            </View>
+          </Animated.View>
+        </ScrollView>
+
+        <View style={styles.bottomContainer}>
           <TouchableOpacity
             style={[
               styles.submitButton,
@@ -218,47 +230,27 @@ const Addlocation = ({ route }) => {
             ]}
             onPress={handleSubmit}
             disabled={isSaving}
+            activeOpacity={0.8}
           >
             <LinearGradient
-              colors={["#2E3192", "#1BFFFF"]}
+              colors={["#26589c", "#9cb2d8"]}
               style={styles.gradientButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             >
+              <Ionicons
+                name={isSaving ? "sync" : "save-outline"}
+                size={24}
+                color="#fff"
+                style={styles.buttonIcon}
+              />
               <Text style={styles.submitButtonText}>
-                {isSaving ? "Saving..." : "Submit Location"}
+                {isSaving ? "Saving..." : "Save Address"}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
-
-        <Modal
-          visible={isZoneModalVisible}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={() => setIsZoneModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <LinearGradient
-                colors={["#2E3192", "#1BFFFF"]}
-                style={styles.modalHeader}
-              >
-                <Text style={styles.modalTitle}>Select Your Zone</Text>
-                <TouchableOpacity
-                  onPress={() => setIsZoneModalVisible(false)}
-                  style={styles.closeButton}
-                >
-                  <Ionicons name="close" size={24} color="#fff" />
-                </TouchableOpacity>
-              </LinearGradient>
-              <ScrollView style={styles.zoneList}>
-                {zones.map(renderZoneItem)}
-              </ScrollView>
-            </View>
-          </View>
-        </Modal>
-      </Animated.View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -266,7 +258,179 @@ const Addlocation = ({ route }) => {
 export default Addlocation;
 
 const styles = StyleSheet.create({
-  // ... existing styles ...
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: "#26589c",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  backButton: {
+    padding: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 12,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#fff",
+    letterSpacing: 0.5,
+  },
+  placeholder: {
+    width: 40,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 100,
+  },
+  imageContainer: {
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  gradientOverlay: {
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: width * 0.15,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#26589c",
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  locationIcon: {
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    padding: 20,
+    borderRadius: 40,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  formContainer: {
+    flex: 1,
+    alignItems: "center",
+    width: "100%",
+  },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#26589c",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  formSubtitle: {
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  inputField: {
+    width: "100%",
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#26589c",
+    marginBottom: 8,
+    paddingLeft: 4,
+  },
+  requiredStar: {
+    color: "#ff4444",
+  },
+  inputWrapper: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(38, 88, 156, 0.2)",
+    shadowColor: "#26589c",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  input: {
+    fontSize: 16,
+    color: "#26589c",
+    padding: 12,
+    textAlign: "left",
+  },
+  bottomContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 16,
+  },
+  submitButton: {
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#26589c",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  gradientButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+  submitButtonText: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#fff",
+    letterSpacing: 0.5,
+  },
   submitButtonDisabled: {
     opacity: 0.7,
   },

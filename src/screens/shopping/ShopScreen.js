@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, Platform } from "react-native";
 import React, { useState, useCallback } from "react";
-import ProductList from "../../components/ProductsComponents/ProductList";
+import ProductList from "../.././components/ExploreComponents/ProductList";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import StoresList from "../../components/StoresComponents/StoresList";

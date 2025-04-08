@@ -46,12 +46,19 @@ const MainAccPageScreen = () => {
       color: "#9cb2d8",
       screen: "Rewards",
     },
+    // {
+    //   id: 4,
+    //   title: "Saved Addresses",
+    //   icon: "location-outline",
+    //   color: "#26589c",
+    //   screen: "Addresses",
+    // },
     {
       id: 4,
       title: "Saved Addresses",
       icon: "location-outline",
       color: "#26589c",
-      screen: "Addresses",
+      screen: "Savedaddresses",
     },
     {
       id: 5,

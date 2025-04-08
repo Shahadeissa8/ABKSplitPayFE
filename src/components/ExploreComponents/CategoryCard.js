@@ -68,12 +68,12 @@ const CategoryCard = () => {
         style={styles.cardContainer}
         activeOpacity={0.8}
       >
-        <View style={[styles.card, { transform: [{ scale: 1 }] }]}>
+        <Animated.View style={[styles.card, { transform: [{ scale }] }]}>
           <LinearGradient
             colors={item.gradient}
             style={styles.gradientBackground}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+            // start={{ x: 0, y: 0 }}
+            // end={{ x: 1, y: 1 }}
           >
             <BlurView intensity={20} style={styles.blurContainer}>
               <Image
@@ -81,52 +81,42 @@ const CategoryCard = () => {
                 style={styles.image}
                 resizeMode="cover"
               />
+              <Text style={styles.text}>{item.name}</Text>
             </BlurView>
-            <Text style={styles.text}>{item.name}</Text>
           </LinearGradient>
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     );
   };
-
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    {
-      useNativeDriver: false,
-      listener: (event) => {
-        const slideSize = width * 0.8 + 20;
-        const index = Math.round(event.nativeEvent.contentOffset.x / slideSize);
-        setActiveIndex(index);
-      },
-    }
-  );
 
   return (
     <View style={styles.container}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        // contentContainerStyle={styles.scrollContent}
         snapToInterval={width * 0.8 + 20}
         snapToAlignment="center"
         decelerationRate="fast"
-        onScroll={handleScroll}
-        scrollEventThrottle={16} // Keep this from the uncommented code
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
+        )}
       >
         {categories.map((item, index) => renderCard({ item, index }))}
       </ScrollView>
 
-      {/* <View style={styles.pagination}>
+      <View style={styles.pagination}>
         {categories.map((_, index) => (
           <View
             key={index}
             style={[
               styles.paginationDot,
-              index === activeIndex && styles.paginationDotActive, // Keep this behavior from uncommented code
+              index === activeIndex && styles.paginationDotActive,
             ]}
           />
         ))}
-      </View> */}
+      </View>
     </View>
   );
 };
@@ -137,11 +127,14 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 10,
+    // paddingLeft: 90,
+    // margin: 90,
   },
   cardContainer: {
-    width: "auto",
-    height: "auto",
-    marginHorizontal: 5,
+    width: width * 0.8,
+    marginHorizontal: -10,
+    marginStart: 10,
+    marginLeft: 10,
   },
   card: {
     borderRadius: 20,
@@ -166,40 +159,36 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    // marginRight: 15,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginRight: 15,
     borderWidth: 2,
     borderColor: "#fff",
-    marginBottom: -20,
-    alignSelf: "flex-start",
   },
   text: {
-    margin: 10,
     fontSize: 22,
     fontWeight: "700",
     color: "#fff",
-    // alignItems: "center",
-    alignSelf: "center",
+    flex: 1,
   },
-  // pagination: {
-  //   flexDirection: "row",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   marginTop: 20,
-  // },
-  // paginationDot: {
-  //   width: 8,
-  //   height: 8,
-  //   borderRadius: 4,
-  //   backgroundColor: "rgba(38, 88, 156, 0.2)",
-  //   marginHorizontal: 4,
-  // },
-  // paginationDotActive: {
-  //   backgroundColor: "#26589c",
-  //   width: 24,
-  // },
+  pagination: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(46, 49, 146, 0.3)",
+    marginHorizontal: 4,
+  },
+  paginationDotActive: {
+    backgroundColor: "#2E3192",
+    width: 20,
+  },
 });
 
 export default CategoryCard;

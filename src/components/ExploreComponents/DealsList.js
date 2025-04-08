@@ -15,7 +15,7 @@ export default DealsList;
 
 const styles = StyleSheet.create({
   Text: {
-    marginTop: 40,
+    marginTop: -40,
     marginLeft: 20,
     fontSize: 30,
     fontWeight: "bold",

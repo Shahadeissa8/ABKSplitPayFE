@@ -16,7 +16,6 @@ const ShoppingNavigation = () => {
         headerShown: false,
       }}
     >
-      {/* needs A LOT OF EDITING */}
       <Stack.Screen name="ShopScreen" component={ShopScreen} />
       {/* <Stack.Screen name="ProductsScreen" component={ProductsScreen} /> */}
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />

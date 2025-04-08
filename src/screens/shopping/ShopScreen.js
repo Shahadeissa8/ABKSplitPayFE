@@ -3,7 +3,6 @@ import React, { useState, useCallback } from "react";
 import ProductList from "../../components/ProductsComponents/ProductList";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
-import StoresList from "../../components/StoresComponents/StoresList";
 
 const ShopScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -76,7 +75,7 @@ const ShopScreen = ({ navigation }) => {
         {/* <View style={styles.header}> */}
         {/* <Text>Shop</Text>
       <Text style={styles.subtitle}>Find your daily needs</Text> */}
-        <StoresList
+        <ProductList
           products={products}
           loading={loading}
           onProductPress={handleProductPress}

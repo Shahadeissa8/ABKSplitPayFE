@@ -6,6 +6,7 @@ import {
   TextInput,
   SafeAreaView,
   KeyboardAvoidingView,
+  ScrollView,
   Platform,
   StatusBar,
   Animated,
@@ -69,166 +70,171 @@ const LoginScreen = () => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <Animated.View
-            style={[
-              styles.headerContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              },
-            ]}
-          >
-            <View style={styles.logoContainer}>
-              <LinearGradient
-                colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-                style={styles.logoGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <Ionicons name="storefront-outline" size={60} color="#fff" />
-              </LinearGradient>
-            </View>
-            <Text style={styles.welcomeText}>Welcome Back!</Text>
-            <Text style={styles.subtitle}>
-              Sign in to continue your shopping experience
-            </Text>
-          </Animated.View>
-
-          <Animated.View
-            style={[
-              styles.formContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{ scale: scaleAnim }],
-              },
-            ]}
-          >
-            <View style={styles.inputContainer}>
-              <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
-                style={styles.iconContainer}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <Ionicons name="mail-outline" size={20} color="#fff" />
-              </LinearGradient>
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholderTextColor="#666"
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
-                style={styles.iconContainer}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <Ionicons name="lock-closed-outline" size={20} color="#fff" />
-              </LinearGradient>
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                placeholderTextColor="#666"
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                style={styles.eyeIcon}
-              >
-                <Ionicons
-                  name={showPassword ? "eye-off-outline" : "eye-outline"}
-                  size={24}
-                  color="#26589c"
-                />
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={styles.forgotPassword}
-              onPress={() => navigation.navigate("ForgotPassword")}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Animated.View
+              style={[
+                styles.headerContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
             >
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={handleLogin}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
-                style={styles.gradientButton}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
-                <Ionicons
-                  name="log-in-outline"
-                  size={24}
-                  color="#fff"
-                  style={styles.buttonIcon}
-                />
-                <Text style={styles.loginButtonText}>Sign In</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.orText}>OR</Text>
-              <View style={styles.divider} />
-            </View>
-
-            <View style={styles.socialButtonsContainer}>
-              {[
-                { icon: "logo-google", color: "#DB4437" },
-                { icon: "logo-apple", color: "#000000" },
-                { icon: "logo-facebook", color: "#4267B2" },
-              ].map((social, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.socialButton}
-                  activeOpacity={0.8}
+              <View style={styles.logoContainer}>
+                <LinearGradient
+                  colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
+                  style={styles.logoGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
                 >
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]}
-                    style={styles.socialButtonGradient}
-                  >
-                    <Ionicons
-                      name={social.icon}
-                      size={24}
-                      color={social.color}
-                    />
-                  </LinearGradient>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </Animated.View>
+                  <Ionicons name="storefront-outline" size={60} color="#fff" />
+                </LinearGradient>
+              </View>
+              <Text style={styles.welcomeText}>Welcome Back!</Text>
+              <Text style={styles.subtitle}>
+                Sign in to continue your shopping experience
+              </Text>
+            </Animated.View>
 
-          <Animated.View
-            style={[
-              styles.footerContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              },
-            ]}
-          >
-            <Text style={styles.footerText}>Don't have an account? </Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("RegisterScreen")}
-              activeOpacity={0.8}
+            <Animated.View
+              style={[
+                styles.formContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ scale: scaleAnim }],
+                },
+              ]}
             >
-              <Text style={styles.registerText}>Register</Text>
-            </TouchableOpacity>
-          </Animated.View>
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="mail-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor="#666"
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="lock-closed-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  placeholderTextColor="#666"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={24}
+                    color="#26589c"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={styles.forgotPassword}
+                onPress={() => navigation.navigate("ForgotPassword")}
+              >
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={handleLogin}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.gradientButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <Ionicons
+                    name="log-in-outline"
+                    size={24}
+                    color="#fff"
+                    style={styles.buttonIcon}
+                  />
+                  <Text style={styles.loginButtonText}>Sign In</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.orText}>OR</Text>
+                <View style={styles.divider} />
+              </View>
+
+              <View style={styles.socialButtonsContainer}>
+                {[
+                  { icon: "logo-google", color: "#DB4437" },
+                  { icon: "logo-apple", color: "#000000" },
+                  { icon: "logo-facebook", color: "#4267B2" },
+                ].map((social, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.socialButton}
+                    activeOpacity={0.8}
+                  >
+                    <LinearGradient
+                      colors={[
+                        "rgba(255,255,255,0.1)",
+                        "rgba(255,255,255,0.05)",
+                      ]}
+                      style={styles.socialButtonGradient}
+                    >
+                      <Ionicons
+                        name={social.icon}
+                        size={24}
+                        color={social.color}
+                      />
+                    </LinearGradient>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </Animated.View>
+
+            <Animated.View
+              style={[
+                styles.footerContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
+            >
+              <Text style={styles.footerText}>Don't have an account? </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("RegisterScreen")}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.registerText}>Register</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </ScrollView>
         </LinearGradient>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -402,6 +408,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 28,
+    marginBottom: 20,
   },
   footerText: {
     color: "#fff",

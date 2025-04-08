@@ -1,45 +1,483 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  ScrollView,
+  Alert,
+} from "react-native";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [formData, setFormData] = useState({
+    username: "",
+    phoneNumber: "",
+    civilId: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("+965"); // Default to Kuwait
+
+  const countries = [
+    { code: "+965", name: "KWT" },
+    { code: "+971", name: "UAE" },
+    { code: "+20", name: "EG" },
+  ];
+
+  const validateForm = () => {
+    if (!formData.username.trim()) {
+      Alert.alert("Error", "Please enter your username");
+      return false;
+    }
+
+    if (!formData.phoneNumber.trim()) {
+      Alert.alert("Error", "Please enter your phone number");
+      return false;
+    }
+
+    if (!formData.civilId.trim()) {
+      Alert.alert("Error", "Please enter your civil ID");
+      return false;
+    }
+
+    if (formData.password.length < 6) {
+      Alert.alert("Error", "Password must be at least 6 characters long");
+      return false;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleRegister = () => {
+    if (validateForm()) {
+      // Add your registration logic here
+      console.log("Registration data:", formData);
+    }
+  };
+
   return (
-    <View>
-      <Text>RegisterScreen</Text>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("LocationScreen");
-        }}
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
       >
-        <Text style={styles.button}>Choose your loaction address</Text>
-      </TouchableOpacity>
-      <View style={{ flexDirection: "row" }}>
-        <Text>
-          Already have an account?
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("LoginScreen");
-            }}
-          >
-            <Text style={{ color: "red" }}>Login</Text>
-          </TouchableOpacity>
-        </Text>
-      </View>
-    </View>
+        <LinearGradient
+          colors={["#26589c", "#9cb2d8"]}
+          style={styles.gradientBackground}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.welcomeText}>Create Account</Text>
+              <Text style={styles.subtitle}>
+                Please fill in the form to create your account
+              </Text>
+            </View>
+
+            <View style={styles.formContainer}>
+              {/* Profile Picture */}
+              <View style={styles.profilePictureContainer}>
+                <View style={styles.profilePicturePlaceholder}>
+                  <Ionicons name="person" size={40} color="#26589c" />
+                </View>
+                <TouchableOpacity
+                  style={styles.uploadButton}
+                  onPress={() => {}}
+                  activeOpacity={0.8}
+                >
+                  <LinearGradient
+                    colors={["#26589c", "#9cb2d8"]}
+                    style={styles.uploadGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  >
+                    <Ionicons
+                      name="camera-outline"
+                      size={20}
+                      color="#fff"
+                      style={styles.cameraIcon}
+                    />
+                    <Text style={styles.uploadText}>Add Photo</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+
+              {/* Username */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="person-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Username"
+                  value={formData.username}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, username: text })
+                  }
+                  placeholderTextColor="#666"
+                />
+              </View>
+
+              {/* Phone Number */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="call-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <View style={styles.phoneInputContainer}>
+                  <TouchableOpacity
+                    style={styles.countryCodeButton}
+                    onPress={() => {
+                      const nextIndex = countries.findIndex(
+                        (c) => c.code === selectedCountry
+                      );
+                      const newIndex = (nextIndex + 1) % countries.length;
+                      setSelectedCountry(countries[newIndex].code);
+                    }}
+                  >
+                    <Text style={styles.countryCodeText}>
+                      {selectedCountry}{" "}
+                      {countries.find((c) => c.code === selectedCountry)?.name}
+                    </Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={[styles.input, styles.phoneInput]}
+                    placeholder="Phone Number"
+                    value={formData.phoneNumber}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, phoneNumber: text })
+                    }
+                    keyboardType="phone-pad"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+              </View>
+
+              {/* Civil ID */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="card-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Civil ID"
+                  value={formData.civilId}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, civilId: text })
+                  }
+                  keyboardType="numeric"
+                  placeholderTextColor="#666"
+                />
+              </View>
+
+              {/* Password */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="lock-closed-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  value={formData.password}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, password: text })
+                  }
+                  secureTextEntry={!showPassword}
+                  placeholderTextColor="#666"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={24}
+                    color="#26589c"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/* Confirm Password */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="lock-closed-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, confirmPassword: text })
+                  }
+                  secureTextEntry={!showConfirmPassword}
+                  placeholderTextColor="#666"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={
+                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
+                    }
+                    size={24}
+                    color="#26589c"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={styles.registerButton}
+                onPress={handleRegister}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.gradientButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <Text style={styles.registerButtonText}>Create Account</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.footerContainer}>
+              <Text style={styles.footerText}>Already have an account? </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("LoginScreen")}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.loginText}>Login</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "lightblue",
+  container: {
+    flex: 1,
+  },
+  gradientBackground: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  headerContainer: {
+    alignItems: "center",
+    marginTop: Platform.OS === "ios" ? 60 : 40,
+    marginBottom: 32,
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#fff",
+    marginBottom: 8,
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: "rgba(255, 255, 255, 0.9)",
+    textAlign: "center",
+    maxWidth: "75%",
+    lineHeight: 22,
+  },
+  formContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 6,
+    marginHorizontal: 4,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "rgba(38, 88, 156, 0.08)",
+    overflow: "hidden",
+    height: 54,
+  },
+  iconContainer: {
+    width: 44,
+    height: 54,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    fontSize: 15,
+    color: "#26589c",
+    height: 54,
+  },
+  phoneInputContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  countryCodeButton: {
+    paddingHorizontal: 8,
+    height: 54,
+    justifyContent: "center",
+    borderRightWidth: 1,
+    borderRightColor: "rgba(38, 88, 156, 0.08)",
+  },
+  countryCodeText: {
+    color: "#26589c",
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  phoneInput: {
+    flex: 1,
+  },
+  eyeIcon: {
     padding: 10,
-    borderRadius: 5,
-    margin: 10,
-    width: 100,
+    marginRight: 2,
+  },
+  registerButton: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginTop: 8,
+    shadowColor: "#26589c",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.16,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  gradientButton: {
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 14,
+  },
+  registerButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  footerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 28,
+    marginBottom: 20,
+  },
+  footerText: {
+    color: "#fff",
+    fontSize: 15,
+  },
+  loginText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+    marginLeft: 4,
+  },
+  profilePictureContainer: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  profilePicturePlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#f8f9fa",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(38, 88, 156, 0.08)",
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  uploadButton: {
+    borderRadius: 20,
+    overflow: "hidden",
+    width: "50%",
+  },
+  uploadGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  cameraIcon: {
+    marginRight: 6,
+  },
+  uploadText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

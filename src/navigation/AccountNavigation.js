@@ -18,7 +18,7 @@ import Savedaddresses from "../screens/account/Savedaddresses";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Addlocation from "../screens/account/Addlocation";
-
+import PaymentMethods from "../screens/account/PaymentMethods";
 const Stack = createNativeStackNavigator();
 
 const AccountNavigation = () => {
@@ -64,7 +64,7 @@ const AccountNavigation = () => {
           animationEnabled: true,
         }}
       />
-
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods} />
       <Stack.Screen
         name="WishListScreen"
         component={WishListScreen}

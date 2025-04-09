@@ -1,4 +1,3 @@
-
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import MainAccPageScreen from "../screens/account/MainAccPageScreen";
@@ -11,6 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Addlocation from "../screens/account/Addlocation";
 import PaymentMethods from "../screens/account/PaymentMethods";
 import Payment from "../screens/account/Payment";
+import Feedback from "../screens/account/Feedback";
 const Stack = createNativeStackNavigator();
 
 const AccountNavigation = () => {
@@ -62,6 +62,13 @@ const AccountNavigation = () => {
       <Stack.Screen
         name="WishListScreen"
         component={WishListScreen}
+        options={{
+          animationEnabled: true,
+        }}
+      />
+      <Stack.Screen
+        name="Feedback"
+        component={Feedback}
         options={{
           animationEnabled: true,
         }}

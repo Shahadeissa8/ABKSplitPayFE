@@ -11,6 +11,7 @@ import Addlocation from "../screens/account/Addlocation";
 import PaymentMethods from "../screens/account/PaymentMethods";
 import Payment from "../screens/account/Payment";
 import Feedback from "../screens/account/Feedback";
+import HelpCenter from "../screens/account/HelpCenter";
 const Stack = createNativeStackNavigator();
 
 const AccountNavigation = () => {
@@ -69,6 +70,13 @@ const AccountNavigation = () => {
       <Stack.Screen
         name="Feedback"
         component={Feedback}
+        options={{
+          animationEnabled: true,
+        }}
+      />
+      <Stack.Screen
+        name="HelpCenter"
+        component={HelpCenter}
         options={{
           animationEnabled: true,
         }}

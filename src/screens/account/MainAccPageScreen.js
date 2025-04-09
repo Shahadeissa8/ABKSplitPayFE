@@ -66,7 +66,7 @@ const MainAccPageScreen = () => {
       title: "Help Center",
       icon: "help-circle-outline",
       color: "#9cb2d8",
-      screen: "Help",
+      screen: "HelpCenter",
     },
     {
       id: 8,

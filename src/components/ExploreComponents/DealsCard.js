@@ -11,9 +11,6 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const DealsCard = () => {
   return (
-    // <View style={styles.viewContainer}>
-    //   <Text style={styles.dealsText}>Deals</Text>
-
     <ScrollView style={styles.scrollContainer} horizontal={true}>
       {/* <TouchableOpacity style={styles.card}>*/}
       <TouchableOpacity style={styles.container}>
@@ -96,14 +93,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     marginHorizontal: 8,
-    width: 170, // Set the width here instead of maxWidth for more control
-    height: 230, // You can set a fixed height to avoid overflowing
+    width: 100, // Set the width here instead of maxWidth for more control
+    height: 160, // You can set a fixed height to avoid overflowing
   },
   dealsText: {
     // alignSelf: "stretch",
     marginTop: 40,
     marginLeft: 20,
-    fontSize: 30,
+    fontSize: 10,
     fontWeight: "bold",
     // marginBottom: 10,
   },
@@ -121,9 +118,10 @@ const styles = StyleSheet.create({
     borderRadius: 18, // Make sure the gradient has rounded corners
   },
   imageContainer: {
-    height: 150,
+    height: 100,
     width: "100%",
     backgroundColor: "#F2F3F2",
+    alignSelf: "center",
   },
   image: {
     width: "100%",
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
   price: {
     alignSelf: "center",
     fontFamily: "Lato",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "700",
     color: "#fff", // Change text color to white for better contrast against gradient
   },

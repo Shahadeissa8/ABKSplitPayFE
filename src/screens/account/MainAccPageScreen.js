@@ -32,40 +32,27 @@ const MainAccPageScreen = () => {
       color: "#26589c",
       screen: "EditProfile",
     },
-    // {
-    //   id: 2,
-    //   title: "Change Password",
-    //   icon: "lock-closed-outline",
-    //   color: "#9cb2d8",
-    //   screen: "ConfirmPassword",
-    // },
     {
-      id: 3,
+      id: 2,
       title: "Tiers & Rewards",
       icon: "star-outline",
       color: "#9cb2d8",
       screen: "Rewards",
     },
-    // {
-    //   id: 4,
-    //   title: "Saved Addresses",
-    //   icon: "location-outline",
-    //   color: "#26589c",
-    //   screen: "Addresses",
-    // },
+
     {
-      id: 4,
+      id: 3,
       title: "Saved Addresses",
       icon: "location-outline",
       color: "#26589c",
       screen: "Savedaddresses",
     },
     {
-      id: 5,
+      id: 4,
       title: "Payment Methods",
       icon: "card-outline",
       color: "#9cb2d8",
-      screen: "Payments",
+      screen: "PaymentMethods",
     },
     {
       id: 6,
@@ -79,7 +66,7 @@ const MainAccPageScreen = () => {
       title: "Help Center",
       icon: "help-circle-outline",
       color: "#9cb2d8",
-      screen: "Help",
+      screen: "HelpCenter",
     },
     {
       id: 8,
@@ -87,13 +74,6 @@ const MainAccPageScreen = () => {
       icon: "chatbox-outline",
       color: "#26589c",
       screen: "Feedback",
-    },
-    {
-      id: 9,
-      title: "Settings",
-      icon: "settings-outline",
-      color: "#9cb2d8",
-      screen: "Settings",
     },
   ];
 

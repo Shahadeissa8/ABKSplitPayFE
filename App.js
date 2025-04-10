@@ -1,59 +1,64 @@
-// import { StatusBar, View, Button } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  Text,
-  Button,
-  StatusBar,
   View,
-  FlatList,
+  ActivityIndicator,
+  StatusBar,
 } from "react-native";
-import { useState } from "react";
-import ShoppingNavigation from "./src/navigation/ShoppingNavigation";
 import { NavigationContainer } from "@react-navigation/native";
+import AuthNavigation from "./src/navigation/AuthNavigation";
 import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
-import SplashScreen from "./src/screens/SplashScreen";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
+import { getToken } from "./src/api/storage";
+import { getProfile } from "./src/api/auth";
 
 export default function App() {
-  // const [isStatusBarVisible, setIsStatusBarVisible] = useState(false);
-  // const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // if (loading) {
-  //   return <SplashScreen onFinish={() => setLoading(false)} />;
-  // }
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const token = await getToken();
+        if (token) {
+          await getProfile(); // Verify the token is valid by fetching the profile
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("Authentication check failed:", error.message);
+        setIsAuthenticated(false); // Ensure user is logged out if token is invalid
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#26589c" />
+        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
-      <QueryClientProvider client={queryClient}>
-        {" "}
-        {/* <ShoppingNavigation /> */}
+      {isAuthenticated ? (
         <MainBottomNavigation />
-      </QueryClientProvider>
+      ) : (
+        <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
+      )}
     </NavigationContainer>
-
-    //   <View style={styles.container}>
-    //     <Button
-    //       title="Hide /Show StatusBar"
-    //       onPress={() => setIsStatusBarVisible(!isStatusBarVisible)}
-    //     />
-    //     <Text>hello</Text>
-    //     <StatusBar
-    //       backgroundColor="lightblue"
-    //       barStyle="dark-content"
-    //       hidden={isStatusBarVisible}
-    //     />
-    //  </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
-    padding: 60,
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });

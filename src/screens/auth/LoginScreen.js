@@ -11,22 +11,23 @@ import {
   StatusBar,
   Animated,
   Dimensions,
+  Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { login } from "../../api/auth";
+import { getToken } from "../../api/storage";
 
 const { width } = Dimensions.get("window");
 
-const LoginScreen = () => {
+const LoginScreen = ({ setIsAuthenticated }) => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  // Animation values
   const fadeAnim = new Animated.Value(0);
   const slideAnim = new Animated.Value(50);
   const scaleAnim = new Animated.Value(0.95);
@@ -52,10 +53,31 @@ const LoginScreen = () => {
     ]).start();
   }, []);
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log("Login pressed");
-  };
+  const handleLogin = useCallback(async () => {
+    if (!userName.trim() || !password.trim()) {
+      Alert.alert("Error", "Please enter both username and password.");
+      return;
+    }
+
+    try {
+      const userInfo = { userName, password };
+      const response = await login(userInfo);
+      const { token } = response;
+
+      if (token) {
+        const storedToken = await getToken();
+        console.log("Stored Token:", storedToken);
+        Alert.alert("Login Successful");
+
+        // Update authentication state to switch to MainBottomNavigation
+        setIsAuthenticated(true);
+      } else {
+        Alert.alert("Error", "Failed to retrieve token. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message || "Login failed. Please try again.");
+    }
+  }, [userName, password, setIsAuthenticated]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,6 +85,7 @@ const LoginScreen = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : StatusBar.currentHeight}
       >
         <LinearGradient
           colors={["#26589c", "#9cb2d8"]}
@@ -74,10 +97,7 @@ const LoginScreen = () => {
             <Animated.View
               style={[
                 styles.headerContainer,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
+                { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
               ]}
             >
               <View style={styles.logoContainer}>
@@ -99,10 +119,7 @@ const LoginScreen = () => {
             <Animated.View
               style={[
                 styles.formContainer,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ scale: scaleAnim }],
-                },
+                { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
               ]}
             >
               <View style={styles.inputContainer}>
@@ -112,14 +129,13 @@ const LoginScreen = () => {
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                 >
-                  <Ionicons name="mail-outline" size={20} color="#fff" />
+                  <Ionicons name="person-outline" size={20} color="#fff" />
                 </LinearGradient>
                 <TextInput
                   style={styles.input}
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
+                  placeholder="Username"
+                  value={userName}
+                  onChangeText={setUserName}
                   autoCapitalize="none"
                   placeholderTextColor="#666"
                 />
@@ -181,49 +197,12 @@ const LoginScreen = () => {
                   <Text style={styles.loginButtonText}>Sign In</Text>
                 </LinearGradient>
               </TouchableOpacity>
-
-              <View style={styles.dividerContainer}>
-                <View style={styles.divider} />
-                <Text style={styles.orText}>OR</Text>
-                <View style={styles.divider} />
-              </View>
-
-              <View style={styles.socialButtonsContainer}>
-                {[
-                  { icon: "logo-google", color: "#DB4437" },
-                  { icon: "logo-apple", color: "#000000" },
-                  { icon: "logo-facebook", color: "#4267B2" },
-                ].map((social, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.socialButton}
-                    activeOpacity={0.8}
-                  >
-                    <LinearGradient
-                      colors={[
-                        "rgba(255,255,255,0.1)",
-                        "rgba(255,255,255,0.05)",
-                      ]}
-                      style={styles.socialButtonGradient}
-                    >
-                      <Ionicons
-                        name={social.icon}
-                        size={24}
-                        color={social.color}
-                      />
-                    </LinearGradient>
-                  </TouchableOpacity>
-                ))}
-              </View>
             </Animated.View>
 
             <Animated.View
               style={[
                 styles.footerContainer,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
+                { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
               ]}
             >
               <Text style={styles.footerText}>Don't have an account? </Text>
@@ -290,10 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
     shadowRadius: 10,
     elevation: 6,
@@ -344,10 +320,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     marginTop: 8,
     shadowColor: "#26589c",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.16,
     shadowRadius: 6,
     elevation: 3,
@@ -367,41 +340,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.3,
-  },
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "rgba(38, 88, 156, 0.08)",
-  },
-  orText: {
-    color: "#666",
-    marginHorizontal: 12,
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  socialButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 20,
-    marginTop: 4,
-  },
-  socialButton: {
-    borderRadius: 12,
-    overflow: "hidden",
-  },
-  socialButtonGradient: {
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f8f9fa",
-    borderWidth: 1,
-    borderColor: "rgba(38, 88, 156, 0.08)",
   },
   footerContainer: {
     flexDirection: "row",

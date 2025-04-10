@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
+import { getProductCategories } from "../../api/ProductCategoryAPI";
 
 const { width } = Dimensions.get("window");
 
@@ -203,3 +204,148 @@ const styles = StyleSheet.create({
 });
 
 export default CategoryCard;
+// import {
+//   View,
+//   Text,
+//   Image,
+//   StyleSheet,
+//   ScrollView,
+//   TouchableOpacity,
+//   Dimensions,
+//   Animated,
+// } from "react-native";
+// import React, { useEffect, useState } from "react";
+// import { LinearGradient } from "expo-linear-gradient";
+// import { BlurView } from "expo-blur";
+
+// const { width } = Dimensions.get("window");
+
+// const CategoryCard = ({ categories }) => {
+//   // Receive categories from props
+//   const scrollX = new Animated.Value(0);
+//   const [activeIndex, setActiveIndex] = useState(0);
+
+//   const renderCard = ({ item, index }) => {
+//     const inputRange = [
+//       (index - 1) * width,
+//       index * width,
+//       (index + 1) * width,
+//     ];
+
+//     const scale = scrollX.interpolate({
+//       inputRange,
+//       outputRange: [0.9, 1, 0.9],
+//       extrapolate: "clamp",
+//     });
+
+//     return (
+//       <TouchableOpacity
+//         key={item.id}
+//         style={styles.cardContainer}
+//         activeOpacity={0.8}
+//       >
+//         <View style={[styles.card, { transform: [{ scale: 1 }] }]}>
+//           <LinearGradient
+//             colors={item.gradient}
+//             style={styles.gradientBackground}
+//             start={{ x: 0, y: 0 }}
+//             end={{ x: 1, y: 1 }}
+//           >
+//             <BlurView intensity={20} style={styles.blurContainer}>
+//               <Image
+//                 source={{ uri: item.pictureUrl }} // Dynamically load image URL
+//                 style={styles.image}
+//                 resizeMode="cover"
+//               />
+//             </BlurView>
+//             <Text style={styles.text}>{item.name}</Text>
+//           </LinearGradient>
+//         </View>
+//       </TouchableOpacity>
+//     );
+//   };
+
+//   const handleScroll = Animated.event(
+//     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+//     {
+//       useNativeDriver: false,
+//       listener: (event) => {
+//         const slideSize = width * 0.8 + 20;
+//         const index = Math.round(event.nativeEvent.contentOffset.x / slideSize);
+//         setActiveIndex(index);
+//       },
+//     }
+//   );
+
+//   return (
+//     <View style={styles.container}>
+//       <ScrollView
+//         horizontal
+//         showsHorizontalScrollIndicator={false}
+//         contentContainerStyle={styles.scrollContent}
+//         snapToInterval={width * 0.8 + 20}
+//         snapToAlignment="center"
+//         decelerationRate="fast"
+//         onScroll={handleScroll}
+//         scrollEventThrottle={16}
+//       >
+//         {categories.map((item, index) => renderCard({ item, index }))}{" "}
+//         {/* Map through the categories */}
+//       </ScrollView>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     marginVertical: 20,
+//   },
+//   scrollContent: {
+//     paddingHorizontal: 10,
+//   },
+//   cardContainer: {
+//     width: "auto",
+//     height: "auto",
+//     marginHorizontal: 5,
+//   },
+//   card: {
+//     borderRadius: 20,
+//     overflow: "hidden",
+//     elevation: 5,
+//     shadowColor: "#2E3192",
+//     shadowOffset: {
+//       width: 0,
+//       height: 4,
+//     },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 8,
+//   },
+//   gradientBackground: {
+//     padding: 2,
+//   },
+//   blurContainer: {
+//     backgroundColor: "rgba(46, 49, 146, 0.1)",
+//     padding: 20,
+//     flexDirection: "row",
+//     alignItems: "center",
+//     borderRadius: 18,
+//   },
+//   image: {
+//     width: 100,
+//     height: 100,
+//     borderRadius: 10,
+//     borderWidth: 2,
+//     borderColor: "#fff",
+//     marginBottom: -20,
+//     alignSelf: "flex-start",
+//   },
+//   text: {
+//     margin: 10,
+//     fontSize: 22,
+//     fontWeight: "700",
+//     color: "#fff",
+//     alignSelf: "center",
+//   },
+// });
+
+// export default CategoryCard;

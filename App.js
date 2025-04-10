@@ -12,6 +12,9 @@ import ShoppingNavigation from "./src/navigation/ShoppingNavigation";
 import { NavigationContainer } from "@react-navigation/native";
 import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
 import SplashScreen from "./src/screens/SplashScreen";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   // const [isStatusBarVisible, setIsStatusBarVisible] = useState(false);
@@ -23,8 +26,11 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {/* <ShoppingNavigation /> */}
-      <MainBottomNavigation />
+      <QueryClientProvider client={queryClient}>
+        {" "}
+        {/* <ShoppingNavigation /> */}
+        <MainBottomNavigation />
+      </QueryClientProvider>
     </NavigationContainer>
 
     //   <View style={styles.container}>

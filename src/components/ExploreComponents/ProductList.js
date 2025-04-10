@@ -2,11 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import ProductCard from "./ProductCard";
 
-const ProductList = () => {
+const ProductList = (onPress) => {
   return (
     <View style={styles.container}>
       <Text style={styles.Text}>Products</Text>
-      <ProductCard />
+      <ProductCard onPress={onPress} />
     </View>
   );
 };

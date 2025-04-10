@@ -64,9 +64,13 @@ const LoginScreen = ({ setIsAuthenticated }) => {
       const response = await login(userInfo);
       const { token } = response;
 
+      // if (token) {
+      //   const storedToken = await getToken();
+      //   console.log("Stored Token:", storedToken);
+      //   Alert.alert("Login Successful");
       if (token) {
-        const storedToken = await getToken();
-        console.log("Stored Token:", storedToken);
+        await setToken(token); // Store the token after successful login
+        console.log("Stored Token:", token);
         Alert.alert("Login Successful");
 
         // Update authentication state to switch to MainBottomNavigation
@@ -85,7 +89,9 @@ const LoginScreen = ({ setIsAuthenticated }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : StatusBar.currentHeight}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 0 : StatusBar.currentHeight
+        }
       >
         <LinearGradient
           colors={["#26589c", "#9cb2d8"]}

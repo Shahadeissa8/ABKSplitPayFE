@@ -1,45 +1,44 @@
-import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  FlatList,
+  ActivityIndicator,
+  Text,
+} from "react-native";
 import React from "react";
-// import ProductCard from "./ProductCard";
 import StoresCard from "./StoresCard";
 
-const StoresList = ({
-  products,
-  loading,
-  onProductPress,
-  refreshing,
-  onRefresh,
-}) => {
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#53B175" />
-      </View>
-    );
-  }
-
+const StoresList = ({ stores = [], onStorePress }) => {
   return (
-    <FlatList
-      data={products}
-      renderItem={({ item }) => (
-        <StoresCard product={item} onPress={() => onProductPress(item)} />
-      )}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={2}
-      contentContainerStyle={styles.listContainer}
-      showsVerticalScrollIndicator={false}
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-    />
+    <View style={styles.container}>
+      <Text style={styles.title}>Stores</Text>
+      <ScrollView>
+        {stores.map((store) => (
+          <StoresCard
+            key={store.storeId}
+            storeId={store.storeId}
+            name={store.name}
+            logo={store.logoUrl}
+            gradient={["#26589c", "#9cb2d8"]}
+            onPress={() => onStorePress(store)}
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 };
-
 export default StoresList;
 
 const styles = StyleSheet.create({
   listContainer: {
     padding: 8,
     paddingBottom: 20,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   loadingContainer: {
     flex: 1,

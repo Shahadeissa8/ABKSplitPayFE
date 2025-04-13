@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import SplashScreen from "../screens/auth/SplashScreen";
+import SplashScreen2 from "../screens/SplashScreen2";
 import OnBoardingScreen from "../screens/auth/OnBoardingScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/RegisterScreen";
@@ -9,10 +9,10 @@ const Stack = createStackNavigator();
 
 const AuthNavigation = ({ setIsAuthenticated }) => {
   return (
-    <Stack.Navigator initialRouteName="SplashScreen">
+    <Stack.Navigator initialRouteName="SplashScreen2">
       <Stack.Screen
-        name="SplashScreen"
-        component={SplashScreen}
+        name="SplashScreen2"
+        component={SplashScreen2}
         options={{ headerShown: false }}
       />
       <Stack.Screen

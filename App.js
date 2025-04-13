@@ -13,7 +13,7 @@ import { getProfile } from "./src/api/auth";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -34,14 +34,7 @@ export default function App() {
     checkAuthentication();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#26589c" />
-        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      </View>
-    );
-  }
+ 
 
   return (
     <NavigationContainer>

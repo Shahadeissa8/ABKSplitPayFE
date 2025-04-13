@@ -9,8 +9,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+
   const queryClient = new QueryClient();
+
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
@@ -30,33 +31,9 @@ export default function App() {
     checkAuthentication(); // Call the function to check authentication status
   }, []);
 
-  // useEffect(() => {
-  //   const checkAuthentication = async () => {
-  //     try {
-  //       const token = await getToken();
-  //       if (token) {
-  //         await getProfile(); // Verify the token is valid by fetching the profile
-  //         setIsAuthenticated(true);
-  //       }
-  //     } catch (error) {
-  //       console.error("Authentication check failed:", error.message);
-  //       setIsAuthenticated(false); // Ensure user is logged out if token is invalid
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
-  //   checkAuthentication();
-  // }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#26589c" />
-        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      </View>
-    );
-  }
+
 
   return (
     <NavigationContainer>

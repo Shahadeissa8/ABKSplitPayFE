@@ -1,50 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ActivityIndicator, StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import AuthNavigation from "./src/navigation/AuthNavigation";
 import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
 import { getToken } from "./src/api/storage";
-import { getProfile } from "./src/api/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const Stack = createStackNavigator();
+const queryClient = new QueryClient();
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const queryClient = new QueryClient();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const token = await getToken(); // Retrieve the stored token
-        if (token) {
-          setIsAuthenticated(true); // Stay logged in if token exists
-        } else {
-          setIsAuthenticated(false); // Log out if no token
-        }
+        const token = await getToken();
+        setIsAuthenticated(!!token);
       } catch (error) {
         console.error("Error checking authentication:", error);
-        setIsAuthenticated(false); // Log out if error occurs
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false); // Set loading to false once the check is done
     };
 
-    checkAuthentication(); // Call the function to check authentication status
+    checkAuthentication();
   }, []);
 
-
-
-
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#26589c" />
+        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      </View>
+    );
+  }
 
   return (
-    <NavigationContainer>
-      <QueryClientProvider client={queryClient}>
-        {isAuthenticated ? (
-          <MainBottomNavigation />
-        ) : (
-          <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
-        )}
-      </QueryClientProvider>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {isAuthenticated ? (
+            <Stack.Screen
+              name="MainBottomNavigation"
+              children={() => (
+                <MainBottomNavigation setIsAuthenticated={setIsAuthenticated} />
+              )}
+            />
+          ) : (
+            <Stack.Screen
+              name="AuthNavigation"
+              children={() => (
+                <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
+              )}
+            />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 

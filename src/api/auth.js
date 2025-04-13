@@ -24,17 +24,7 @@ const login = async (userInfo) => {
   }
 };
 
-const getProfile = async () => {
-  try {
-    const response = await instance.get("/users/me");
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      throw new Error(error.response.data?.title || "Failed to fetch profile.");
-    }
-    throw new Error("Profile fetch failed. Please check your network and try again.");
-  }
-};
+
 
 const register = async (userInfo) => {
   try {
@@ -48,4 +38,4 @@ const register = async (userInfo) => {
   }
 };
 
-export { login, getProfile, register };
+export { login, register };

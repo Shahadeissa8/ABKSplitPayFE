@@ -19,6 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { login } from "../../api/auth";
 import { getToken } from "../../api/storage";
+import { setToken } from "../../api/storage";
 
 const { width } = Dimensions.get("window");
 
@@ -58,31 +59,32 @@ const LoginScreen = ({ setIsAuthenticated }) => {
       Alert.alert("Error", "Please enter both username and password.");
       return;
     }
-
+  
     try {
       const userInfo = { userName, password };
       const response = await login(userInfo);
       const { token } = response;
-
-      // if (token) {
-      //   const storedToken = await getToken();
-      //   console.log("Stored Token:", storedToken);
-      //   Alert.alert("Login Successful");
+  
       if (token) {
         await setToken(token); // Store the token after successful login
         console.log("Stored Token:", token);
         Alert.alert("Login Successful");
-
-        // Update authentication state to switch to MainBottomNavigation
+  
+        // Update authentication state
         setIsAuthenticated(true);
+  
+        // Reset the navigation stack and navigate to MainBottomNavigation
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MainBottomNavigation" }],
+        });
       } else {
         Alert.alert("Error", "Failed to retrieve token. Please try again.");
       }
     } catch (error) {
       Alert.alert("Error", error.message || "Login failed. Please try again.");
     }
-  }, [userName, password, setIsAuthenticated]);
-
+  }, [userName, password, navigation, setIsAuthenticated]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />

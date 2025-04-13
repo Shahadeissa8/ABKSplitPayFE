@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,26 +11,52 @@ import {
   Animated,
   Dimensions,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { deleteToken } from "../../api/storage";
+import { getUserProfile } from "../../api/profile";
 
 const { width } = Dimensions.get("window");
 
-const MainAccPageScreen = () => {
+const MainAccPageScreen = ({ setIsAuthenticated }) => {
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [refreshing, setRefreshing] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+
+  const defaultProfilePicture =
+    "https://th.bing.com/th/id/R.1871862d87bb8037d953317fb4497189?rik=MBf1NyuchSQUtQ&riu=http%3a%2f%2fwww.pngall.com%2fwp-content%2fuploads%2f5%2fProfile.png&ehk=Ouu2uMvvMPnkP1bdIY2BTAzbwhRoG9p03NUzbwGLhlg%3d&risl=&pid=ImgRaw&r=0";
+
+  const userId = "f5ff8593-78cc-455d-bcc3-083e6788f4ff";
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setRefreshing(true);
+      const profileData = await getUserProfile(userId);
+      setUserProfile(profileData);
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
+      Alert.alert("Error", "Unable to load profile data");
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const menuItems = [
     {
       id: 1,
-      title: "Edit profile",
+      title: "Edit Profile",
       icon: "person-outline",
       color: "#26589c",
-      screen: "EditProfile",
+      screen: "EditProfileScreen",
     },
     {
       id: 2,
@@ -39,7 +65,6 @@ const MainAccPageScreen = () => {
       color: "#9cb2d8",
       screen: "Rewards",
     },
-
     {
       id: 3,
       title: "Saved Addresses",
@@ -55,21 +80,21 @@ const MainAccPageScreen = () => {
       screen: "PaymentMethods",
     },
     {
-      id: 6,
+      id: 5,
       title: "Wishlist",
       icon: "heart-outline",
       color: "#26589c",
       screen: "Wishlist",
     },
     {
-      id: 7,
+      id: 6,
       title: "Help Center",
       icon: "help-circle-outline",
       color: "#9cb2d8",
       screen: "HelpCenter",
     },
     {
-      id: 8,
+      id: 7,
       title: "Feedback",
       icon: "chatbox-outline",
       color: "#26589c",
@@ -92,35 +117,65 @@ const MainAccPageScreen = () => {
   );
 
   const handleRefresh = async () => {
-    setRefreshing(true);
-    // Add your refresh logic here
-    setTimeout(() => setRefreshing(false), 2000);
+    await fetchUserProfile();
   };
 
   const handleMenuPress = (screen) => {
-    if (screen === "EditProfile") {
-      navigation.navigate("EditProfileScreen", {
-        userData: {
-          username: "John Doe",
-          email: "john.doe@example.com",
-          phoneNumber: "+971050600798",
-          profilePicture: "https://via.placeholder.com/100",
+    if (screen === "EditProfileScreen") {
+      navigation.navigate("Account", {
+        screen: "EditProfileScreen",
+        params: {
+          userData: {
+            username: userProfile?.userName || "N/A",
+            email: userProfile?.email || "N/A",
+            phoneNumber: userProfile?.phoneNumber || "N/A",
+            profilePicture: userProfile?.profilePictureUrl || defaultProfilePicture,
+          },
         },
       });
-    } else if (screen === "ConfirmPassword") {
-      navigation.navigate("ConfirmPasswordScreen", {
-        onSuccess: () => {
-          navigation.navigate("EditPasswordScreen");
+    } else if (screen === "ChangePasswordScreen") {
+      navigation.navigate("Account", {
+        screen: "ChangePasswordScreen",
+        params: {
+          onSuccess: () => {
+            navigation.navigate("Account", { screen: "ChangePasswordScreen" });
+          },
         },
       });
     } else {
-      navigation.navigate(screen);
+      navigation.navigate("Account", { screen });
     }
   };
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    navigation.navigate("Login");
+  const handleLogout = async () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteToken();
+              setIsAuthenticated(false);
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "AuthNavigation" }],
+              });
+            } catch (error) {
+              Alert.alert("Error", "Failed to log out. Please try again.");
+              console.error("Logout Error:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const renderMenuItem = ({ id, title, icon, color, screen }) => (
@@ -166,49 +221,55 @@ const MainAccPageScreen = () => {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-      <Text style={styles.civilId}>Civil Id: 571050600798</Text>
+      <Text style={styles.civilId}>Phone: {userProfile?.phoneNumber || "N/A"}</Text>
     </LinearGradient>
   );
 
-  const renderProfileSection = () => (
-    <View style={styles.profileSection}>
-      <View style={styles.profileImageContainer}>
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          style={styles.profileImageBorder}
-        >
-          <View style={styles.profileImageInner}>
-            <Image
-              source={{ uri: "https://via.placeholder.com/100" }}
-              style={styles.profileImage}
-            />
-          </View>
-        </LinearGradient>
-        <TouchableOpacity
-          style={styles.editProfileButton}
-          onPress={() => handleMenuPress("EditProfile")}
-        >
+  const renderProfileSection = () => {
+    return (
+      <View style={styles.profileSection}>
+        <View style={styles.profileImageContainer}>
           <LinearGradient
             colors={["#26589c", "#9cb2d8"]}
-            style={styles.editButtonGradient}
+            style={styles.profileImageBorder}
           >
-            <Ionicons name="pencil" size={18} color="#fff" />
+            <View style={styles.profileImageInner}>
+              <Image
+                source={{
+                  uri: userProfile?.profilePictureUrl?.trim()
+                    ? userProfile.profilePictureUrl
+                    : defaultProfilePicture,
+                }}
+                style={styles.profileImage}
+              />
+            </View>
           </LinearGradient>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.editProfileButton}
+            onPress={() => handleMenuPress("EditProfileScreen")}
+          >
+            <LinearGradient
+              colors={["#26589c", "#9cb2d8"]}
+              style={styles.editButtonGradient}
+            >
+              <Ionicons name="pencil" size={18} color="#fff" />
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>
+        <Text style={styles.emailText}>{userProfile?.email || "N/A"}</Text>
+        <LinearGradient
+          colors={["#26589c", "#9cb2d8"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.membershipBadge}
+        >
+          <Ionicons name="star" size={18} color="#fff" />
+          <Text style={styles.membershipText}>Premium Member</Text>
+        </LinearGradient>
       </View>
-      <Text style={styles.nameText}>John Doe</Text>
-      <Text style={styles.emailText}>john.doe@example.com</Text>
-      <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.membershipBadge}
-      >
-        <Ionicons name="star" size={18} color="#fff" />
-        <Text style={styles.membershipText}>Premium Member</Text>
-      </LinearGradient>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView
@@ -325,7 +386,7 @@ const styles = StyleSheet.create({
   profileSection: {
     alignItems: "center",
     padding: 15,
-    marginTop: 0,
+    marginTop: 15,
   },
   profileImageContainer: {
     position: "relative",

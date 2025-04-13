@@ -3,10 +3,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ExploreScreen from "../screens/shopping/ExploreScreen";
 import ShoppingNavigation from "./ShoppingNavigation";
 import InstallmentNavigation from "./InstallmentNavigation";
-import MainAccPageScreen from "../screens/account/MainAccPageScreen";
+import AccountNavigation from "./AccountNavigation"; // Import AccountNavigation
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import AccountNavigation   from "./AccountNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +47,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
       />
       <Tab.Screen
         name="Account"
-        component={AccountNavigation} // Use AccountNavigation here
+        children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />} // Pass setIsAuthenticated to AccountNavigation
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

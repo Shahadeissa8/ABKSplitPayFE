@@ -18,6 +18,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { deleteToken } from "../../api/storage";
 import { getUserProfile } from "../../api/profile";
+import { getToken } from "../../api/storage";
+import { useIsFocused } from "@react-navigation/native";
+import { getUserId } from "../../api/storage"; // Import getUserId function
+
 
 const { width } = Dimensions.get("window");
 
@@ -33,6 +37,8 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const userId = "f5ff8593-78cc-455d-bcc3-083e6788f4ff";
 
+ 
+  
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -161,11 +167,11 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           style: "destructive",
           onPress: async () => {
             try {
-              await deleteToken();
-              setIsAuthenticated(false);
+              await deleteToken(); // Delete the token from secure storage
+              setIsAuthenticated(false); // Update authentication state
               navigation.reset({
                 index: 0,
-                routes: [{ name: "AuthNavigation" }],
+                routes: [{ name: "AuthNavigation" }], // Navigate back to the authentication flow
               });
             } catch (error) {
               Alert.alert("Error", "Failed to log out. Please try again.");

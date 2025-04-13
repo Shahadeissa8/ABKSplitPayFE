@@ -204,17 +204,99 @@
 // });
 
 // export default CategoryCard;
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+// import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+// import React from "react";
+// import { LinearGradient } from "expo-linear-gradient";
+// import { BlurView } from "expo-blur";
+
+// const CategoryCard = ({ name, image, gradient }) => {
+//   return (
+//     <TouchableOpacity style={styles.cardContainer} activeOpacity={0.8} onPress={() =>
+//       navigation.navigate("ProductList", { productCategoryId: 1 })
+//     }>
+//       <View style={styles.card}>
+//         <LinearGradient colors={gradient} style={styles.gradientBackground}>
+//           <BlurView intensity={20} style={styles.blurContainer}>
+//             {/* <Image
+//               source={{ uri: image }}
+//               style={styles.image}
+//               resizeMode="cover"
+//             /> */}
+//           </BlurView>
+//           <Text style={styles.text}>{name}</Text>
+//         </LinearGradient>
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };
+
+// export default CategoryCard;
+
+// const styles = StyleSheet.create({
+//   cardContainer: {
+//     width: 200,
+//     marginHorizontal: 5,
+//     marhginleft: 9,
+//   },
+//   card: {
+//     borderRadius: 20,
+//     overflow: "hidden",
+//     elevation: 5,
+//     shadowColor: "#2E3192",
+//     shadowOffset: { width: 0, height: 4 },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 8,
+//   },
+//   gradientBackground: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     padding: 20,
+//     borderRadius: 20,
+//   },
+//   blurContainer: {
+//     backgroundColor: "rgba(46, 49, 146, 0.1)",
+//     borderRadius: 18,
+//     flexDirection: "row",
+//     alignItems: "center",
+//   },
+//   image: {
+//     width: 100,
+//     height: 100,
+//     borderRadius: 10,
+//     marginBottom: -20,
+//     borderWidth: 2,
+//     borderColor: "#fff",
+//   },
+//   text: {
+//     // marginTop: 10,
+//     fontSize: 18,
+//     fontWeight: "700",
+//     color: "#fff",
+//     textAlign: "center",
+//   },
+// });
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
+import { useNavigation } from "@react-navigation/native";
 
-const CategoryCard = ({ name, image, gradient }) => {
+const CategoryCard = ({ name, image, gradient, productCategoryId }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.cardContainer} activeOpacity={0.8}>
+    <TouchableOpacity
+      style={styles.cardContainer}
+      activeOpacity={0.8}
+      onPress={
+        () => navigation.navigate("ProductList", { productCategoryId }) // ✅ Make sure this isn't undefined
+      }
+    >
       <View style={styles.card}>
         <LinearGradient colors={gradient} style={styles.gradientBackground}>
           <BlurView intensity={20} style={styles.blurContainer}>
+            {/* If you want to show image, uncomment below */}
             {/* <Image
               source={{ uri: image }}
               style={styles.image}
@@ -229,7 +311,6 @@ const CategoryCard = ({ name, image, gradient }) => {
 };
 
 export default CategoryCard;
-
 const styles = StyleSheet.create({
   cardContainer: {
     width: 200,

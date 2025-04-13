@@ -1,13 +1,15 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
+import { useNavigation } from "@react-navigation/native";
 
-const StoresCard = ({ name, gradient, onPress, logo }) => {
+const StoresCard = ({ name, gradient, logo, id }) => {
+  const navigation = useNavigation();
   return (
     <TouchableOpacity
       style={styles.cardContainer}
       activeOpacity={0.8}
-      onPress={onPress}
+      onPress={() => navigation.navigate("StoreDetailsScreen", { StoreId: id })}
     >
       <LinearGradient colors={gradient} style={styles.gradientBackground}>
         <View style={styles.imageContainer}>

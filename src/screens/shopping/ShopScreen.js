@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import StoresList from "../../components/StoresComponents/StoresList";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native"; 
+import { ScrollView } from "react-native";
 import { GetStores } from "../../api/StoreAPI"; // Adjust the import path as necessary
 const ShopScreen = ({}) => {
   // const navigation = useNavigation();
@@ -26,19 +26,12 @@ const ShopScreen = ({}) => {
     fetchStores();
   }, []);
 
-  const handleStorePress = (store) => {
-    // You can navigate to a detail screen here
-    console.log("Pressed store:", store.name);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.instructionsContainer}>
-          {!loading && (
-            <StoresList stores={stores} onStorePress={handleStorePress} />
-          )}
+          {!loading && <StoresList stores={stores} />}
         </View>
       </ScrollView>
     </SafeAreaView>

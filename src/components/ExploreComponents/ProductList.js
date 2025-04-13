@@ -30,7 +30,29 @@ import ProductCard from "../../components/ExploreComponents/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getProduct } from "../../api/ProductAPI"; // Adjust to your API location
 
-const ProductList = () => {
+// const ProductList = () => {
+//   const { data: products, isLoading } = useQuery({
+//     queryKey: ["products"],
+//     queryFn: getProduct,
+//   });
+
+//   if (isLoading) return null;
+
+//   return (
+//     <ScrollView contentContainerStyle={styles.container}>
+//       {products.map((product) => (
+//         <ProductCard
+//           key={product.productId}
+//           productId={product.productId}
+//           name={product.name}
+//           price={product.price}
+//           image={product.pictureUrl}
+//         />
+//       ))}
+//     </ScrollView>
+//   );
+// };
+const ProductList = ({ selectedCategoryId, onPress }) => {
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: getProduct,
@@ -38,15 +60,22 @@ const ProductList = () => {
 
   if (isLoading) return null;
 
+  const filteredProducts = selectedCategoryId
+    ? products.filter(
+        (product) => product.productCategoryId === selectedCategoryId
+      )
+    : products;
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <ProductCard
           key={product.productId}
           productId={product.productId}
           name={product.name}
           price={product.price}
           image={product.pictureUrl}
+          onPress={() => onPress(product.productId)} // Pass up to navigate
         />
       ))}
     </ScrollView>

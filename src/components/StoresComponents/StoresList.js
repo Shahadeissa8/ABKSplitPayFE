@@ -20,8 +20,8 @@ const StoresList = ({ stores = [], onStorePress }) => {
             storeId={store.storeId}
             name={store.name}
             logo={store.logoUrl}
+            id={store.storeId}
             gradient={["#26589c", "#9cb2d8"]}
-            onPress={() => onStorePress(store)}
           />
         ))}
       </ScrollView>

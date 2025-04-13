@@ -115,7 +115,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
         }, 3000); // Hide the banner after 3 seconds
       }
     } catch (error) {
-      setNotificationMessage("Biometric data not found");
+      setNotificationMessage(error.message || "An error occurred during biometric authentication.");
       setNotificationVisible(true);
       setTimeout(() => {
         setNotificationVisible(false);

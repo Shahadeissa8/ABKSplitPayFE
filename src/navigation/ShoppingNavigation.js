@@ -18,10 +18,10 @@ const ShoppingNavigation = () => {
     >
       {/* needs A LOT OF EDITING */}
       <Stack.Screen name="ShopScreen" component={ShopScreen} />
-      {/* <Stack.Screen name="ProductsScreen" component={ProductsScreen} /> */}
-      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
       <Stack.Screen name="ShopLinkScreen" component={ShopLinkScreen} />
-      <Stack.Screen name="ShopDetailsScreen" component={ShopDetailsScreen} />
+      {/* <Stack.Screen name="ProductsScreen" component={ProductsScreen} /> */}
+      {/* <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} /> */}
+      {/* <Stack.Screen name="ShopDetailsScreen" component={ShopDetailsScreen} /> */}
     </Stack.Navigator>
   );
 };

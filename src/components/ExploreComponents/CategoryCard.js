@@ -281,34 +281,50 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { useNavigation } from "@react-navigation/native";
-
-const CategoryCard = ({ name, image, gradient, productCategoryId }) => {
-  const navigation = useNavigation();
-
+const CategoryCard = ({ name, gradient, onPress }) => {
   return (
     <TouchableOpacity
       style={styles.cardContainer}
       activeOpacity={0.8}
-      onPress={
-        () => navigation.navigate("ProductList", { productCategoryId }) // ✅ Make sure this isn't undefined
-      }
+      onPress={onPress} // 👈 Easy update
     >
       <View style={styles.card}>
         <LinearGradient colors={gradient} style={styles.gradientBackground}>
-          <BlurView intensity={20} style={styles.blurContainer}>
-            {/* If you want to show image, uncomment below */}
-            {/* <Image
-              source={{ uri: image }}
-              style={styles.image}
-              resizeMode="cover"
-            /> */}
-          </BlurView>
+          <BlurView intensity={20} style={styles.blurContainer} />
           <Text style={styles.text}>{name}</Text>
         </LinearGradient>
       </View>
     </TouchableOpacity>
   );
 };
+
+// const CategoryCard = ({ name, image, gradient, productCategoryId }) => {
+//   const navigation = useNavigation();
+
+//   return (
+// <TouchableOpacity
+//   style={styles.cardContainer}
+//   activeOpacity={0.8}
+//   onPress={
+//     () => navigation.navigate("ProductList", { productCategoryId }) // ✅ Make sure this isn't undefined
+//   }
+// >
+//   <View style={styles.card}>
+//     <LinearGradient colors={gradient} style={styles.gradientBackground}>
+//       <BlurView intensity={20} style={styles.blurContainer}>
+//         {/* If you want to show image, uncomment below */}
+//         {/* <Image
+//           source={{ uri: image }}
+//           style={styles.image}
+//           resizeMode="cover"
+//         /> */}
+//       </BlurView>
+//       <Text style={styles.text}>{name}</Text>
+//     </LinearGradient>
+//   </View>
+// </TouchableOpacity>
+//   );
+// };
 
 export default CategoryCard;
 const styles = StyleSheet.create({

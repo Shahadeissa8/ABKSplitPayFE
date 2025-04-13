@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProductCategories } from "../../api/ProductCategoryAPI"; // assuming the API fetch is from this file
 import CategoryCard from "../../components/ExploreComponents/CategoryCard"; // make sure the path is correct
 
-const CategoryList = () => {
+const CategoryList = ({ onSelectCategory }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["productCategories"],
     queryFn: getProductCategories, // Fetch categories from the API
@@ -26,16 +26,34 @@ const CategoryList = () => {
   }
 
   return (
+    // <View style={styles.container}>
+    //   <Text style={styles.text}>Categories</Text>
+    //   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    //     {data.map((category) => (
+    //       <CategoryCard
+    //         key={category.productCategoryId} // Use the productCategoryId as the key
+    //         name={category.name}
+    //         // productCategoryId={category.productCategoryId}
+    //         // image={category.pictureUrl}
+    //         gradient={["#26589c", "#9cb2d8"]} // You can customize this if needed
+    //       />
+    //     ))}
+    //   </ScrollView>
+    // </View>
     <View style={styles.container}>
       <Text style={styles.text}>Categories</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <CategoryCard
+          name="All"
+          gradient={["#999", "#ccc"]}
+          onPress={() => onSelectCategory(null)} // Reset filter
+        />
         {data.map((category) => (
           <CategoryCard
-            key={category.productCategoryId} // Use the productCategoryId as the key
+            key={category.productCategoryId}
             name={category.name}
-            // productCategoryId={category.productCategoryId}
-            // image={category.pictureUrl}
-            gradient={["#26589c", "#9cb2d8"]} // You can customize this if needed
+            gradient={["#26589c", "#9cb2d8"]}
+            onPress={() => onSelectCategory(category.productCategoryId)} // Send ID
           />
         ))}
       </ScrollView>

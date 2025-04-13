@@ -1,66 +1,12 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import ProductCard from "./ProductCard";
-
-const ProductList = (onPress) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.Text}>Products</Text>
-      <ProductCard onPress={onPress} />
-    </View>
-  );
-};
-
-export default ProductList;
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: -45,
-  },
-  Text: {
-    marginTop: 40,
-    marginLeft: 20,
-    fontSize: 30,
-    fontWeight: "bold",
-  },
-});
-// import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+// import { StyleSheet, Text, View } from "react-native";
 // import React from "react";
 // import ProductCard from "./ProductCard";
-// import { useQuery } from "@tanstack/react-query";
-// import { getProduct } from "../../api/ProductAPI";
-// import { ScrollView } from "react-native-gesture-handler";
 
 // const ProductList = (onPress) => {
-//   const { data, isLoading, isError } = useQuery({
-//     queryKey: ["product"],
-//     queryFn: getProduct, // Fetch categories from the API
-//     refetchOnMount: "always",
-//   });
-
-//   if (isLoading) {
-//     return <ActivityIndicator size="large" color="#0000ff" />;
-//   }
-
-//   if (isError) {
-//     return <Text>Error fetching categories</Text>;
-//   }
-
 //   return (
 //     <View style={styles.container}>
-//       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-//         {data.map((product) => (
-//           <ProductCard
-//             key={product.productId} // Use the productId as the key
-//             name={product.name}
-//             productId={product.productId}
-//             image={product.pictureUrl}
-//             // gradient={["#26589c", "#9cb2d8"]} // You can customize this if needed
-//           />
-//         ))}
-//       </ScrollView>
 //       <Text style={styles.Text}>Products</Text>
-//       {/* <ProductCard onPress={onPress} /> */}
+//       <ProductCard onPress={onPress} />
 //     </View>
 //   );
 // };
@@ -78,3 +24,42 @@ const styles = StyleSheet.create({
 //     fontWeight: "bold",
 //   },
 // });
+import React from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
+import ProductCard from "../../components/ExploreComponents/ProductCard";
+import { useQuery } from "@tanstack/react-query";
+import { getProduct } from "../../api/ProductAPI"; // Adjust to your API location
+
+const ProductList = () => {
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+  });
+
+  if (isLoading) return null;
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      {products.map((product) => (
+        <ProductCard
+          key={product.productId}
+          productId={product.productId}
+          name={product.name}
+          price={product.price}
+          image={product.pictureUrl}
+        />
+      ))}
+    </ScrollView>
+  );
+};
+
+export default ProductList;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    padding: 10,
+  },
+});

@@ -19,6 +19,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { login } from "../../api/auth";
 import { getToken } from "../../api/storage";
+import { handleBiometricLogin } from "../auth/auth-utils/handleBiometricLogin";
+import { IconButton } from "react-native-paper";
 
 const { width } = Dimensions.get("window");
 
@@ -82,7 +84,45 @@ const LoginScreen = ({ setIsAuthenticated }) => {
       Alert.alert("Error", error.message || "Login failed. Please try again.");
     }
   }, [userName, password, setIsAuthenticated]);
+  // biometric login
+  const authenticate = async () => {
+    // call function to check authentication
+    setLogin("Logging in");
 
+    const refreshToken = await getToken("refresh");
+
+    try {
+      if (refreshToken) {
+        const status = await handleBiometricLogin();
+
+        if (status) {
+          // over here is where the refresh token will be used to obtain a new access token to login with
+          // For now, "setAuthenticated" is turned true to hide "AuthNaviagtor" component without actually
+          // retrieving any actual user information from backend
+
+          const response = await refreshTokenAPI(refreshToken);
+
+          await setToken(response.accessToken, "access");
+          await setToken(response.refreshToken, "refresh");
+
+          checkToken();
+        }
+      } else {
+        setNotificationMessage("Biometric data not found");
+        setNotificationVisible(true);
+        setTimeout(() => {
+          setNotificationVisible(false);
+        }, 3000); // Hide the banner after 3 seconds
+      }
+    } catch (error) {
+      setNotificationMessage("Biometric data not found");
+      setNotificationVisible(true);
+      setTimeout(() => {
+        setNotificationVisible(false);
+      }, 3000); // Hide the banner after 3 seconds
+    }
+    setLogin("Login");
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
@@ -220,6 +260,15 @@ const LoginScreen = ({ setIsAuthenticated }) => {
               </TouchableOpacity>
             </Animated.View>
           </ScrollView>
+          {/* Biometric Login Button */}
+          <IconButton
+            icon="fingerprint"
+            size={70}
+            style={styles.biometric}
+            onPress={authenticate}
+            iconColor="rgba(255, 255, 255, 0.2)" // Set the icon color to white
+          />
+          <Text style={styles.biometricText}>Login with Fingerprint</Text>
         </LinearGradient>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -364,5 +413,15 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textDecorationLine: "underline",
     marginLeft: 4,
+  },
+  biometric: {
+    alignSelf: "center",
+    marginTop: 40,
+  },
+  biometricText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginTop: 8,
+    color: "rgba(255, 255, 255, 0.22)",
   },
 });

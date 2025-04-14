@@ -1,3 +1,4 @@
+
 import {
   StyleSheet,
   Text,
@@ -21,6 +22,7 @@ const { width } = Dimensions.get("window");
 
 const ConfirmPasswordScreen = () => {
   const navigation = useNavigation();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,6 +30,7 @@ const ConfirmPasswordScreen = () => {
   const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -72,6 +75,7 @@ const ConfirmPasswordScreen = () => {
     }
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
+
       shakeAnimation();
       return;
     }
@@ -85,6 +89,7 @@ const ConfirmPasswordScreen = () => {
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to change password.");
     }
+
   };
 
   const shakeAnimation = () => {
@@ -156,7 +161,9 @@ const ConfirmPasswordScreen = () => {
             value={value}
             onChangeText={setValue}
             secureTextEntry={!isVisible}
+
             placeholder={placeholder}
+
             placeholderTextColor="#999"
           />
           <TouchableOpacity
@@ -202,6 +209,7 @@ const ConfirmPasswordScreen = () => {
             isCurrentPasswordVisible,
             setIsCurrentPasswordVisible,
             "Enter current password",
+
             true
           )}
           {renderInputField(
@@ -210,6 +218,7 @@ const ConfirmPasswordScreen = () => {
             setNewPassword,
             isNewPasswordVisible,
             setIsNewPasswordVisible,
+
             "Enter new password",
             false
           )}
@@ -220,6 +229,7 @@ const ConfirmPasswordScreen = () => {
             isConfirmPasswordVisible,
             setIsConfirmPasswordVisible,
             "Confirm new password",
+
             false
           )}
 
@@ -259,8 +269,6 @@ const ConfirmPasswordScreen = () => {
     </SafeAreaView>
   );
 };
-
-export default ConfirmPasswordScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -408,3 +416,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 });
+
+export default ConfirmPasswordScreen;

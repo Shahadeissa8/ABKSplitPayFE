@@ -3,7 +3,7 @@ import React from "react";
 import MainAccPageScreen from "../screens/account/MainAccPageScreen";
 import EditProfileScreen from "../screens/account/EditProfileScreen";
 import ConfirmPasswordScreen from "../screens/account/ConfirmPasswordScreen";
-import WishListScreen from "../screens/account/WishListScreen";
+
 import Savedaddresses from "../screens/account/Savedaddresses";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -12,6 +12,7 @@ import PaymentMethods from "../screens/account/PaymentMethods";
 import Payment from "../screens/account/Payment";
 import Feedback from "../screens/account/Feedback";
 import HelpCenter from "../screens/account/HelpCenter";
+import WishListScreen from "../screens/account/WishListScreen";
 const Stack = createNativeStackNavigator();
 
 const AccountNavigation = ({ setIsAuthenticated }) => {
@@ -65,13 +66,15 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
       <Stack.Screen name="PaymentMethods" component={Payment} />
 
       <Stack.Screen name="Payment" component={PaymentMethods} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="WishListScreen"
         component={WishListScreen}
         options={{
           animationEnabled: true,
         }}
-      />
+      /> */}
+
+      <Stack.Screen name="WishListScreen" component={WishListScreen} />
       <Stack.Screen
         name="Feedback"
         component={Feedback}

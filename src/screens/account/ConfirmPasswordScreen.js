@@ -10,23 +10,27 @@ import {
   Animated,
   TextInput,
   Dimensions,
+  Alert,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { changePassword } from "../../api/profile"; // Import the changePassword API function
 
 const { width } = Dimensions.get("window");
 
 const ConfirmPasswordScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] =
-    useState(false);
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -63,24 +67,29 @@ const ConfirmPasswordScreen = () => {
     ]).start(() => navigation.goBack());
   };
 
-  const handleSave = () => {
-    if (currentPassword.length < 6) {
-      setError("Current password must be at least 6 characters");
+  const handleSave = async () => {
+    if (newPassword.length < 6) {
+      setError("Password must be at least 6 characters");
       shakeAnimation();
       return;
     }
-    if (newPassword.length < 6) {
-      setError("New password must be at least 6 characters");
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+
       shakeAnimation();
       return;
     }
     setError("");
 
-    // Navigate back to EditProfileScreen with the new password
-    navigation.navigate("EditProfileScreen", {
-      updatedPassword: newPassword,
-      currentPassword: currentPassword,
-    });
+    try {
+      // Call the changePassword API
+      await changePassword(currentPassword, newPassword);
+      Alert.alert("Success", "Password changed successfully!");
+      navigation.goBack(); // Navigate back after successful password change
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to change password.");
+    }
+
   };
 
   const shakeAnimation = () => {
@@ -123,6 +132,7 @@ const ConfirmPasswordScreen = () => {
     setValue,
     isVisible,
     setIsVisible,
+    placeholder,
     isFirst = true
   ) => (
     <Animated.View
@@ -151,7 +161,9 @@ const ConfirmPasswordScreen = () => {
             value={value}
             onChangeText={setValue}
             secureTextEntry={!isVisible}
-            placeholder={`Enter ${label.toLowerCase()}`}
+
+            placeholder={placeholder}
+
             placeholderTextColor="#999"
           />
           <TouchableOpacity
@@ -196,6 +208,8 @@ const ConfirmPasswordScreen = () => {
             setCurrentPassword,
             isCurrentPasswordVisible,
             setIsCurrentPasswordVisible,
+            "Enter current password",
+
             true
           )}
           {renderInputField(
@@ -204,6 +218,18 @@ const ConfirmPasswordScreen = () => {
             setNewPassword,
             isNewPasswordVisible,
             setIsNewPasswordVisible,
+
+            "Enter new password",
+            false
+          )}
+          {renderInputField(
+            "Confirm Password",
+            confirmPassword,
+            setConfirmPassword,
+            isConfirmPasswordVisible,
+            setIsConfirmPasswordVisible,
+            "Confirm new password",
+
             false
           )}
 

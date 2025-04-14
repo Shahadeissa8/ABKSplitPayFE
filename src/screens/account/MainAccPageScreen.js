@@ -209,7 +209,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const renderHeader = () => (
     <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
+      colors={["#26589c", "#9cb2d8"]} // Use gradient colors for the header
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.header}

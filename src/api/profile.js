@@ -8,7 +8,8 @@ const getUserProfile = async (id) => {
       throw new Error("Token is missing. Please log in again.");
     }
 
-    const response = await instance.get(`/ApplicationUser/${id}`, {
+    const response 
+    = await instance.get(`/ApplicationUser/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the Authorization header
       },

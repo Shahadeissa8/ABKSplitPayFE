@@ -26,20 +26,6 @@ const CategoryList = ({ onSelectCategory }) => {
   }
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.text}>Categories</Text>
-    //   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-    //     {data.map((category) => (
-    //       <CategoryCard
-    //         key={category.productCategoryId} // Use the productCategoryId as the key
-    //         name={category.name}
-    //         // productCategoryId={category.productCategoryId}
-    //         // image={category.pictureUrl}
-    //         gradient={["#26589c", "#9cb2d8"]} // You can customize this if needed
-    //       />
-    //     ))}
-    //   </ScrollView>
-    // </View>
     <View style={styles.container}>
       <Text style={styles.text}>Categories</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>

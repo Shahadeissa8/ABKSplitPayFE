@@ -11,4 +11,4 @@ const ShopLinkScreen = () => {
 
 export default ShopLinkScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({}) 

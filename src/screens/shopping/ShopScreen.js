@@ -1,116 +1,52 @@
 import { StyleSheet, Text, View, SafeAreaView, Platform } from "react-native";
-import React, { useState, useCallback } from "react";
-import ProductList from "../.././components/ExploreComponents/ProductList";
+import React, { useState, useCallback, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import StoresList from "../../components/StoresComponents/StoresList";
+import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native";
+import { GetStores } from "../../api/StoreAPI"; // Adjust the import path as necessary
+const ShopScreen = ({}) => {
+  // const navigation = useNavigation();
+  const [stores, setStores] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const ShopScreen = ({ navigation }) => {
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Organic Bananas",
-      description: "Fresh organic bananas from Ecuador - 7pcs",
-      price: 4.99,
-      image:
-        "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 2,
-      name: "Red Apple",
-      description: "Sweet and crispy red apples - 1kg",
-      price: 2.99,
-      image:
-        "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 3,
-      name: "Fresh Strawberries",
-      description: "Sweet and juicy strawberries - 500g",
-      price: 5.99,
-      image:
-        "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 4,
-      name: "Avocado",
-      description: "Ripe and ready to eat - 2pcs",
-      price: 3.99,
-      image:
-        "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const data = await GetStores();
+        setStores(data); // set the fetched store list here
+      } catch (error) {
+        console.error("Error fetching stores:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    {
-      id: 5,
-      name: "Avocado",
-      description: "Ripe and ready to eat - 2pcs",
-      price: 3.99,
-      image:
-        "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-  ]);
-
-  const handleProductPress = useCallback(
-    (product) => {
-      navigation.navigate("ShopLinkScreen", { product });
-    },
-    [navigation]
-  );
-
-  const handleRefresh = useCallback(async () => {
-    setRefreshing(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setRefreshing(false);
+    fetchStores();
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
-      <LinearGradient
-        colors={["rgba(46, 49, 146, 0.1)", "rgba(27, 126, 255, 0.1)"]}
-        style={styles.background}
-      >
-        {/* <View style={styles.header}> */}
-        {/* <Text>Shop</Text>
-      <Text style={styles.subtitle}>Find your daily needs</Text> */}
-        <StoresList
-          products={products}
-          loading={loading}
-          onProductPress={handleProductPress}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-        />
-        {/* </View> */}'
-      </LinearGradient>
-      '
-    </View>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.instructionsContainer}>
+          {!loading && <StoresList stores={stores} />}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default ShopScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: "red",
-  },
-  // header: {
-  //   padding: 20,
-  //   // backgroundColor: "",
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "#E2E2E2",
-  // },
   title: {
     fontSize: 24,
     alignSelf: "center",
     fontWeight: "600",
     color: "#181725",
     fontFamily: "Lato",
-    // marginBottom: 4,
-    // marginTop:-30
   },
   subtitle: {
     alignSelf: "center",

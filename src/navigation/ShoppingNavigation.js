@@ -4,7 +4,7 @@ import React from "react";
 import ProductsScreen from "../screens/shopping/ProductsScreen";
 import ProductDetailsScreen from "../screens/shopping/ProductDetailsScreen";
 import ShopScreen from "../screens/shopping/ShopScreen";
-import ShopDetailsScreen from "../screens/shopping/ShopDetailsScreen";
+import StoreDetailsScreen from "../screens/shopping/StoreDetailsScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ShopLinkScreen from "../screens/shopping/ShopLinkScreen";
 
@@ -18,10 +18,10 @@ const ShoppingNavigation = () => {
     >
       {/* needs A LOT OF EDITING */}
       <Stack.Screen name="ShopScreen" component={ShopScreen} />
-      {/* <Stack.Screen name="ProductsScreen" component={ProductsScreen} /> */}
-      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
       <Stack.Screen name="ShopLinkScreen" component={ShopLinkScreen} />
-      <Stack.Screen name="ShopDetailsScreen" component={ShopDetailsScreen} />
+      {/* <Stack.Screen name="ProductsScreen" component={ProductsScreen} /> */}
+      {/* <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} /> */}
+      <Stack.Screen name="StoreDetailsScreen" component={StoreDetailsScreen} />
     </Stack.Navigator>
   );
 };

@@ -26,7 +26,13 @@
     },
     "plugins": [
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(ABK SplitPay) to use Face ID."
+        }
+      ]
     ]
   }
 }

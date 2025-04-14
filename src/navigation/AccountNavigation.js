@@ -24,6 +24,8 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
         presentation: "card",
         gestureEnabled: true,
         gestureDirection: "horizontal",
+        headerShown: false,
+        header: () => null,
       }}
       initialRouteName="MainAccPageScreen"
       
@@ -33,6 +35,8 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
         children={() => <MainAccPageScreen setIsAuthenticated={setIsAuthenticated} />} // Pass setIsAuthenticated to MainAccPageScreen
         options={{
           animationEnabled: true,
+          headerShown: false,
+          header: () => null,
         }}
       />
 

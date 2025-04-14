@@ -54,6 +54,8 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
               name="account-outline"
               size={24}
               color={color}
+              headerShown ={false}
+              
             />
           ),
         }}

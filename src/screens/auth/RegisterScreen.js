@@ -1,75 +1,87 @@
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   TextInput,
+  TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
   ScrollView,
   Alert,
+  Dimensions,
 } from "react-native";
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { register } from "../../api/auth";
+
+const { width } = Dimensions.get("window");
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
+    email: "",
+    fullName: "",
     phoneNumber: "",
-    civilId: "",
     password: "",
     confirmPassword: "",
+    profilePictureUrl: " ", // Set default value to a single space
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState("+965"); // Default to Kuwait
-
-  const countries = [
-    { code: "+965", name: "KWT" },
-    { code: "+971", name: "UAE" },
-    { code: "+20", name: "EG" },
-  ];
 
   const validateForm = () => {
-    if (!formData.username.trim()) {
+    if (!formData.userName.trim()) {
       Alert.alert("Error", "Please enter your username");
       return false;
     }
-
+    if (!formData.email.trim()) {
+      Alert.alert("Error", "Please enter your email");
+      return false;
+    }
+    if (!formData.fullName.trim()) {
+      Alert.alert("Error", "Please enter your full name");
+      return false;
+    }
     if (!formData.phoneNumber.trim()) {
       Alert.alert("Error", "Please enter your phone number");
       return false;
     }
-
-    if (!formData.civilId.trim()) {
-      Alert.alert("Error", "Please enter your civil ID");
-      return false;
-    }
-
     if (formData.password.length < 6) {
       Alert.alert("Error", "Password must be at least 6 characters long");
       return false;
     }
-
     if (formData.password !== formData.confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return false;
     }
-
     return true;
   };
 
-  const handleRegister = () => {
-    if (validateForm()) {
-      // Add your registration logic here
-      console.log("Registration data:", formData);
+  const handleRegister = useCallback(async () => {
+    if (!validateForm()) return;
+
+    try {
+      const userInfo = {
+        userName: formData.userName,
+        email: formData.email,
+        fullName: formData.fullName,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        profilePictureUrl: formData.profilePictureUrl, // This will now be " "
+      };
+
+      await register(userInfo);
+      Alert.alert("Success", "Registration successful! Please log in.");
+      navigation.navigate("LoginScreen");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Registration failed. Please try again.");
     }
-  };
+  }, [formData, navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,6 +89,7 @@ const RegisterScreen = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : StatusBar.currentHeight}
       >
         <LinearGradient
           colors={["#26589c", "#9cb2d8"]}
@@ -93,33 +106,6 @@ const RegisterScreen = () => {
             </View>
 
             <View style={styles.formContainer}>
-              {/* Profile Picture */}
-              <View style={styles.profilePictureContainer}>
-                <View style={styles.profilePicturePlaceholder}>
-                  <Ionicons name="person" size={40} color="#26589c" />
-                </View>
-                <TouchableOpacity
-                  style={styles.uploadButton}
-                  onPress={() => {}}
-                  activeOpacity={0.8}
-                >
-                  <LinearGradient
-                    colors={["#26589c", "#9cb2d8"]}
-                    style={styles.uploadGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                  >
-                    <Ionicons
-                      name="camera-outline"
-                      size={20}
-                      color="#fff"
-                      style={styles.cameraIcon}
-                    />
-                    <Text style={styles.uploadText}>Add Photo</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-
               {/* Username */}
               <View style={styles.inputContainer}>
                 <LinearGradient
@@ -133,9 +119,53 @@ const RegisterScreen = () => {
                 <TextInput
                   style={styles.input}
                   placeholder="Username"
-                  value={formData.username}
+                  value={formData.userName}
                   onChangeText={(text) =>
-                    setFormData({ ...formData, username: text })
+                    setFormData({ ...formData, userName: text })
+                  }
+                  placeholderTextColor="#666"
+                />
+              </View>
+
+              {/* Email */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="mail-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={formData.email}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, email: text })
+                  }
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor="#666"
+                />
+              </View>
+
+              {/* Full Name */}
+              <View style={styles.inputContainer}>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.iconContainer}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="person-outline" size={20} color="#fff" />
+                </LinearGradient>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, fullName: text })
                   }
                   placeholderTextColor="#666"
                 />
@@ -151,53 +181,14 @@ const RegisterScreen = () => {
                 >
                   <Ionicons name="call-outline" size={20} color="#fff" />
                 </LinearGradient>
-                <View style={styles.phoneInputContainer}>
-                  <TouchableOpacity
-                    style={styles.countryCodeButton}
-                    onPress={() => {
-                      const nextIndex = countries.findIndex(
-                        (c) => c.code === selectedCountry
-                      );
-                      const newIndex = (nextIndex + 1) % countries.length;
-                      setSelectedCountry(countries[newIndex].code);
-                    }}
-                  >
-                    <Text style={styles.countryCodeText}>
-                      {selectedCountry}{" "}
-                      {countries.find((c) => c.code === selectedCountry)?.name}
-                    </Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    style={[styles.input, styles.phoneInput]}
-                    placeholder="Phone Number"
-                    value={formData.phoneNumber}
-                    onChangeText={(text) =>
-                      setFormData({ ...formData, phoneNumber: text })
-                    }
-                    keyboardType="phone-pad"
-                    placeholderTextColor="#666"
-                  />
-                </View>
-              </View>
-
-              {/* Civil ID */}
-              <View style={styles.inputContainer}>
-                <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
-                  style={styles.iconContainer}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                >
-                  <Ionicons name="card-outline" size={20} color="#fff" />
-                </LinearGradient>
                 <TextInput
                   style={styles.input}
-                  placeholder="Civil ID"
-                  value={formData.civilId}
+                  placeholder="Phone Number"
+                  value={formData.phoneNumber}
                   onChangeText={(text) =>
-                    setFormData({ ...formData, civilId: text })
+                    setFormData({ ...formData, phoneNumber: text })
                   }
-                  keyboardType="numeric"
+                  keyboardType="phone-pad"
                   placeholderTextColor="#666"
                 />
               </View>
@@ -259,9 +250,7 @@ const RegisterScreen = () => {
                   style={styles.eyeIcon}
                 >
                   <Ionicons
-                    name={
-                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
-                    }
+                    name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
                     size={24}
                     color="#26589c"
                   />
@@ -313,7 +302,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: "center",
-    marginTop: Platform.OS === "ios" ? 60 : 40,
+    marginTop: 40,
     marginBottom: 32,
   },
   welcomeText: {
@@ -321,15 +310,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
     marginBottom: 8,
-    textShadowColor: "rgba(0, 0, 0, 0.2)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
   subtitle: {
     fontSize: 15,
     color: "rgba(255, 255, 255, 0.9)",
     textAlign: "center",
-    maxWidth: "75%",
+    maxWidth: width * 0.75,
     lineHeight: 22,
   },
   formContainer: {
@@ -337,10 +323,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
     shadowRadius: 10,
     elevation: 6,
@@ -371,26 +354,6 @@ const styles = StyleSheet.create({
     color: "#26589c",
     height: 54,
   },
-  phoneInputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  countryCodeButton: {
-    paddingHorizontal: 8,
-    height: 54,
-    justifyContent: "center",
-    borderRightWidth: 1,
-    borderRightColor: "rgba(38, 88, 156, 0.08)",
-  },
-  countryCodeText: {
-    color: "#26589c",
-    fontSize: 15,
-    fontWeight: "500",
-  },
-  phoneInput: {
-    flex: 1,
-  },
   eyeIcon: {
     padding: 10,
     marginRight: 2,
@@ -398,17 +361,16 @@ const styles = StyleSheet.create({
   registerButton: {
     borderRadius: 12,
     overflow: "hidden",
+    marginBottom: 24,
     marginTop: 8,
     shadowColor: "#26589c",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.16,
     shadowRadius: 6,
     elevation: 3,
   },
   gradientButton: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 14,
@@ -436,48 +398,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textDecorationLine: "underline",
     marginLeft: 4,
-  },
-  profilePictureContainer: {
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  profilePicturePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#f8f9fa",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(38, 88, 156, 0.08)",
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  uploadButton: {
-    borderRadius: 20,
-    overflow: "hidden",
-    width: "50%",
-  },
-  uploadGradient: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  cameraIcon: {
-    marginRight: 6,
-  },
-  uploadText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "600",
   },
 });

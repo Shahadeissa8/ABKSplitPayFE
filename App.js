@@ -1,53 +1,74 @@
-// import { StatusBar, View, Button } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  Button,
-  StatusBar,
-  View,
-  FlatList,
-} from "react-native";
-import { useState } from "react";
-import ShoppingNavigation from "./src/navigation/ShoppingNavigation";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, ActivityIndicator, StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import AuthNavigation from "./src/navigation/AuthNavigation";
 import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
-import SplashScreen from "./src/screens/SplashScreen";
+import { getToken } from "./src/api/storage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const Stack = createStackNavigator();
+const queryClient = new QueryClient();
 
 export default function App() {
-  // const [isStatusBarVisible, setIsStatusBarVisible] = useState(false);
-  // const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // if (loading) {
-  //   return <SplashScreen onFinish={() => setLoading(false)} />;
-  // }
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const token = await getToken();
+        setIsAuthenticated(!!token);
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#26589c" />
+        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      </View>
+    );
+  }
 
   return (
-    <NavigationContainer>
-      {/* <ShoppingNavigation /> */}
-      <MainBottomNavigation />
-    </NavigationContainer>
-
-    //   <View style={styles.container}>
-    //     <Button
-    //       title="Hide /Show StatusBar"
-    //       onPress={() => setIsStatusBarVisible(!isStatusBarVisible)}
-    //     />
-    //     <Text>hello</Text>
-    //     <StatusBar
-    //       backgroundColor="lightblue"
-    //       barStyle="dark-content"
-    //       hidden={isStatusBarVisible}
-    //     />
-    //  </View>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {isAuthenticated ? (
+            <Stack.Screen
+              name="MainBottomNavigation"
+              children={() => (
+                <MainBottomNavigation setIsAuthenticated={setIsAuthenticated} />
+              )}
+            />
+          ) : (
+            <Stack.Screen
+              name="AuthNavigation"
+              children={() => (
+                <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
+              )}
+            />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
-    padding: 60,
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });

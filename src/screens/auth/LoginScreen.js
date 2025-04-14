@@ -89,8 +89,6 @@ const LoginScreen = ({ setIsAuthenticated }) => {
     }
 
   }, [userName, password, navigation, setIsAuthenticated]);
-=======
-  }, [userName, password, setIsAuthenticated]);
   // biometric login
   const authenticate = async () => {
     // call function to check authentication

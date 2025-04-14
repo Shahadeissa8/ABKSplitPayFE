@@ -22,7 +22,6 @@ import { getToken } from "../../api/storage";
 import { useIsFocused } from "@react-navigation/native";
 import { getUserId } from "../../api/storage"; // Import getUserId function
 
-
 const { width } = Dimensions.get("window");
 
 const MainAccPageScreen = ({ setIsAuthenticated }) => {
@@ -37,8 +36,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const userId = "f5ff8593-78cc-455d-bcc3-083e6788f4ff";
 
- 
-  
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -128,14 +125,12 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const handleMenuPress = (screen) => {
     if (screen === "EditProfileScreen") {
-
       navigation.navigate("EditProfileScreen", {
         userData: {
           username: "John Doe",
           email: "john.doe@example.com",
           phoneNumber: "+971050600798",
           profilePicture: "https://via.placeholder.com/100",
-
         },
       });
     } else if (screen === "ChangePasswordScreen") {
@@ -226,7 +221,9 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-      <Text style={styles.civilId}>Phone: {userProfile?.phoneNumber || "N/A"}</Text>
+      <Text style={styles.civilId}>
+        Phone: {userProfile?.phoneNumber || "N/A"}
+      </Text>
     </LinearGradient>
   );
 
@@ -248,7 +245,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           style={styles.editProfileButton}
           onPress={() => handleMenuPress("EditProfileScreen")}
         >
-
           <LinearGradient
             colors={["#26589c", "#9cb2d8"]}
             style={styles.profileImageBorder}
@@ -275,21 +271,21 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
               <Ionicons name="pencil" size={18} color="#fff" />
             </LinearGradient>
           </TouchableOpacity>
-        </View>
-        <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>
-        <Text style={styles.emailText}>{userProfile?.email || "N/A"}</Text>
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.membershipBadge}
-        >
-          <Ionicons name="star" size={18} color="#fff" />
-          <Text style={styles.membershipText}>Premium Member</Text>
-        </LinearGradient>
+        </TouchableOpacity>
       </View>
-    );
-  };
+      <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>
+      <Text style={styles.emailText}>{userProfile?.email || "N/A"}</Text>
+      <LinearGradient
+        colors={["#26589c", "#9cb2d8"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.membershipBadge}
+      >
+        <Ionicons name="star" size={18} color="#fff" />
+        <Text style={styles.membershipText}>Premium Member</Text>
+      </LinearGradient>
+    </View>
+  );
 
   return (
     <SafeAreaView

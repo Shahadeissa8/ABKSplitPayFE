@@ -17,19 +17,21 @@ import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createAddress } from "../../api/profile";
 
 const { width, height } = Dimensions.get("window");
-const ADDRESSES_STORAGE_KEY = "@saved_addresses";
 
-const Addlocation = ({ route }) => {
+const AddLocation = () => {
   const navigation = useNavigation();
   const [addressDetails, setAddressDetails] = useState({
-    area: "",
-    block: "",
-    street: "",
-    house: "",
-    extra: "",
+    fullName: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+    isDefault: false, // Added isDefault to state
   });
   const [isSaving, setIsSaving] = useState(false);
   const fadeAnim = new Animated.Value(0);
@@ -57,78 +59,49 @@ const Addlocation = ({ route }) => {
     ]).start();
   }, []);
 
-  const saveAddress = async (newAddress) => {
+  const handleSubmit = async () => {
+    const { fullName, addressLine1, city, state, postalCode, country, isDefault } = addressDetails;
+  
+    // Validate required fields
+    if (
+      !fullName.trim() ||
+      !addressLine1.trim() ||
+      !city.trim() ||
+      !state.trim() ||
+      !postalCode.trim() ||
+      !country.trim()
+    ) {
+      Alert.alert("Missing Information", "Please fill in all required address fields", [{ text: "OK" }]);
+      return;
+    }
+  
     try {
       setIsSaving(true);
-      const existingAddressesJson = await AsyncStorage.getItem(
-        ADDRESSES_STORAGE_KEY
-      );
-      const existingAddresses = existingAddressesJson
-        ? JSON.parse(existingAddressesJson)
-        : [];
-
-      const isFirstAddress = existingAddresses.length === 0;
-      const addressToSave = {
-        ...newAddress,
-        isDefault: isFirstAddress,
-        isSelected: false,
-      };
-
-      const updatedAddresses = [...existingAddresses, addressToSave];
-      await AsyncStorage.setItem(
-        ADDRESSES_STORAGE_KEY,
-        JSON.stringify(updatedAddresses)
-      );
-
+      // Call the createAddress API
+      await createAddress({
+        fullName,
+        addressLine1,
+        addressLine2: addressDetails.addressLine2 || "", // Optional field
+        city,
+        state,
+        postalCode,
+        country,
+        isDefault,
+      });
+  
       Alert.alert("Success", "Address saved successfully", [
         {
           text: "OK",
           onPress: () => {
-            navigation.navigate("Savedaddresses", { refresh: Date.now() });
+            navigation.navigate("Savedaddresses", { refresh: Date.now() }); // Pass refresh parameter
           },
         },
       ]);
     } catch (error) {
-      Alert.alert("Error", "Failed to save address. Please try again.", [
-        { text: "OK" },
-      ]);
+      Alert.alert("Error", "Failed to save address. Please try again.", [{ text: "OK" }]);
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleSubmit = async () => {
-    const { area, block, street, house } = addressDetails;
-
-    if (!area.trim() || !block.trim() || !street.trim() || !house.trim()) {
-      Alert.alert(
-        "Missing Information",
-        "Please fill in all required address fields",
-        [{ text: "OK" }]
-      );
-      return;
-    }
-
-    const formattedAddress = `Area: ${area}, Block: ${block}, Street: ${street}, House: ${house}${
-      addressDetails.extra ? `, ${addressDetails.extra}` : ""
-    }`;
-
-    const newAddress = {
-      id: Date.now().toString(),
-      title: `Address ${Math.floor(Math.random() * 1000) + 1}`,
-      location: formattedAddress,
-      details: formattedAddress,
-      createdAt: new Date().toISOString(),
-      type: "home",
-      coordinates: null,
-      area,
-      block,
-      street,
-      house,
-      extra: addressDetails.extra,
-    };
-
-    await saveAddress(newAddress);
   };
 
   const renderInputField = (label, placeholder, key, required = true) => (
@@ -149,6 +122,10 @@ const Addlocation = ({ route }) => {
       </View>
     </View>
   );
+
+  const toggleIsDefault = () => {
+    setAddressDetails((prev) => ({ ...prev, isDefault: !prev.isDefault }));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -208,16 +185,44 @@ const Addlocation = ({ route }) => {
                 Please fill in your address information
               </Text>
 
-              {renderInputField("Area", "Enter area name", "area")}
-              {renderInputField("Block", "Enter block number", "block")}
-              {renderInputField("Street", "Enter street name/number", "street")}
-              {renderInputField("House", "Enter house number", "house")}
+              {renderInputField("Full Name", "Enter full name", "fullName")}
               {renderInputField(
-                "Additional Details",
-                "Apartment number, floor, etc. (optional)",
-                "extra",
+                "Address Line 1",
+                "Enter address line 1",
+                "addressLine1"
+              )}
+              {renderInputField(
+                "Address Line 2",
+                "Enter address line 2 (optional)",
+                "addressLine2",
                 false
               )}
+              {renderInputField("City", "Enter city", "city")}
+              {renderInputField("State", "Enter state", "state")}
+              {renderInputField(
+                "Postal Code",
+                "Enter postal code",
+                "postalCode"
+              )}
+              {renderInputField("Country", "Enter country", "country")}
+
+              {/* Checkbox for isDefault */}
+              <TouchableOpacity
+                style={styles.checkboxContainer}
+                onPress={toggleIsDefault}
+              >
+                <Ionicons
+                  name={
+                    addressDetails.isDefault
+                      ? "checkbox-outline"
+                      : "square-outline"
+                  }
+                  size={24}
+                  color="#26589c"
+                  style={styles.checkboxIcon}
+                />
+                <Text style={styles.checkboxLabel}>Set as Default Address</Text>
+              </TouchableOpacity>
             </View>
           </Animated.View>
         </ScrollView>
@@ -255,7 +260,7 @@ const Addlocation = ({ route }) => {
   );
 };
 
-export default Addlocation;
+export default AddLocation;
 
 const styles = StyleSheet.create({
   container: {
@@ -384,6 +389,20 @@ const styles = StyleSheet.create({
     color: "#26589c",
     padding: 12,
     textAlign: "left",
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 16,
+  },
+  checkboxIcon: {
+    marginRight: 8,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#26589c",
   },
   bottomContainer: {
     position: "absolute",

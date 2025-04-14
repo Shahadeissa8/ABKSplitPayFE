@@ -30,7 +30,7 @@ const MainAccPageScreen = () => {
       title: "Edit profile",
       icon: "person-outline",
       color: "#26589c",
-      screen: "EditProfile",
+      screen: "EditProfileScreen",
     },
     {
       id: 2,
@@ -39,7 +39,6 @@ const MainAccPageScreen = () => {
       color: "#9cb2d8",
       screen: "Rewards",
     },
-
     {
       id: 3,
       title: "Saved Addresses",
@@ -59,7 +58,7 @@ const MainAccPageScreen = () => {
       title: "Wishlist",
       icon: "heart-outline",
       color: "#26589c",
-      screen: "Wishlist",
+      screen: "WishListScreen",
     },
     {
       id: 7,
@@ -98,7 +97,7 @@ const MainAccPageScreen = () => {
   };
 
   const handleMenuPress = (screen) => {
-    if (screen === "EditProfile") {
+    if (screen === "EditProfileScreen") {
       navigation.navigate("EditProfileScreen", {
         userData: {
           username: "John Doe",
@@ -186,7 +185,7 @@ const MainAccPageScreen = () => {
         </LinearGradient>
         <TouchableOpacity
           style={styles.editProfileButton}
-          onPress={() => handleMenuPress("EditProfile")}
+          onPress={() => handleMenuPress("EditProfileScreen")}
         >
           <LinearGradient
             colors={["#26589c", "#9cb2d8"]}

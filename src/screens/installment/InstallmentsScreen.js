@@ -10,5 +10,3 @@ const InstallmentsScreen = () => {
 };
 
 export default InstallmentsScreen;
-
-const styles = StyleSheet.create({});

@@ -20,7 +20,7 @@ import { deleteToken } from "../../api/storage";
 import { getUserProfile } from "../../api/profile";
 import { getToken } from "../../api/storage";
 import { useIsFocused } from "@react-navigation/native";
-import { getUserId } from "../../api/storage"; // Import getUserId function
+import { getUserId } from "../../api/storage";
 
 const { width } = Dimensions.get("window");
 
@@ -125,10 +125,12 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
     if (screen === "EditProfileScreen") {
       navigation.navigate("EditProfileScreen", {
         userData: {
-          username: "John Doe",
-          email: "john.doe@example.com",
-          phoneNumber: "+971050600798",
-          profilePicture: "https://via.placeholder.com/100",
+          fullName: userProfile?.fullName || "",
+          phoneNumber: userProfile?.phoneNumber || "",
+          profilePicture: userProfile?.profilePictureUrl || defaultProfilePicture,
+        },
+        onSuccess: () => {
+          fetchUserProfile(); // Fetch updated user profile after editing
         },
       });
     } else if (screen === "ChangePasswordScreen") {
@@ -159,11 +161,11 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           style: "destructive",
           onPress: async () => {
             try {
-              await deleteToken(); // Delete the token from secure storage
-              setIsAuthenticated(false); // Update authentication state
+              await deleteToken();
+              setIsAuthenticated(false);
               navigation.reset({
                 index: 0,
-                routes: [{ name: "AuthNavigation" }], // Navigate back to the authentication flow
+                routes: [{ name: "AuthNavigation" }],
               });
             } catch (error) {
               Alert.alert("Error", "Failed to log out. Please try again.");
@@ -201,7 +203,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const renderHeader = () => (
     <LinearGradient
-      colors={["#26589c", "#9cb2d8"]} // Use gradient colors for the header
+      colors={["#26589c", "#9cb2d8"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.header}
@@ -234,7 +236,13 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         >
           <View style={styles.profileImageInner}>
             <Image
-              source={{ uri: "https://via.placeholder.com/100" }}
+              source={{
+                uri:
+                  userProfile?.profilePictureUrl?.trim() &&
+                  userProfile?.profilePictureUrl !== " "
+                    ? userProfile.profilePictureUrl
+                    : defaultProfilePicture,
+              }}
               style={styles.profileImage}
             />
           </View>
@@ -245,30 +253,10 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         >
           <LinearGradient
             colors={["#26589c", "#9cb2d8"]}
-            style={styles.profileImageBorder}
+            style={styles.editButtonGradient}
           >
-            <View style={styles.profileImageInner}>
-              <Image
-                source={{
-                  uri: userProfile?.profilePictureUrl?.trim()
-                    ? userProfile.profilePictureUrl
-                    : defaultProfilePicture,
-                }}
-                style={styles.profileImage}
-              />
-            </View>
+            <Ionicons name="pencil" size={18} color="#fff" />
           </LinearGradient>
-          <TouchableOpacity
-            style={styles.editProfileButton}
-            onPress={() => handleMenuPress("EditProfileScreen")}
-          >
-            <LinearGradient
-              colors={["#26589c", "#9cb2d8"]}
-              style={styles.editButtonGradient}
-            >
-              <Ionicons name="pencil" size={18} color="#fff" />
-            </LinearGradient>
-          </TouchableOpacity>
         </TouchableOpacity>
       </View>
       <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>

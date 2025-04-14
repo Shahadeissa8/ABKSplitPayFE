@@ -10,33 +10,50 @@ import {
   StatusBar,
   Dimensions,
   Animated,
+  Modal,
+  Alert,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
+import { updateUserProfile } from "../../api/profile"; // Import the API function
 
 const { width } = Dimensions.get("window");
 
 const EditProfileScreen = ({ route, navigation }) => {
-  // Get user data from navigation params
-  const { userData: initialUserData } = route.params || {
+  const { userData: initialUserData, onSuccess } = route.params || {
     userData: {
-      username: "Ahmad Ali",
-      password: "••••••••••••",
-      phoneNumber: "+971050600798",
-      profilePicture: "https://via.placeholder.com/100",
+      fullName: "",
+      phoneNumber: "",
+      profilePicture: "",
     },
   };
 
-  const [userData, setUserData] = useState(initialUserData);
+  const defaultProfilePicture =
+    "https://th.bing.com/th/id/R.1871862d87bb8037d953317fb4497189?rik=MBf1NyuchSQUtQ&riu=http%3a%2f%2fwww.pngall.com%2fwp-content%2fuploads%2f5%2fProfile.png&ehk=Ouu2uMvvMPnkP1bdIY2BTAzbwhRoG9p03NUzbwGLhlg%3d&risl=&pid=ImgRaw&r=0";
+
+  const [userData, setUserData] = useState({
+    fullName: initialUserData.fullName || "",
+    phoneNumber: initialUserData.phoneNumber || "",
+    profilePicture: initialUserData.profilePicture || defaultProfilePicture,
+    password: "••••••••••••",
+  });
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
   const imageScale = useRef(new Animated.Value(0.3)).current;
 
-  React.useEffect(() => {
+  const profilePictureOptions = [
+    defaultProfilePicture,
+    "https://th.bing.com/th/id/OIP.cMii7UGD3ywM1CuMBS-ZawAAAA?pid=ImgDet&w=198&h=198&c=7&dpr=3",
+    "https://th.bing.com/th/id/OIP.p9fdQAE5JOscu5dUCsPifQHaIM?w=1735&h=1920&rs=1&pid=ImgDetMain",
+    "https://img.freepik.com/premium-vector/cute-woman-avatar-profile-vector-illustration_1058532-14592.jpg"
+  ];
+
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -57,12 +74,11 @@ const EditProfileScreen = ({ route, navigation }) => {
     ]).start();
   }, []);
 
-  // Listen for navigation updates
   React.useEffect(() => {
     if (route.params?.updatedPassword) {
       setUserData((prev) => ({
         ...prev,
-        password: "••••••••••••", // Show dots for security
+        password: "••••••••••••",
       }));
     }
   }, [route.params?.updatedPassword]);
@@ -96,10 +112,29 @@ const EditProfileScreen = ({ route, navigation }) => {
     }).start();
   };
 
-  const handleSave = () => {
-    // Save the updated user data
-    console.log("Saving changes:", userData);
-    handleBack();
+  const handleSave = async () => {
+    try {
+      console.log("Updating profile with:", {
+        fullName: userData.fullName,
+        phoneNumber: userData.phoneNumber,
+        profilePictureUrl: userData.profilePicture,
+      });
+
+      await updateUserProfile(
+        userData.fullName,
+        userData.phoneNumber,
+        userData.profilePicture
+      );
+
+      Alert.alert("Success", "Profile updated successfully!");
+      if (onSuccess) {
+        onSuccess(); // Trigger refresh on MainAccPageScreen
+      }
+      handleBack();
+    } catch (error) {
+      console.error("Failed to update profile:", error.message);
+      Alert.alert("Error", error.message || "Failed to update profile.");
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -110,8 +145,15 @@ const EditProfileScreen = ({ route, navigation }) => {
   };
 
   const handleEditPicture = () => {
-    // Implement image picker functionality here
-    console.log("Edit picture pressed");
+    setIsModalVisible(true); // Show the modal when the user wants to edit the picture
+  };
+
+  const handleSelectPicture = (url) => {
+    setUserData((prev) => ({
+      ...prev,
+      profilePicture: url, // Update the profile picture with the selected image URL
+    }));
+    setIsModalVisible(false); // Close the modal after selection
   };
 
   const renderHeader = () => (
@@ -131,6 +173,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     </LinearGradient>
   );
 
+  // Add the missing renderProfilePicture function
   const renderProfilePicture = () => (
     <Animated.View
       style={[
@@ -215,6 +258,37 @@ const EditProfileScreen = ({ route, navigation }) => {
     </Animated.View>
   );
 
+  const renderImagePickerModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={isModalVisible}
+      onRequestClose={() => setIsModalVisible(false)} // Close the modal when requested
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Select Profile Picture</Text>
+          <View style={styles.imageOptions}>
+            {profilePictureOptions.map((url, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleSelectPicture(url)} // Handle image selection
+              >
+                <Image source={{ uri: url }} style={styles.modalImage} />
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity
+            onPress={() => setIsModalVisible(false)} // Close the modal
+            style={styles.closeButton}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
@@ -225,12 +299,12 @@ const EditProfileScreen = ({ route, navigation }) => {
           {renderProfilePicture()}
           <View style={styles.formContainer}>
             {renderInputField(
-              "User name",
-              userData.username,
+              "Full Name",
+              userData.fullName,
               "person-outline",
               null,
               false,
-              "username"
+              "fullName"
             )}
             {renderInputField(
               "Password",
@@ -271,6 +345,8 @@ const EditProfileScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {renderImagePickerModal()}
     </SafeAreaView>
   );
 };
@@ -482,5 +558,49 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+  },
+  imageOptions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 10,
+  },
+  modalImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#26589c",
+  },
+  closeButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#26589c",
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

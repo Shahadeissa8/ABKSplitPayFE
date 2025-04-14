@@ -34,8 +34,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   const defaultProfilePicture =
     "https://th.bing.com/th/id/R.1871862d87bb8037d953317fb4497189?rik=MBf1NyuchSQUtQ&riu=http%3a%2f%2fwww.pngall.com%2fwp-content%2fuploads%2f5%2fProfile.png&ehk=Ouu2uMvvMPnkP1bdIY2BTAzbwhRoG9p03NUzbwGLhlg%3d&risl=&pid=ImgRaw&r=0";
 
-  const userId = "f5ff8593-78cc-455d-bcc3-083e6788f4ff";
-
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -43,7 +41,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   const fetchUserProfile = async () => {
     try {
       setRefreshing(true);
-      const profileData = await getUserProfile(userId);
+      const profileData = await getUserProfile();
       setUserProfile(profileData);
     } catch (error) {
       console.error("Failed to fetch profile:", error);

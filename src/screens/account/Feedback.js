@@ -1,3 +1,4 @@
+//
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -54,7 +55,7 @@ const Feedback = () => {
   const renderStars = () => {
     return (
       <View style={styles.starsContainer}>
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.starsRow}>
           {[1, 2, 3, 4, 5].map((star) => (
             <TouchableOpacity
               key={star}
@@ -63,7 +64,7 @@ const Feedback = () => {
             >
               <Ionicons
                 name={rating >= star ? "star" : "star-outline"}
-                size={40}
+                size={45}
                 color={rating >= star ? "#FFD700" : "rgba(38, 88, 156, 0.3)"}
               />
             </TouchableOpacity>
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
   ratingContainer: {
     marginBottom: 30,
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 25,
     borderRadius: 15,
     ...Platform.select({
       ios: {
@@ -366,25 +367,32 @@ const styles = StyleSheet.create({
     }),
   },
   starsContainer: {
+    alignItems: "center",
+    paddingVertical: 15,
+  },
+  starsRow: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: 5,
+    marginBottom: 15,
   },
   starButton: {
     padding: 8,
+    width: 65,
+    height: 65,
+    justifyContent: "center",
+    alignItems: "center",
   },
   ratingLabel: {
-    marginTop: 0,
-    marginLeft: 15,
-    padding: 8,
-    paddingHorizontal: 16,
+    marginTop: 15,
+    paddingHorizontal: 25,
+    paddingVertical: 10,
     backgroundColor: "#26589c",
-    borderRadius: 20,
+    borderRadius: 25,
   },
   ratingText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "600",
   },
   feedbackContainer: {
@@ -447,3 +455,4 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
+

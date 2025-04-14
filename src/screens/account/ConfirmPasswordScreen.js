@@ -1,3 +1,4 @@
+
 import {
   StyleSheet,
   Text,
@@ -20,12 +21,12 @@ const { width } = Dimensions.get("window");
 const ConfirmPasswordScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] =
     useState(false);
+  const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -63,13 +64,13 @@ const ConfirmPasswordScreen = () => {
   };
 
   const handleSave = () => {
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (currentPassword.length < 6) {
+      setError("Current password must be at least 6 characters");
       shakeAnimation();
       return;
     }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (newPassword.length < 6) {
+      setError("New password must be at least 6 characters");
       shakeAnimation();
       return;
     }
@@ -77,7 +78,8 @@ const ConfirmPasswordScreen = () => {
 
     // Navigate back to EditProfileScreen with the new password
     navigation.navigate("EditProfileScreen", {
-      updatedPassword: password,
+      updatedPassword: newPassword,
+      currentPassword: currentPassword,
     });
   };
 
@@ -149,7 +151,7 @@ const ConfirmPasswordScreen = () => {
             value={value}
             onChangeText={setValue}
             secureTextEntry={!isVisible}
-            placeholder="Enter password"
+            placeholder={`Enter ${label.toLowerCase()}`}
             placeholderTextColor="#999"
           />
           <TouchableOpacity
@@ -189,19 +191,19 @@ const ConfirmPasswordScreen = () => {
       <View style={styles.content}>
         <View style={styles.formContainer}>
           {renderInputField(
-            "New Password",
-            password,
-            setPassword,
-            isPasswordVisible,
-            setIsPasswordVisible,
+            "Current Password",
+            currentPassword,
+            setCurrentPassword,
+            isCurrentPasswordVisible,
+            setIsCurrentPasswordVisible,
             true
           )}
           {renderInputField(
-            "Confirm Password",
-            confirmPassword,
-            setConfirmPassword,
-            isConfirmPasswordVisible,
-            setIsConfirmPasswordVisible,
+            "New Password",
+            newPassword,
+            setNewPassword,
+            isNewPasswordVisible,
+            setIsNewPasswordVisible,
             false
           )}
 
@@ -241,8 +243,6 @@ const ConfirmPasswordScreen = () => {
     </SafeAreaView>
   );
 };
-
-export default ConfirmPasswordScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -390,3 +390,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 });
+
+export default ConfirmPasswordScreen;

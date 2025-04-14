@@ -90,7 +90,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       title: "Wishlist",
       icon: "heart-outline",
       color: "#26589c",
-      screen: "Wishlist",
+      screen: "WishListScreen",
     },
     {
       id: 6,
@@ -128,15 +128,14 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const handleMenuPress = (screen) => {
     if (screen === "EditProfileScreen") {
-      navigation.navigate("Account", {
-        screen: "EditProfileScreen",
-        params: {
-          userData: {
-            username: userProfile?.userName || "N/A",
-            email: userProfile?.email || "N/A",
-            phoneNumber: userProfile?.phoneNumber || "N/A",
-            profilePicture: userProfile?.profilePictureUrl || defaultProfilePicture,
-          },
+
+      navigation.navigate("EditProfileScreen", {
+        userData: {
+          username: "John Doe",
+          email: "john.doe@example.com",
+          phoneNumber: "+971050600798",
+          profilePicture: "https://via.placeholder.com/100",
+
         },
       });
     } else if (screen === "ChangePasswordScreen") {
@@ -231,10 +230,25 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
     </LinearGradient>
   );
 
-  const renderProfileSection = () => {
-    return (
-      <View style={styles.profileSection}>
-        <View style={styles.profileImageContainer}>
+  const renderProfileSection = () => (
+    <View style={styles.profileSection}>
+      <View style={styles.profileImageContainer}>
+        <LinearGradient
+          colors={["#26589c", "#9cb2d8"]}
+          style={styles.profileImageBorder}
+        >
+          <View style={styles.profileImageInner}>
+            <Image
+              source={{ uri: "https://via.placeholder.com/100" }}
+              style={styles.profileImage}
+            />
+          </View>
+        </LinearGradient>
+        <TouchableOpacity
+          style={styles.editProfileButton}
+          onPress={() => handleMenuPress("EditProfileScreen")}
+        >
+
           <LinearGradient
             colors={["#26589c", "#9cb2d8"]}
             style={styles.profileImageBorder}

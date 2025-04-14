@@ -36,6 +36,9 @@ const StoresDetailsPage = ({ StoreDetails }) => {
           {StoreDetails.name}
         </Text>
         <Text>{StoreDetails.description}</Text>
+        <TouchableOpacity>
+          <Text>{StoreDetails.websiteUrl}</Text>
+        </TouchableOpacity>
       </TouchableOpacity>
     </View>
   );

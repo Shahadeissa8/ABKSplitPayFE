@@ -7,11 +7,8 @@ const getUserProfile = async () => {
     if (!token) {
       throw new Error("Token is missing. Please log in again.");
     }
-    // TODO : Replace with the actual user ID from your application logic
-    const userId = "f5ff8593-78cc-455d-bcc3-083e6788f4ff";
-    console.log("Fetching user profile with ID:", id);
     console.log("Using token:", token);
-    const response = await instance.get(`/ApplicationUser/${id}`, {
+    const response = await instance.get(`/ApplicationUser/me`, {
       headers: {
         Authorization: `Bearer ${token}`, // Include the token in the Authorization header
       },

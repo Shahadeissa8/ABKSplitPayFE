@@ -13,6 +13,8 @@ import Payment from "../screens/account/Payment";
 import Feedback from "../screens/account/Feedback";
 import HelpCenter from "../screens/account/HelpCenter";
 import WishListScreen from "../screens/account/WishListScreen";
+
+
 const Stack = createNativeStackNavigator();
 
 const AccountNavigation = ({ setIsAuthenticated }) => {

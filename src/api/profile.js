@@ -46,4 +46,29 @@ const changePassword = async (currentPassword, newPassword) => {
   }
 };
 
-export { getUserProfile, changePassword };
+const updateUserProfile = async (fullName, phoneNumber, profilePictureUrl) => {
+  try {
+    const token = await getToken(); // Retrieve the token from storage
+    if (!token) {
+      throw new Error("Token is missing. Please log in again.");
+    }
+
+    const response = await instance.put(
+      `/ApplicationUser/update`,
+      { fullName, phoneNumber, profilePictureUrl },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    throw new Error(
+      error.response?.data?.title ||
+        "Failed to update user profile. Please try again."
+    );
+  }};
+
+export { getUserProfile, changePassword, updateUserProfile };

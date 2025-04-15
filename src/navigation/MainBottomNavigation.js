@@ -83,7 +83,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
 // Styles for the shadow effect (especially for iOS)
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: '#7F5DF0', // Shadow color (adjust as needed)
+    shadowColor: '#3C66B5', // Shadow color (adjust as needed)
     shadowOffset: {
       width: 0,
       height: 10,

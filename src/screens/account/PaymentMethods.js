@@ -12,67 +12,40 @@ import {
   TextInput,
   Modal,
   Animated,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
+import { createPaymentMethod } from "../../api/profile";
 
 const { width, height } = Dimensions.get("window");
 
-const banks = [
+const cardTypes = [
   {
     id: "1",
-    name: "Al Ahli Bank of Kuwait",
-    shortName: "ABK",
-    color: "#F7B500",
-    secondaryColor: "#003B7B",
+    name: "Visa",
+    color: "#1A1F71",
+    secondaryColor: "#F7B500",
   },
   {
     id: "2",
-    name: "Kuwait Finance House",
-    shortName: "KFH",
-    color: "#2B8F4C",
-    secondaryColor: "#1D5F33",
-  },
-  {
-    id: "3",
-    name: "National Bank of Kuwait",
-    shortName: "NBK",
-    color: "#003D7D",
-    secondaryColor: "#E31B23",
-  },
-  {
-    id: "4",
-    name: "Gulf Bank",
-    shortName: "GB",
-    color: "#E31837",
-    secondaryColor: "#BE0D2E",
-  },
-  {
-    id: "5",
-    name: "Burgan Bank",
-    shortName: "BB",
-    color: "#0066B3",
-    secondaryColor: "#FF6B00",
-  },
-  {
-    id: "6",
-    name: "Boubyan Bank",
-    shortName: "BOUB",
-    color: "#E31B23",
-    secondaryColor: "#BA0C1C",
+    name: "Mastercard",
+    color: "#CC0000",
+    secondaryColor: "#FF9900",
   },
 ];
 
 const PaymentMethods = () => {
   const navigation = useNavigation();
-  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedCardType, setSelectedCardType] = useState(null);
   const [cardNumber, setCardNumber] = useState("");
   const [cardHolder, setCardHolder] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
-  const [showBankModal, setShowBankModal] = useState(false);
+  const [isDefault, setIsDefault] = useState(false);
+  const [showCardTypeModal, setShowCardTypeModal] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
 
   const formatCardNumber = (text) => {
@@ -89,44 +62,96 @@ const PaymentMethods = () => {
     return cleaned;
   };
 
-  const handleSave = () => {
-    navigation.goBack();
+  const validateInputs = () => {
+    const cleanedCardNumber = cardNumber.replace(/\s/g, "");
+    if (cleanedCardNumber.length !== 16) {
+      Alert.alert("Invalid Card Number", "Card number must be 16 digits.");
+      return false;
+    }
+    if (!cardHolder.trim()) {
+      Alert.alert("Missing Information", "Please enter the cardholder name.");
+      return false;
+    }
+    if (!selectedCardType) {
+      Alert.alert("Missing Information", "Please select a card type.");
+      return false;
+    }
+    const [month, year] = expiryDate.split("/");
+    if (!month || !year || month > 12 || month < 1) {
+      Alert.alert("Invalid Expiry Date", "Please enter a valid expiry date (MM/YY).");
+      return false;
+    }
+    if (cvv.length !== 3) {
+      Alert.alert("Invalid CVV", "CVV must be 3 digits.");
+      return false;
+    }
+    return true;
   };
 
-  const renderBankOption = (bank) => (
+  const handleSave = async () => {
+    if (!validateInputs()) return;
+
+    const cleanedCardNumber = cardNumber.replace(/\s/g, "");
+    const [month, year] = expiryDate.split("/");
+    const lastFourDigits = cleanedCardNumber.slice(-4);
+    const expiryMonth = parseInt(month, 10);
+    const expiryYear = parseInt(`20${year}`, 10);
+
+    const paymentMethodData = {
+      token: cardHolder, // Cardholder name
+      lastFourDigits: lastFourDigits,
+      cardType: selectedCardType.name,
+      expiryMonth: expiryMonth,
+      expiryYear: expiryYear,
+      isDefault: isDefault,
+    };
+
+    try {
+      await createPaymentMethod(paymentMethodData);
+      Alert.alert("Success", "Payment method added successfully", [
+        {
+          text: "OK",
+          onPress: () => navigation.goBack(),
+        },
+      ]);
+    } catch (error) {
+      Alert.alert("Error", "Failed to add payment method. Please try again.", [
+        { text: "OK" },
+      ]);
+    }
+  };
+
+  const renderCardTypeOption = (cardType) => (
     <TouchableOpacity
-      key={bank.id}
+      key={cardType.id}
       style={[
-        styles.bankOption,
-        selectedBank?.id === bank.id && {
-          borderColor: bank.color,
-          backgroundColor: bank.color + "08",
+        styles.cardTypeOption,
+        selectedCardType?.id === cardType.id && {
+          borderColor: cardType.color,
+          backgroundColor: cardType.color + "08",
         },
       ]}
       onPress={() => {
-        setSelectedBank(bank);
-        setShowBankModal(false);
+        setSelectedCardType(cardType);
+        setShowCardTypeModal(false);
       }}
     >
       <LinearGradient
-        colors={[bank.color, bank.secondaryColor]}
-        style={styles.bankLogo}
+        colors={[cardType.color, cardType.secondaryColor]}
+        style={styles.cardTypeLogo}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <Text style={[styles.bankShortName, { color: "#fff" }]}>
-          {bank.shortName}
+        <Text style={[styles.cardTypeShortName, { color: "#fff" }]}>
+          {cardType.name}
         </Text>
       </LinearGradient>
-      <View style={styles.bankInfo}>
-        <Text style={styles.bankOptionName}>{bank.name}</Text>
-        <Text style={[styles.bankType, { color: bank.color }]}>
-          Debit/Credit Card
-        </Text>
+      <View style={styles.cardTypeInfo}>
+        <Text style={styles.cardTypeOptionName}>{cardType.name}</Text>
       </View>
-      {selectedBank?.id === bank.id && (
+      {selectedCardType?.id === cardType.id && (
         <View
-          style={[styles.checkmarkContainer, { backgroundColor: bank.color }]}
+          style={[styles.checkmarkContainer, { backgroundColor: cardType.color }]}
         >
           <Ionicons name="checkmark" size={16} color="#fff" />
         </View>
@@ -162,38 +187,38 @@ const PaymentMethods = () => {
       >
         <View style={styles.mainContent}>
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>SELECT BANK</Text>
+            <Text style={styles.sectionLabel}>CHOOSE CARD TYPE</Text>
             <TouchableOpacity
               style={[
-                styles.bankSelector,
-                selectedBank && { borderColor: selectedBank.color },
+                styles.cardTypeSelector,
+                selectedCardType && { borderColor: selectedCardType.color },
               ]}
-              onPress={() => setShowBankModal(true)}
+              onPress={() => setShowCardTypeModal(true)}
             >
-              <View style={styles.bankSelectorContent}>
-                {selectedBank ? (
-                  <View style={styles.selectedBankInfo}>
+              <View style={styles.cardTypeSelectorContent}>
+                {selectedCardType ? (
+                  <View style={styles.selectedCardTypeInfo}>
                     <LinearGradient
-                      colors={[selectedBank.color, selectedBank.secondaryColor]}
-                      style={styles.selectedBankLogo}
+                      colors={[selectedCardType.color, selectedCardType.secondaryColor]}
+                      style={styles.selectedCardTypeLogo}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                     >
-                      <Text style={[styles.bankShortName, { color: "#fff" }]}>
-                        {selectedBank.shortName}
+                      <Text style={[styles.cardTypeShortName, { color: "#fff" }]}>
+                        {selectedCardType.name}
                       </Text>
                     </LinearGradient>
-                    <Text style={styles.selectedBankName}>
-                      {selectedBank.name}
+                    <Text style={styles.selectedCardTypeName}>
+                      {selectedCardType.name}
                     </Text>
                   </View>
                 ) : (
-                  <Text style={styles.bankSelectorLabel}>Choose your bank</Text>
+                  <Text style={styles.cardTypeSelectorLabel}>Choose card type</Text>
                 )}
                 <Ionicons
                   name="chevron-down"
                   size={24}
-                  color={selectedBank?.color || "#26589c"}
+                  color={selectedCardType?.color || "#26589c"}
                 />
               </View>
             </TouchableOpacity>
@@ -210,7 +235,7 @@ const PaymentMethods = () => {
                     focusedInput === "cardNumber" &&
                       styles.inputContainerFocused,
                     focusedInput === "cardNumber" &&
-                      selectedBank && { borderColor: selectedBank.color },
+                      selectedCardType && { borderColor: selectedCardType.color },
                   ]}
                 >
                   <Ionicons
@@ -235,14 +260,14 @@ const PaymentMethods = () => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Card Holder Name</Text>
+                <Text style={styles.label}>Cardholder Name</Text>
                 <View
                   style={[
                     styles.inputContainer,
                     focusedInput === "cardHolder" &&
                       styles.inputContainerFocused,
                     focusedInput === "cardHolder" &&
-                      selectedBank && { borderColor: selectedBank.color },
+                      selectedCardType && { borderColor: selectedCardType.color },
                   ]}
                 >
                   <Ionicons
@@ -253,7 +278,7 @@ const PaymentMethods = () => {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="JOHN DOE"
+                    placeholder="Name"
                     value={cardHolder}
                     onChangeText={setCardHolder}
                     autoCapitalize="characters"
@@ -272,7 +297,7 @@ const PaymentMethods = () => {
                       focusedInput === "expiryDate" &&
                         styles.inputContainerFocused,
                       focusedInput === "expiryDate" &&
-                        selectedBank && { borderColor: selectedBank.color },
+                        selectedCardType && { borderColor: selectedCardType.color },
                     ]}
                   >
                     <Ionicons
@@ -302,7 +327,7 @@ const PaymentMethods = () => {
                       styles.inputContainer,
                       focusedInput === "cvv" && styles.inputContainerFocused,
                       focusedInput === "cvv" &&
-                        selectedBank && { borderColor: selectedBank.color },
+                        selectedCardType && { borderColor: selectedCardType.color },
                     ]}
                   >
                     <Ionicons
@@ -325,6 +350,20 @@ const PaymentMethods = () => {
                   </View>
                 </View>
               </View>
+
+              {/* Checkbox for isDefault */}
+              <TouchableOpacity
+                style={styles.checkboxContainer}
+                onPress={() => setIsDefault(!isDefault)}
+              >
+                <Ionicons
+                  name={isDefault ? "checkbox-outline" : "square-outline"}
+                  size={24}
+                  color="#26589c"
+                  style={styles.checkboxIcon}
+                />
+                <Text style={styles.checkboxLabel}>Set as Default Payment Method</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -332,14 +371,14 @@ const PaymentMethods = () => {
         <TouchableOpacity
           style={[
             styles.saveButton,
-            { backgroundColor: selectedBank?.color || "#26589c" },
+            { backgroundColor: selectedCardType?.color || "#26589c" },
           ]}
           onPress={handleSave}
         >
           <LinearGradient
             colors={[
-              selectedBank?.color || "#26589c",
-              (selectedBank?.color || "#26589c") + "CC",
+              selectedCardType?.color || "#26589c",
+              (selectedCardType?.color || "#26589c") + "CC",
             ]}
             style={styles.saveButtonGradient}
             start={{ x: 0, y: 0 }}
@@ -354,27 +393,27 @@ const PaymentMethods = () => {
       </ScrollView>
 
       <Modal
-        visible={showBankModal}
+        visible={showCardTypeModal}
         transparent
         animationType="fade"
-        onRequestClose={() => setShowBankModal(false)}
+        onRequestClose={() => setShowCardTypeModal(false)}
       >
         <BlurView intensity={20} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Your Bank</Text>
+              <Text style={styles.modalTitle}>Select Card Type</Text>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => setShowBankModal(false)}
+                onPress={() => setShowCardTypeModal(false)}
               >
                 <Ionicons name="close" size={24} color="#666" />
               </TouchableOpacity>
             </View>
             <ScrollView
-              style={styles.bankList}
+              style={styles.cardTypeList}
               showsVerticalScrollIndicator={false}
             >
-              {banks.map(renderBankOption)}
+              {cardTypes.map(renderCardTypeOption)}
             </ScrollView>
           </View>
         </BlurView>
@@ -446,24 +485,24 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     letterSpacing: 1,
   },
-  bankSelector: {
+  cardTypeSelector: {
     backgroundColor: "#fff",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(38,88,156,0.1)",
     overflow: "hidden",
   },
-  bankSelectorContent: {
+  cardTypeSelectorContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
   },
-  selectedBankInfo: {
+  selectedCardTypeInfo: {
     flexDirection: "row",
     alignItems: "center",
   },
-  selectedBankLogo: {
+  selectedCardTypeLogo: {
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -482,12 +521,12 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  selectedBankName: {
+  selectedCardTypeName: {
     fontSize: 16,
     color: "#333",
     fontWeight: "500",
   },
-  bankSelectorLabel: {
+  cardTypeSelectorLabel: {
     fontSize: 16,
     color: "#666",
   },
@@ -525,10 +564,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  bankList: {
+  cardTypeList: {
     padding: 16,
   },
-  bankOption: {
+  cardTypeOption: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
@@ -538,7 +577,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.1)",
   },
-  bankLogo: {
+  cardTypeLogo: {
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -557,23 +596,19 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  bankInfo: {
+  cardTypeInfo: {
     flex: 1,
   },
-  bankShortName: {
+  cardTypeShortName: {
     fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
   },
-  bankOptionName: {
+  cardTypeOptionName: {
     fontSize: 16,
     color: "#333",
     fontWeight: "500",
     marginBottom: 4,
-  },
-  bankType: {
-    fontSize: 13,
-    fontWeight: "500",
   },
   checkmarkContainer: {
     width: 24,
@@ -621,6 +656,19 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     gap: 12,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  checkboxIcon: {
+    marginRight: 8,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#26589c",
   },
   saveButton: {
     marginTop: 24,

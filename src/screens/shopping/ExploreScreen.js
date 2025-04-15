@@ -17,6 +17,7 @@ import ProductList from "../../components/ExploreComponents/ProductList";
 import { useNavigation } from "@react-navigation/native";
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
@@ -32,6 +33,16 @@ const ExploreScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => 
+            navigation.navigate("MyCartScreen")
+          }
+        >
+          <Ionicons name="cart-outline" size={24} color="#2E3192" />
+        </TouchableOpacity>
+      </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.instructionsContainer}>
           <InstructionsCard />
@@ -42,8 +53,7 @@ const ExploreScreen = () => {
         </View>
 
         <View>
-          <CategoryList onSelectCategory={setSelectedCategoryId} />{" "}
-          {/* ✅ Step 2 */}
+          <CategoryList onSelectCategory={setSelectedCategoryId} />
         </View>
 
         <View>
@@ -118,6 +128,19 @@ export default ExploreScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  cartButton: {
+    padding: 8,
   },
   scrollContent: {
     flexGrow: 1,

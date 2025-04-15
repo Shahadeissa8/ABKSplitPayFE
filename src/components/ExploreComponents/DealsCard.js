@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   scrollContainer: {
-    flexDirection: "row", // Ensures horizontal scrolling
-    padding: 10, // Optional: Add some padding around the scrollview for spacing
+    flexDirection: "row", 
+    padding: 10, 
   },
   gradientBackground: {
-    flex: 1, // Ensure the gradient takes up the entire container
-    borderRadius: 18, // Make sure the gradient has rounded corners
+    flex: 1, 
+    borderRadius: 18,
   },
   imageContainer: {
     height: 100,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     fontFamily: "Lato",
     fontSize: 25,
     fontWeight: "600",
-    color: "#fff", // Change text color to white for better contrast against gradient
+    color: "#fff",
     marginBottom: 4,
   },
   price: {
@@ -143,6 +143,6 @@ const styles = StyleSheet.create({
     fontFamily: "Lato",
     fontSize: 13,
     fontWeight: "700",
-    color: "#fff", // Change text color to white for better contrast against gradient
+    color: "#fff", 
   },
 });

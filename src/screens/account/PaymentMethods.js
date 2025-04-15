@@ -111,8 +111,7 @@ const PaymentMethods = () => {
       Alert.alert("Success", "Payment method added successfully", [
         {
           text: "OK",
-          onPress: () => navigation.goBack(),
-        },
+          onPress: () => navigation.navigate("PaymentMethods", { refresh: Date.now() }),        },
       ]);
     } catch (error) {
       Alert.alert("Error", "Failed to add payment method. Please try again.", [

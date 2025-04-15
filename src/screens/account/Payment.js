@@ -25,24 +25,24 @@ const savedCards = [
     secondaryColor: "#003B7B",
     isDefault: true,
   },
-  {
-    id: "2",
-    bank: "KFH",
-    cardType: "Mastercard",
-    lastFourDigits: "7823",
-    expiryDate: "08/24",
-    color: "#2B8F4C",
-    secondaryColor: "#1D5F33",
-  },
-  {
-    id: "3",
-    bank: "NBK",
-    cardType: "Visa",
-    lastFourDigits: "4582",
-    expiryDate: "05/25",
-    color: "#003D7D",
-    secondaryColor: "#E31B23",
-  },
+  // {
+  //   id: "2",
+  //   bank: "KFH",
+  //   cardType: "Mastercard",
+  //   lastFourDigits: "7823",
+  //   expiryDate: "08/24",
+  //   color: "#2B8F4C",
+  //   secondaryColor: "#1D5F33",
+  // },
+  // {
+  //   id: "3",
+  //   bank: "NBK",
+  //   cardType: "Visa",
+  //   lastFourDigits: "4582",
+  //   expiryDate: "05/25",
+  //   color: "#003D7D",
+  //   secondaryColor: "#E31B23",
+  // },
 ];
 
 const Payment = () => {

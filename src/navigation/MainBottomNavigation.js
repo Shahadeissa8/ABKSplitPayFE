@@ -1,4 +1,5 @@
 import React from "react";
+import { Platform, StyleSheet } from 'react-native'; // Import Platform and StyleSheet
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ShoppingNavigation from "./ShoppingNavigation";
 import InstallmentNavigation from "./InstallmentNavigation";
@@ -14,8 +15,21 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "red",
-        tabBarInactiveTintColor: "gray",
+        tabBarActiveTintColor: "red", // Active icon color
+        tabBarInactiveTintColor: "gray", // Inactive icon color
+        tabBarShowLabel: true, // Set to false if you DON'T want labels like in the image
+        tabBarStyle: {
+          position: 'absolute', // Make the tab bar float
+          bottom: 25, // Distance from the bottom edge (adjust as needed)
+          left: 20,   // Distance from the left edge (adjust as needed)
+          right: 20,  // Distance from the right edge (adjust as needed)
+          elevation: 5, // Shadow for Android
+          backgroundColor: '#ffffff', // Background color of the tab bar (change as needed)
+          borderRadius: 30, // Rounded corners (adjust as needed)
+          height: 70, // Height of the tab bar (adjust as needed)
+          ...styles.shadow, // Apply shadow styles for iOS
+          borderTopWidth: 0, // Remove the default top border
+        },
       }}
     >
       <Tab.Screen
@@ -47,21 +61,37 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
       />
       <Tab.Screen
         name="Account"
-        children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />} // Pass setIsAuthenticated to AccountNavigation
+        // Use component prop directly if AccountNavigation doesn't need setIsAuthenticated
+        // component={AccountNavigation}
+        // If it needs props, use children like you did:
+        children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-outline"
               size={24}
               color={color}
-              headerShown ={false}
-              
             />
           ),
+          // Note: headerShown is usually set in screenOptions, not here
         }}
       />
     </Tab.Navigator>
   );
 };
+
+// Styles for the shadow effect (especially for iOS)
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#3C66B5', // Shadow color (adjust as needed)
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    // elevation: 5 // Already set inline for Android
+  }
+});
 
 export default MainBottomNavigation;

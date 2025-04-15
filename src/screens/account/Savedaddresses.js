@@ -11,12 +11,10 @@ import {
   Platform,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-
-const ADDRESSES_STORAGE_KEY = "@saved_addresses";
-
+import { getSavedAddresses } from "../../api/profile";
+import { deleteAddress } from "../../api/profile"; 
 const Savedaddresses = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -25,35 +23,21 @@ const Savedaddresses = () => {
 
   useEffect(() => {
     loadSavedAddresses();
-  }, [route.params?.refresh]); // Reload when refresh parameter changes
+  }, [route.params?.refresh]); 
 
   const loadSavedAddresses = async () => {
     try {
-      const savedAddressesJson = await AsyncStorage.getItem(
-        ADDRESSES_STORAGE_KEY
-      );
-      if (savedAddressesJson) {
-        const savedAddresses = JSON.parse(savedAddressesJson);
-        setAddresses(savedAddresses);
-        // Set default address
-        const defaultAddress = savedAddresses.find((addr) => addr.isDefault);
-        if (defaultAddress) {
-          setDefaultAddressId(defaultAddress.id);
-        }
+      const savedAddresses = await getSavedAddresses();
+      setAddresses(savedAddresses);
+      // Set default address
+      const defaultAddress = savedAddresses.find((addr) => addr.isDefault);
+      if (defaultAddress) {
+        setDefaultAddressId(defaultAddress.id);
       }
     } catch (error) {
-      console.error("Error loading addresses:", error);
-    }
-  };
-
-  const saveAddresses = async (updatedAddresses) => {
-    try {
-      await AsyncStorage.setItem(
-        ADDRESSES_STORAGE_KEY,
-        JSON.stringify(updatedAddresses)
-      );
-    } catch (error) {
-      console.error("Error saving addresses:", error);
+      Alert.alert("Error", "Failed to load addresses. Please try again.", [
+        { text: "OK" },
+      ]);
     }
   };
 
@@ -68,14 +52,23 @@ const Savedaddresses = () => {
         },
         {
           text: "Set Default",
-          onPress: () => {
-            const updatedAddresses = addresses.map((addr) => ({
-              ...addr,
-              isDefault: addr.id === address.id,
-            }));
-            setAddresses(updatedAddresses);
-            setDefaultAddressId(address.id);
-            saveAddresses(updatedAddresses);
+          onPress: async () => {
+            try {
+              // TODO: Make API call to update the default address
+              // For example: await updateDefaultAddress(address.id);
+              const updatedAddresses = addresses.map((addr) => ({
+                ...addr,
+                isDefault: addr.id === address.id,
+              }));
+              setAddresses(updatedAddresses);
+              setDefaultAddressId(address.id);
+            } catch (error) {
+              Alert.alert(
+                "Error",
+                "Failed to set default address. Please try again.",
+                [{ text: "OK" }]
+              );
+            }
           },
         },
       ]
@@ -83,6 +76,12 @@ const Savedaddresses = () => {
   };
 
   const handleDeleteAddress = (address) => {
+    if (!address || !address.addressId) {
+      console.error("Invalid address object:", address); // Log if address or addressId is missing
+      Alert.alert("Error", "Invalid address. Please try again.");
+      return;
+    }
+  
     Alert.alert(
       "Delete Address",
       "Are you sure you want to delete this address?",
@@ -94,20 +93,28 @@ const Savedaddresses = () => {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => {
-            const updatedAddresses = addresses.filter(
-              (addr) => addr.id !== address.id
-            );
-            setAddresses(updatedAddresses);
-            if (
-              address.id === defaultAddressId &&
-              updatedAddresses.length > 0
-            ) {
-              const newDefault = updatedAddresses[0];
-              newDefault.isDefault = true;
-              setDefaultAddressId(newDefault.id);
+          onPress: async () => {
+            try {
+              console.log("Deleting address with ID:", address.addressId); // Log the addressId
+              await deleteAddress(address.addressId); // Call the deleteAddress API with addressId
+  
+              // Remove the address from the local state
+              const updatedAddresses = addresses.filter(
+                (addr) => addr.addressId !== address.addressId
+              );
+              setAddresses(updatedAddresses);
+  
+              Alert.alert("Success", "Address deleted successfully.", [
+                { text: "OK" },
+              ]);
+            } catch (error) {
+              console.error("Error deleting address:", error.message);
+              Alert.alert(
+                "Error",
+                error.message || "Failed to delete address. Please try again.",
+                [{ text: "OK" }]
+              );
             }
-            saveAddresses(updatedAddresses);
           },
         },
       ]
@@ -133,7 +140,7 @@ const Savedaddresses = () => {
         <Text style={styles.headerTitle}>Saved Addresses</Text>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => navigation.navigate("Addlocation")}
+          onPress={() => navigation.navigate("Addlocation")} // Navigate to AddAddress screen
         >
           <Ionicons name="add" size={24} color="#fff" />
         </TouchableOpacity>
@@ -154,7 +161,9 @@ const Savedaddresses = () => {
               <View style={styles.addressHeader}>
                 <View style={styles.addressTitleContainer}>
                   <Ionicons name="location" size={24} color="#26589c" />
-                  <Text style={styles.addressTitle}>{address.title}</Text>
+                  <Text style={styles.addressTitle}>
+                    {address.fullName}'s Address
+                  </Text>
                   {address.isDefault && (
                     <View style={styles.defaultBadge}>
                       <Text style={styles.defaultText}>Default</Text>
@@ -167,19 +176,31 @@ const Savedaddresses = () => {
                       onPress={() => handleSetDefaultAddress(address)}
                       style={styles.actionButton}
                     >
-                      <Ionicons name="star-outline" size={20} color="#26589c" />
+                      <Ionicons
+                        name="star-outline"
+                        size={20}
+                        color="#26589c"
+                      />
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity
                     onPress={() => handleDeleteAddress(address)}
                     style={[styles.actionButton, styles.deleteButton]}
                   >
-                    <Ionicons name="trash-outline" size={20} color="#ff4444" />
+                    <Ionicons
+                      name="trash-outline"
+                      size={20}
+                      color="#ff4444"
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
               <Text style={[styles.addressDetails, { textAlign: "left" }]}>
-                {address.details}
+                {`${address.addressLine1}${
+                  address.addressLine2 ? `, ${address.addressLine2}` : ""
+                }, ${address.city}, ${address.state}, ${address.postalCode}, ${
+                  address.country
+                }`}
               </Text>
             </View>
           ))

@@ -18,12 +18,14 @@ import { useNavigation } from "@react-navigation/native";
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useCart } from "../../context/CartContext";
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // 👈 Step 1
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const { addToCart } = useCart();
 
   const handleProductPress = (product) => {
     console.log("Pressed product:", product.name); // 👀 Debug log
@@ -36,9 +38,7 @@ const ExploreScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.cartButton}
-          onPress={() => 
-            navigation.navigate("MyCartScreen")
-          }
+          onPress={() => navigation.navigate("MyCartScreen")}
         >
           <Ionicons name="cart-outline" size={24} color="#2E3192" />
         </TouchableOpacity>
@@ -85,7 +85,13 @@ const ExploreScreen = () => {
                 resizeMode="cover"
               />
               <View style={modalStyles.ButtonGradient}>
-                <TouchableOpacity onPress={() => {}}>
+                {/* <TouchableOpacity onPress={() => {}}> */}
+                <TouchableOpacity
+                  onPress={() => {
+                    addToCart(selectedProduct);
+                    setModalVisible(false);
+                  }}
+                >
                   <LinearGradient
                     colors={["#26589c", "#9cb2d8"]}
                     start={{ x: 0, y: 0 }}

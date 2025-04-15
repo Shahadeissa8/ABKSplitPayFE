@@ -6,6 +6,7 @@ import AuthNavigation from "./src/navigation/AuthNavigation";
 import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
 import { getToken } from "./src/api/storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CartProvider } from "./src/context/CartContext";
 
 const Stack = createStackNavigator();
 const queryClient = new QueryClient();
@@ -40,27 +41,31 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {isAuthenticated ? (
-            <Stack.Screen
-              name="MainBottomNavigation"
-              children={() => (
-                <MainBottomNavigation setIsAuthenticated={setIsAuthenticated} />
-              )}
-            />
-          ) : (
-            <Stack.Screen
-              name="AuthNavigation"
-              children={() => (
-                <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
-              )}
-            />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </QueryClientProvider>
+    <CartProvider>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {isAuthenticated ? (
+              <Stack.Screen
+                name="MainBottomNavigation"
+                children={() => (
+                  <MainBottomNavigation
+                    setIsAuthenticated={setIsAuthenticated}
+                  />
+                )}
+              />
+            ) : (
+              <Stack.Screen
+                name="AuthNavigation"
+                children={() => (
+                  <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
+                )}
+              />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </QueryClientProvider>
+    </CartProvider>
   );
 }
 

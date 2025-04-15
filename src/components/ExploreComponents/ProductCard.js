@@ -14,7 +14,7 @@ const ProductCard = ({ name, price, image, onPress }) => {
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.8}
-      onPress={onPress} // 👈 use the passed-down onPress handler
+      onPress={onPress} 
     >
       <LinearGradient
         colors={["#26589c", "#9cb2d8"]}

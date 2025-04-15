@@ -1,12 +1,12 @@
 import React from "react";
 import { Platform, StyleSheet } from 'react-native'; // Import Platform and StyleSheet
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ExploreScreen from "../screens/shopping/ExploreScreen"; // Assuming this path is correct
-import ShoppingNavigation from "./ShoppingNavigation"; // Assuming this path is correct
-import InstallmentNavigation from "./InstallmentNavigation"; // Assuming this path is correct
-import AccountNavigation from "./AccountNavigation"; // Assuming this path is correct
+import ShoppingNavigation from "./ShoppingNavigation";
+import InstallmentNavigation from "./InstallmentNavigation";
+import AccountNavigation from "./AccountNavigation"; // Import AccountNavigation
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import ExploreNavigation from "./ExploreNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
     >
       <Tab.Screen
         name="Explore"
-        component={ExploreScreen}
+        component={ExploreNavigation}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="compass-outline" size={24} color={color} />

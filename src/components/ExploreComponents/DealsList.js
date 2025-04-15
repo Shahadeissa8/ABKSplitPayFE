@@ -6,7 +6,7 @@ const DealsList = () => {
   return (
     <View>
       <Text style={styles.Text}>Deals</Text>
-      <DealsCard />
+      <DealsCard /> 
     </View>
   );
 };

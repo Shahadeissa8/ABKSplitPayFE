@@ -1,76 +1,3 @@
-// import {
-//   StyleSheet,
-//   Text,
-//   View,
-//   ScrollView,
-//   SafeAreaView,
-//   StatusBar,
-//   Platform,
-// } from "react-native";
-// import React, { useState } from "react";
-// import CategoryList from "../../components/ExploreComponents/CategoryList";
-// import InstructionsCard from "../../components/ExploreComponents/InstructionsCard";
-// import DealsList from "../../components/ExploreComponents/DealsList";
-// import ProductList from "../../components/ExploreComponents/ProductList";
-// import { useNavigation } from "@react-navigation/native";
-
-// const ExploreScreen = () => {
-//   const navigation = useNavigation();
-//   const [selectedCategoryId, setSelectedCategoryId] = useState(null); // 👈 Step 1
-//   const [modalVisible, setModalVisible] = useState(false);
-//   const [selectedProduct, setSelectedProduct] = useState(null);
-
-//   const handleProductPress = (product) => {
-//     setSelectedProduct(product); // product object from backend
-//     setModalVisible(true);
-//   };
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
-//       <ScrollView contentContainerStyle={styles.scrollContent}>
-//         <View style={styles.instructionsContainer}>
-//           <InstructionsCard />
-//         </View>
-
-//         <View style={styles.contentContainer}>
-//           <DealsList />
-//         </View>
-
-//         <View>
-//           <CategoryList onSelectCategory={setSelectedCategoryId} />{" "}
-//           {/* ✅ Step 2 */}
-//         </View>
-
-//         <View>
-//           <ProductList
-//             selectedCategoryId={selectedCategoryId} // ✅ Step 3
-//             onPress={(productId) =>
-//               navigation.navigate("ProductDetailsScreen", { productId })
-//             }
-//           />
-//         </View>
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// };
-
-// export default ExploreScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   scrollContent: {
-//     flexGrow: 1,
-//   },
-//   instructionsContainer: {
-//     paddingHorizontal: 15,
-//   },
-//   contentContainer: {
-//     flex: 1,
-//     marginTop: 30,
-//   },
-// });
 import {
   StyleSheet,
   Text,
@@ -88,6 +15,8 @@ import InstructionsCard from "../../components/ExploreComponents/InstructionsCar
 import DealsList from "../../components/ExploreComponents/DealsList";
 import ProductList from "../../components/ExploreComponents/ProductList";
 import { useNavigation } from "@react-navigation/native";
+import Feather from "@expo/vector-icons/Feather";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
@@ -140,23 +69,39 @@ const ExploreScreen = () => {
               <Text style={modalStyles.price}>
                 Price: {selectedProduct.price} KD
               </Text>
-              {/* <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(false);
-                  navigation.navigate("ProductDetailsScreen", {
-                    productId: selectedProduct.productId,
-                  });
-                }}
-              >
-                <Text style={{ color: "blue", marginTop: 20 }}>
-                  View Details
-                </Text>
-              </TouchableOpacity> */}
               <Image
                 source={{ uri: selectedProduct.pictureUrl }}
                 style={modalStyles.image}
                 resizeMode="cover"
               />
+              <View style={modalStyles.ButtonGradient}>
+                <TouchableOpacity onPress={() => {}}>
+                  <LinearGradient
+                    colors={["#26589c", "#9cb2d8"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={modalStyles.addToCartButton} // Apply radius here
+                  >
+                    <Text style={modalStyles.addToCartText}>
+                      <Feather name="shopping-cart" size={20} color="white" />{" "}
+                      Add to cart
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => {}}>
+                  <LinearGradient
+                    colors={["#26589c", "#9cb2d8"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={modalStyles.wishlistButton} // Apply radius here
+                  >
+                    <Text style={modalStyles.addToCartText}>
+                      <Feather name="heart" size={24} color="white" />
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Text style={modalStyles.closeText}>Close</Text>
               </TouchableOpacity>
@@ -236,5 +181,36 @@ const modalStyles = StyleSheet.create({
     alignItems: "center",
     fontWeight: "600",
     fontSize: 18,
+  },
+  ButtonGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    gap: 8,
+    borderRadius: 10,
+    padding: 12,
+  },
+  addToCartButton: {
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 65,
+    marginTop: 15,
+  },
+  wishlistButton: {
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    marginTop: 15,
+  },
+  addToCartText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

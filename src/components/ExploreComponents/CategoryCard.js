@@ -8,7 +8,7 @@ const CategoryCard = ({ name, gradient, onPress }) => {
     <TouchableOpacity
       style={styles.cardContainer}
       activeOpacity={0.8}
-      onPress={onPress} // 👈 Easy update
+      onPress={onPress} 
     >
       <View style={styles.card}>
         <LinearGradient colors={gradient} style={styles.gradientBackground}>
@@ -22,8 +22,8 @@ const CategoryCard = ({ name, gradient, onPress }) => {
 export default CategoryCard;
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 200,
-    marginHorizontal: 5,
+    // width: 200,
+    marginHorizontal: 2,
     marhginleft: 9,
   },
   card: {
@@ -62,5 +62,26 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
     textAlign: "center",
+  },
+   statItem: {
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 20,
+    minWidth: 100,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.9)",
+    marginTop: 5,
   },
 });

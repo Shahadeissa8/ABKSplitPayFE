@@ -9,35 +9,6 @@ import {
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-
-// const ProductCard = ({ productId, name, price, image }) => {
-//   const navigation = useNavigation();
-
-//   return (
-//     <TouchableOpacity
-//       style={styles.card}
-//       activeOpacity={0.8}
-//       onPress={() => navigation.navigate("ProductDetailsScreen", { productId })}
-//     >
-//       <LinearGradient
-//         colors={["#26589c", "#9cb2d8"]}
-//         style={styles.gradientBackground}
-//       >
-//         <View style={styles.imageContainer}>
-//           <Image
-//             source={{ uri: image }}
-//             style={styles.image}
-//             resizeMode="cover"
-//           />
-//         </View>
-//         <View style={styles.infoContainer}>
-//           <Text style={styles.name}>{name}</Text>
-//           <Text style={styles.price}>Price: {price} KD</Text>
-//         </View>
-//       </LinearGradient>
-//     </TouchableOpacity>
-//   );
-// };
 const ProductCard = ({ name, price, image, onPress }) => {
   return (
     <TouchableOpacity
@@ -51,7 +22,7 @@ const ProductCard = ({ name, price, image, onPress }) => {
       >
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: image }}
+            source={{ uri: image  }}
             style={styles.image}
             resizeMode="cover"
           />
@@ -72,20 +43,24 @@ const styles = StyleSheet.create({
     width: "48%",
     marginVertical: 8,
     borderRadius: 15,
-    overflow: "hidden",
-    elevation: 4,
+    // overflow: "hidden",
+    // elevation: 4,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
   },
   gradientBackground: {
-    padding: 10,
+    paddingBottom: 10,
     borderRadius: 15,
   },
-  imageContainer: {
-    alignItems: "center",
-  },
+  // imageContainer: {
+  //   alignItems: "center",
+  // },
   image: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
+    width: "100%",
+    height: 150,
+    // borderRadius: 10,
+    resizeMode: "contain",
   },
   infoContainer: {
     marginTop: 10,

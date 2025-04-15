@@ -127,7 +127,8 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         userData: {
           fullName: userProfile?.fullName || "",
           phoneNumber: userProfile?.phoneNumber || "",
-          profilePicture: userProfile?.profilePictureUrl || defaultProfilePicture,
+          profilePicture:
+            userProfile?.profilePictureUrl || defaultProfilePicture,
         },
         onSuccess: () => {
           fetchUserProfile(); // Fetch updated user profile after editing

@@ -380,6 +380,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 8,
   },
   backButton: {
     width: 40,
@@ -404,12 +405,14 @@ const styles = StyleSheet.create({
   },
   profilePictureContainer: {
     alignItems: "center",
-    marginTop: -30,
-    marginBottom: 20,
+    // marginTop: -30,
+    marginTop: 10,
+    marginBottom: 10,
   },
   profilePictureBorder: {
     padding: 4,
     borderRadius: 75,
+
     ...Platform.select({
       ios: {
         shadowColor: "#26589c",
@@ -427,6 +430,7 @@ const styles = StyleSheet.create({
     borderRadius: 71,
     backgroundColor: "#fff",
     overflow: "hidden",
+
   },
   profilePicture: {
     width: 130,
@@ -456,6 +460,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 25,
+
   },
   editPictureText: {
     color: "#fff",
@@ -487,6 +492,7 @@ const styles = StyleSheet.create({
       },
     }),
     paddingHorizontal: 16,
+    
     borderWidth: 1,
     borderColor: "rgba(38, 88, 156, 0.1)",
   },
@@ -552,6 +558,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+   
   },
   saveButtonText: {
     color: "#fff",
@@ -604,3 +611,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+
+
+

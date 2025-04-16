@@ -3,6 +3,8 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ExploreScreen from "../screens/shopping/ExploreScreen";
 import MyCartScreen from "../screens/checkOut/MyCartScreen";
+import CheckoutScreen from "../screens/checkOut/CheckoutScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +18,7 @@ const ExploreNavigation = () => {
     >
       <Stack.Screen name="ExploreScreen" component={ExploreScreen} />
       <Stack.Screen name="MyCartScreen" component={MyCartScreen} />
+      <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
     </Stack.Navigator>
   );
 };

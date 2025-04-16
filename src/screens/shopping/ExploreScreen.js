@@ -39,6 +39,9 @@ const ExploreScreen = () => {
         <TouchableOpacity
           style={styles.cartButton}
           onPress={() => navigation.navigate("MyCartScreen")}
+
+          //cart stayle 
+          
         >
           <Ionicons name="cart-outline" size={24} color="#2E3192" />
         </TouchableOpacity>

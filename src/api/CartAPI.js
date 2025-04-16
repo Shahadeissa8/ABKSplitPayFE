@@ -1,4 +1,5 @@
 import instance from "./index";
+import { getToken } from "./storage"; // Import setToken function
 
 const getItem = async () => {
   const response = await instance.get("/CartItem");
@@ -51,4 +52,30 @@ const addToCart = async (productId, quantityToAdd = 1) => {
     return await createItem(newItem);
   }
 };
-export { getItem, getItemById, createItem, updateItem, deleteItem, addToCart};
+
+const addToWishList = async (data) => {
+  try {
+    const token = await getToken(); // Retrieve the token
+    const response = await instance.post("/WishList", data, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the token
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error in addToWishList:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+const getWishList = async () => {
+  const response = await instance.get("/WishList");
+  return response.data;
+}
+
+
+const deleteWishListItem = async (id) => {
+  const response = await instance.delete(`/WishList/${id}`);
+  return response.data;
+};
+export { deleteWishListItem,getWishList,addToWishList,getItem, getItemById, createItem, updateItem, deleteItem, addToCart};

@@ -44,9 +44,8 @@ export default function App() {
     <CartProvider>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false, 
-    backgroundColor: "#f8f9fa",}}>
-            {/* {isAuthenticated ? ( */}
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {isAuthenticated ? (
               <Stack.Screen
                 name="MainBottomNavigation"
                 children={() => (
@@ -55,15 +54,14 @@ export default function App() {
                   />
                 )}
               />
-            {/* )  */}
-            {/* : (
+            ) : (
               <Stack.Screen
                 name="AuthNavigation"
                 children={() => (
                   <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
                 )}
               />
-            )} */}
+            )}
           </Stack.Navigator>
         </NavigationContainer>
       </QueryClientProvider>

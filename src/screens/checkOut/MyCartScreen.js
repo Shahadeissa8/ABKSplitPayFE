@@ -12,9 +12,36 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
 
+
+const colors = {
+  primary: "#2E3192",
+  secondary: "#26589c",
+  background: "#FFFFFF",
+  backgroundLight: "#F5F5F5",
+  textPrimary: "#333333",
+  textSecondary: "#666666",
+  border: "#EEEEEE",
+  white: "#FFFFFF",
+  error: "#FF4444",
+  gradientPrimary: ["#26589c", "#9cb2d8"],
+};
+
 const MyCartScreen = () => {
   const navigation = useNavigation();
   const { cartItems, removeFromCart, updateQuantity } = useCart();
+
+  const calculateTotal = () => {
+    return cartItems
+      .reduce(
+        (total, item) => total + parseFloat(item.price) * item.quantity,
+        0
+      )
+      .toFixed(2);
+  };
+
+  const handleCheckout = () => {
+    navigation.navigate("CheckoutScreen");
+  };
 
   const renderProductItem = ({ item }) => (
     <View style={styles.productItem}>
@@ -24,6 +51,7 @@ const MyCartScreen = () => {
         resizeMode="cover"
       />
       <View style={styles.productInfo}>
+
         <Text style={styles.productName}>{item.product.name}</Text>
         <Text style={styles.productPrice}>{item.product.price} KD</Text>
         <View style={styles.quantityContainer}>
@@ -31,14 +59,14 @@ const MyCartScreen = () => {
             style={styles.quantityButton}
             onPress={() => updateQuantity(item.productId, -1)}
           >
-            <Ionicons name="remove" size={20} color="#2E3192" />
+            <Ionicons name="remove" size={20} color={colors.primary} />
           </TouchableOpacity>
           <Text style={styles.quantityText}>{item.quantity}</Text>
           <TouchableOpacity
             style={styles.quantityButton}
             onPress={() => updateQuantity(item.productId, 1)}
           >
-            <Ionicons name="add" size={20} color="#2E3192" />
+            <Ionicons name="add" size={20} color={colors.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -46,16 +74,18 @@ const MyCartScreen = () => {
         style={styles.deleteButton}
         onPress={() => removeFromCart(item.productId)}
       >
-        <Ionicons name="trash-outline" size={24} color="#ff4444" />
+        <Ionicons name="trash-outline" size={24} color={colors.error} />
       </TouchableOpacity>
     </View>
   );
+
 
   const calculateTotal = () => {
     return cartItems
       .reduce((total, item) => total + item.product.price * item.quantity, 0)
       .toFixed(2);
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,7 +94,7 @@ const MyCartScreen = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={24} color="#2E3192" />
+          <Ionicons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Shopping Cart</Text>
       </View>
@@ -73,6 +103,7 @@ const MyCartScreen = () => {
           <FlatList
             data={cartItems}
             renderItem={renderProductItem}
+
             keyExtractor={(item) => item.cartItemId.toString()}
             contentContainerStyle={styles.productList}
           />
@@ -81,12 +112,19 @@ const MyCartScreen = () => {
               <Text style={styles.totalLabel}>Total:</Text>
               <Text style={styles.totalPrice}>{calculateTotal()} KD</Text>
             </View>
-            <TouchableOpacity style={styles.checkoutButton}>
+            <TouchableOpacity
+              style={[
+                styles.checkoutButton,
+                { backgroundColor: colors.primary },
+              ]}
+              onPress={handleCheckout}
+            >
               <Text style={styles.checkoutButtonText}>Checkout</Text>
             </TouchableOpacity>
           </View>
         </>
       ) : (
+
         <View style={styles.emptyCartContainer}>
           <Ionicons name="cart-outline" size={80} color="#2E3192" />
           <Text style={styles.emptyText}>Your Cart is Empty</Text>
@@ -97,17 +135,16 @@ const MyCartScreen = () => {
             <Text style={styles.continueButtonText}>Continue Shopping</Text>
           </TouchableOpacity>
         </View>
+
       )}
     </SafeAreaView>
   );
 };
 
-export default MyCartScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: "row",
@@ -115,7 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: colors.border,
   },
   backButton: {
     padding: 8,
@@ -123,7 +160,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#2E3192",
+    color: colors.primary,
     marginLeft: 10,
   },
   productList: {
@@ -131,18 +168,10 @@ const styles = StyleSheet.create({
   },
   productItem: {
     flexDirection: "row",
-    backgroundColor: "#fff",
+    backgroundColor: colors.background,
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
   },
   productImage: {
     width: 80,
@@ -157,11 +186,11 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
   },
   productPrice: {
     fontSize: 14,
-    color: "#2E3192",
+    color: colors.primary,
     marginTop: 5,
   },
   quantityContainer: {
@@ -173,14 +202,14 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.backgroundLight,
     justifyContent: "center",
     alignItems: "center",
   },
   quantityText: {
     marginHorizontal: 15,
     fontSize: 16,
-    color: "#333",
+    color: colors.textPrimary,
   },
   deleteButton: {
     padding: 8,
@@ -188,7 +217,7 @@ const styles = StyleSheet.create({
   footer: {
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: "#eee",
+    borderTopColor: colors.border,
   },
   totalContainer: {
     flexDirection: "row",
@@ -197,21 +226,21 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 16,
-    color: "#666",
+    color: colors.textSecondary,
   },
   totalPrice: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#2E3192",
+    color: colors.primary,
   },
   checkoutButton: {
-    backgroundColor: "#2E3192",
-    paddingVertical: 15,
     borderRadius: 8,
+    marginBottom: 45,
+    paddingVertical: 15,
     alignItems: "center",
   },
   checkoutButtonText: {
-    color: "#fff",
+    color: colors.white,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -224,19 +253,32 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#2E3192",
+    color: colors.primary,
     marginTop: 20,
   },
+
+  subText: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    marginTop: 10,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+
   continueButton: {
-    backgroundColor: "#2E3192",
-    paddingHorizontal: 30,
-    paddingVertical: 12,
     borderRadius: 8,
-    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    alignItems: "center",
   },
   continueButtonText: {
-    color: "#fff",
+    color: colors.white,
     fontSize: 16,
     fontWeight: "bold",
   },
+
 });
+
+export default MyCartScreen;
+});
+

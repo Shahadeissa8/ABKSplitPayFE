@@ -8,6 +8,7 @@ const instance = axios.create({
 
 
 
+
   timeout: 10000, // 10 seconds timeout
 });
 

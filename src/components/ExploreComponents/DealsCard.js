@@ -47,6 +47,44 @@ const DealsCard = () => {
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.name}>Iphone</Text>
+            <Text style={styles.price}>price: 410KD</Text>
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.container}>
+        <LinearGradient
+          colors={["#26589c", "#9cb2d8"]} // Add your gradient colors here
+          style={styles.gradientBackground} // Add a new style for the gradient background
+        >
+          <View style={styles.imageContainer}>
+            <Image
+              source={{
+                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOGpjLP9sAzw3vDeUmhx7CQZxJAn1wUmxLhw&s",
+              }}
+              style={styles.image}
+            />
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>Iphone</Text>
+            <Text style={styles.price}>price: 410KD</Text>
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.container}>
+        <LinearGradient
+          colors={["#26589c", "#9cb2d8"]} // Add your gradient colors here
+          style={styles.gradientBackground} // Add a new style for the gradient background
+        >
+          <View style={styles.imageContainer}>
+            <Image
+              source={{
+                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOGpjLP9sAzw3vDeUmhx7CQZxJAn1wUmxLhw&s",
+              }}
+              style={styles.image}
+            />
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>Iphone</Text>
             <Text style={styles.price}>price: 333 KD</Text>
           </View>
         </LinearGradient>
@@ -110,11 +148,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   scrollContainer: {
-    flexDirection: "row", 
-    padding: 10, 
+    flexDirection: "row",
+    padding: 10,
   },
   gradientBackground: {
-    flex: 1, 
+    flex: 1,
     borderRadius: 18,
   },
   imageContainer: {
@@ -143,6 +181,6 @@ const styles = StyleSheet.create({
     fontFamily: "Lato",
     fontSize: 13,
     fontWeight: "700",
-    color: "#fff", 
+    color: "#fff",
   },
 });

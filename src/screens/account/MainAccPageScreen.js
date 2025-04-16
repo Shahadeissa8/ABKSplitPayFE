@@ -52,13 +52,13 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   };
 
   const menuItems = [
-    {
-      id: 1,
-      title: "Edit Profile",
-      icon: "person-outline",
-      color: "#26589c",
-      screen: "EditProfileScreen",
-    },
+    // {
+    //   id: 1,
+    //   title: "Edit Profile",
+    //   icon: "person-outline",
+    //   color: "#26589c",
+    //   screen: "EditProfileScreen",
+    // },
     {
       id: 2,
       title: "Tiers & Rewards",

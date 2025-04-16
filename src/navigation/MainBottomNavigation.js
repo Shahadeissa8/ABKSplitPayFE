@@ -19,16 +19,11 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         tabBarInactiveTintColor: "gray", // Inactive icon color
         tabBarShowLabel: true, // Set to false if you DON'T want labels like in the image
         tabBarStyle: {
-          position: 'absolute', // Make the tab bar float
-          bottom: 25, // Distance from the bottom edge (adjust as needed)
-          left: 20,   // Distance from the left edge (adjust as needed)
-          right: 20,  // Distance from the right edge (adjust as needed)
           elevation: 5, // Shadow for Android
           backgroundColor: '#ffffff', // Background color of the tab bar (change as needed)
           borderRadius: 30, // Rounded corners (adjust as needed)
-          height: 70, // Height of the tab bar (adjust as needed)
+          margin: 12,
           ...styles.shadow, // Apply shadow styles for iOS
-          borderTopWidth: 0, // Remove the default top border
         },
       }}
     >

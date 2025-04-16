@@ -35,7 +35,7 @@ export default function App() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#26589c" />
-        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+        {/* <StatusBar barStyle="light-content" backgroundColor="#26589c" /> */}
       </View>
     );
   }
@@ -74,6 +74,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#fffff",
   },
 });

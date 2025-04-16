@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
   TouchableOpacity,
-  ScrollView,
   Image,
   FlatList,
 } from "react-native";
@@ -13,56 +12,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
 
-// Sample product data
-// const sampleProducts = [
-//   {
-//     id: "1",
-//     name: "Product 1",
-//     price: "100 KD",
-//     image: "https://via.placeholder.com/150",
-//     quantity: 1,
-//   },
-//   {
-//     id: "2",
-//     name: "Product 2",
-//     price: "200 KD",
-//     image: "https://via.placeholder.com/150",
-//     quantity: 2,
-//   },
-// ];
-
 const MyCartScreen = () => {
   const navigation = useNavigation();
-  // const [products, setProducts] = useState(sampleProducts);
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const renderProductItem = ({ item }) => (
     <View style={styles.productItem}>
-      {/* <Image source={{ uri:  }} style={styles.productImage} /> */}
       <Image
-        source={{ uri: item.pictureUrl }}
+        source={{ uri: item.product.pictureUrl }}
         style={styles.productImage}
         resizeMode="cover"
       />
       <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name}</Text>
-        {/* <Text style={styles.productPrice}>{item.price}</Text> */}
-        <Text style={styles.productPrice}>{item.price} KD</Text>
-        {/* <View style={styles.quantityContainer}>
-          <TouchableOpacity
-            style={styles.quantityButton}
-            onPress={() => handleQuantityChange(item.id, -1)}
-          >
-            <Ionicons name="remove" size={20} color="#2E3192" />
-          </TouchableOpacity>
-          <Text style={styles.quantityText}>{item.quantity}</Text>
-          <TouchableOpacity
-            style={styles.quantityButton}
-            onPress={() => handleQuantityChange(item.id, 1)}
-          >
-            <Ionicons name="add" size={20} color="#2E3192" />
-          </TouchableOpacity>
-        </View> */}
+        <Text style={styles.productName}>{item.product.name}</Text>
+        <Text style={styles.productPrice}>{item.product.price} KD</Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             style={styles.quantityButton}
@@ -77,14 +40,8 @@ const MyCartScreen = () => {
           >
             <Ionicons name="add" size={20} color="#2E3192" />
           </TouchableOpacity>
-        </View>{" "}
+        </View>
       </View>
-      {/* <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => handleDeleteProduct(item.id)}
-      >
-        <Ionicons name="trash-outline" size={24} color="#ff4444" />
-      </TouchableOpacity> */}
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => removeFromCart(item.productId)}
@@ -94,35 +51,10 @@ const MyCartScreen = () => {
     </View>
   );
 
-  const handleQuantityChange = (productId, change) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.id === productId
-          ? { ...product, quantity: Math.max(1, product.quantity + change) }
-          : product
-      )
-    );
-  };
-
-  const handleDeleteProduct = (productId) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.id !== productId)
-    );
-  };
-
   const calculateTotal = () => {
-    return (
-      // products.reduce(
-      //   (total, product) => total + parseInt(product.price) * product.quantity,
-      //   0
-      // ) + " KD"
-      cartItems
-        .reduce(
-          (total, item) => total + parseFloat(item.price) * item.quantity,
-          0
-        )
-        .toFixed(2)
-    );
+    return cartItems
+      .reduce((total, item) => total + item.product.price * item.quantity, 0)
+      .toFixed(2);
   };
 
   return (
@@ -136,20 +68,18 @@ const MyCartScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>Shopping Cart</Text>
       </View>
-
-      {/* {products.length > 0 ? ( */}
       {cartItems.length > 0 ? (
         <>
           <FlatList
             data={cartItems}
             renderItem={renderProductItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.cartItemId.toString()}
             contentContainerStyle={styles.productList}
           />
           <View style={styles.footer}>
             <View style={styles.totalContainer}>
               <Text style={styles.totalLabel}>Total:</Text>
-              <Text style={styles.totalPrice}>{calculateTotal()}</Text>
+              <Text style={styles.totalPrice}>{calculateTotal()} KD</Text>
             </View>
             <TouchableOpacity style={styles.checkoutButton}>
               <Text style={styles.checkoutButtonText}>Checkout</Text>
@@ -157,21 +87,16 @@ const MyCartScreen = () => {
           </View>
         </>
       ) : (
-        <ScrollView style={styles.content}>
-          <View style={styles.emptyCartContainer}>
-            <Ionicons name="cart-outline" size={80} color="#2E3192" />
-            <Text style={styles.emptyText}>Your Cart is Empty</Text>
-            <Text style={styles.subText}>
-              You haven't added any products to your cart
-            </Text>
-            <TouchableOpacity
-              style={styles.continueButton}
-              onPress={() => navigation.navigate("ExploreScreen")}
-            >
-              <Text style={styles.continueButtonText}>Continue Shopping</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+        <View style={styles.emptyCartContainer}>
+          <Ionicons name="cart-outline" size={80} color="#2E3192" />
+          <Text style={styles.emptyText}>Your Cart is Empty</Text>
+          <TouchableOpacity
+            style={styles.continueButton}
+            onPress={() => navigation.navigate("ExploreScreen")}
+          >
+            <Text style={styles.continueButtonText}>Continue Shopping</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </SafeAreaView>
   );
@@ -200,9 +125,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#2E3192",
     marginLeft: 10,
-  },
-  content: {
-    flex: 1,
   },
   productList: {
     padding: 15,
@@ -304,12 +226,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#2E3192",
     marginTop: 20,
-  },
-  subText: {
-    fontSize: 16,
-    color: "#666",
-    marginTop: 10,
-    textAlign: "center",
   },
   continueButton: {
     backgroundColor: "#2E3192",

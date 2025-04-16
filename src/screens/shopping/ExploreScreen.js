@@ -40,7 +40,7 @@ const ExploreScreen = () => {
           style={styles.cartButton}
           onPress={() => navigation.navigate("MyCartScreen")}
         >
-          <Ionicons name="cart-outline" size={24} color="#2E3192" />
+          <Ionicons name="cart-outline" size={30} color="#2E3192" />
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },

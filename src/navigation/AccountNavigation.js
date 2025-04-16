@@ -1,11 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import MainAccPageScreen from "../screens/account/MainAccPageScreen";
 import EditProfileScreen from "../screens/account/EditProfileScreen";
 import ConfirmPasswordScreen from "../screens/account/ConfirmPasswordScreen";
 
 import Savedaddresses from "../screens/account/Savedaddresses";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Addlocation from "../screens/account/Addlocation";
 import PaymentMethods from "../screens/account/PaymentMethods";
@@ -104,10 +102,3 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
 };
 
 export default AccountNavigation;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});

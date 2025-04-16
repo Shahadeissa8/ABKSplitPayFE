@@ -52,13 +52,13 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   };
 
   const menuItems = [
-    {
-      id: 1,
-      title: "Edit Profile",
-      icon: "person-outline",
-      color: "#26589c",
-      screen: "EditProfileScreen",
-    },
+    // {
+    //   id: 1,
+    //   title: "Edit Profile",
+    //   icon: "person-outline",
+    //   color: "#26589c",
+    //   screen: "EditProfileScreen",
+    // },
     {
       id: 2,
       title: "Tiers & Rewards",
@@ -281,11 +281,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         { marginTop: Platform.OS === "android" ? -35 : 0 },
       ]}
     >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="#26589c"
-        translucent={true}
-      />
       {renderHeader()}
 
       <Animated.ScrollView
@@ -336,10 +331,9 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
   },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingHorizontal: 16,
     paddingBottom: 16,
     borderBottomLeftRadius: 30,

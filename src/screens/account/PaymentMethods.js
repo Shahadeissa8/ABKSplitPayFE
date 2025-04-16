@@ -426,7 +426,7 @@ export default PaymentMethods;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    //backgroundColor: "#f8f9fa",
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,

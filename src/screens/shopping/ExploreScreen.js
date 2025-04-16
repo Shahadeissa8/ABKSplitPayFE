@@ -8,6 +8,7 @@ import {
   Modal,
   Image,
   TouchableOpacity,
+  Alert, // Import Alert
 } from "react-native";
 import React, { useState } from "react";
 import CategoryList from "../../components/ExploreComponents/CategoryList";
@@ -19,6 +20,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../../context/CartContext";
+import { addToWishList } from "../../api/CartAPI"; // Import the addToWishList function
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
@@ -27,11 +29,26 @@ const ExploreScreen = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useCart();
 
-  const handleProductPress = (product) => {
-    console.log("Pressed product:", product.name); // 👀 Debug log
-    setSelectedProduct(product); // product object from backend
-    setModalVisible(true);
+  const handleAddToWishlist = async (productId) => {
+    try {
+      console.log("Adding product to wishlist with productId:", productId); // Debug log
+      await addToWishList({ productId }); // Call the endpoint with the productId
+      Alert.alert("Success", "Product added to wishlist!");
+    } catch (error) {
+      console.error("Error adding product to wishlist:", error.response?.data || error.message);
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to add product to wishlist."
+      );
+    }
   };
+
+  const handleProductPress = (product) => {
+    console.log("Pressed product:", product.name); // Debug log
+    setSelectedProduct(product); // Set the selected product
+    setModalVisible(true); // Show the modal
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
@@ -43,7 +60,7 @@ const ExploreScreen = () => {
           //cart stayle 
           
         >
-          <Ionicons name="cart-outline" size={24} color="#2E3192" />
+          <Ionicons name="cart-outline" size={30} color="#2E3192" />
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -88,10 +105,10 @@ const ExploreScreen = () => {
                 resizeMode="cover"
               />
               <View style={modalStyles.ButtonGradient}>
-                {/* <TouchableOpacity onPress={() => {}}> */}
+                {/* Add to Cart Button */}
                 <TouchableOpacity
                   onPress={() => {
-                    addToCart(selectedProduct);
+                    addToCart(selectedProduct.productId, 1); // Add to cart
                     setModalVisible(false);
                   }}
                 >
@@ -99,7 +116,7 @@ const ExploreScreen = () => {
                     colors={["#26589c", "#9cb2d8"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    style={modalStyles.addToCartButton} // Apply radius here
+                    style={modalStyles.addToCartButton}
                   >
                     <Text style={modalStyles.addToCartText}>
                       <Feather name="shopping-cart" size={20} color="white" />{" "}
@@ -108,12 +125,15 @@ const ExploreScreen = () => {
                   </LinearGradient>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {}}>
+                {/* Add to Wishlist Button */}
+                <TouchableOpacity
+                  onPress={() => handleAddToWishlist(selectedProduct.productId)} // Add to wishlist
+                >
                   <LinearGradient
                     colors={["#26589c", "#9cb2d8"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    style={modalStyles.wishlistButton} // Apply radius here
+                    style={modalStyles.wishlistButton}
                   >
                     <Text style={modalStyles.addToCartText}>
                       <Feather name="heart" size={24} color="white" />
@@ -144,7 +164,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },

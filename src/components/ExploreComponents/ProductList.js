@@ -2,9 +2,9 @@ import React from "react";
 import { View, ScrollView, StyleSheet, Modal } from "react-native";
 import ProductCard from "../../components/ExploreComponents/ProductCard";
 import { useQuery } from "@tanstack/react-query";
-import { getProduct } from "../../api/ProductAPI"; // Adjust to your API location
+import { getProduct } from "../../api/ProductAPI";
 
-const  ProductList = ({ selectedCategoryId, onProductPress }) => {
+const ProductList = ({ selectedCategoryId, onProductPress }) => {
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: getProduct,
@@ -27,8 +27,7 @@ const  ProductList = ({ selectedCategoryId, onProductPress }) => {
           name={product.name}
           price={product.price}
           image={product.pictureUrl}
-          // 🟢 Updated this line:
-          onPress={() => onProductPress(product)} // Pass full product object
+          onPress={() => onProductPress(product)}
         />
       ))}
     </ScrollView>

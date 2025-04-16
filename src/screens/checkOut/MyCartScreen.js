@@ -1,20 +1,17 @@
-
-
-
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
   TouchableOpacity,
-  ScrollView,
   Image,
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
+
 
 const colors = {
   primary: "#2E3192",
@@ -29,11 +26,8 @@ const colors = {
   gradientPrimary: ["#26589c", "#9cb2d8"],
 };
 
-
-
 const MyCartScreen = () => {
   const navigation = useNavigation();
-  // const [products, setProducts] = useState(sampleProducts);
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const calculateTotal = () => {
@@ -52,13 +46,14 @@ const MyCartScreen = () => {
   const renderProductItem = ({ item }) => (
     <View style={styles.productItem}>
       <Image
-        source={{ uri: item.pictureUrl }}
+        source={{ uri: item.product.pictureUrl }}
         style={styles.productImage}
         resizeMode="cover"
       />
       <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>{item.price} KD</Text>
+
+        <Text style={styles.productName}>{item.product.name}</Text>
+        <Text style={styles.productPrice}>{item.product.price} KD</Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             style={styles.quantityButton}
@@ -84,6 +79,14 @@ const MyCartScreen = () => {
     </View>
   );
 
+
+  const calculateTotal = () => {
+    return cartItems
+      .reduce((total, item) => total + item.product.price * item.quantity, 0)
+      .toFixed(2);
+  };
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -95,14 +98,13 @@ const MyCartScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>Shopping Cart</Text>
       </View>
-
-      {/* {products.length > 0 ? ( */}
       {cartItems.length > 0 ? (
         <>
           <FlatList
             data={cartItems}
             renderItem={renderProductItem}
-            keyExtractor={(item) => item.productId}
+
+            keyExtractor={(item) => item.cartItemId.toString()}
             contentContainerStyle={styles.productList}
           />
           <View style={styles.footer}>
@@ -122,24 +124,18 @@ const MyCartScreen = () => {
           </View>
         </>
       ) : (
-        <ScrollView style={styles.content}>
-          <View style={styles.emptyCartContainer}>
-            <Ionicons name="cart-outline" size={80} color={colors.primary} />
-            <Text style={styles.emptyText}>Your Cart is Empty</Text>
-            <Text style={styles.subText}>
-              You haven't added any products to your cart
-            </Text>
-            <TouchableOpacity
-              style={[
-                styles.continueButton,
-                { backgroundColor: colors.primary },
-              ]}
-              onPress={() => navigation.navigate("ExploreScreen")}
-            >
-              <Text style={styles.continueButtonText}>Continue Shopping</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+
+        <View style={styles.emptyCartContainer}>
+          <Ionicons name="cart-outline" size={80} color="#2E3192" />
+          <Text style={styles.emptyText}>Your Cart is Empty</Text>
+          <TouchableOpacity
+            style={styles.continueButton}
+            onPress={() => navigation.navigate("ExploreScreen")}
+          >
+            <Text style={styles.continueButtonText}>Continue Shopping</Text>
+          </TouchableOpacity>
+        </View>
+
       )}
     </SafeAreaView>
   );
@@ -166,9 +162,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.primary,
     marginLeft: 10,
-  },
-  content: {
-    flex: 1,
   },
   productList: {
     padding: 15,
@@ -263,6 +256,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginTop: 20,
   },
+
   subText: {
     fontSize: 16,
     color: colors.textSecondary,
@@ -270,6 +264,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
+
   continueButton: {
     borderRadius: 8,
     paddingVertical: 12,
@@ -281,6 +276,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+
 });
 
 export default MyCartScreen;
+});
+

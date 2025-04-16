@@ -129,7 +129,6 @@ const AddLocation = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
@@ -225,7 +224,6 @@ const AddLocation = () => {
               </TouchableOpacity>
             </View>
           </Animated.View>
-        </ScrollView>
 
         <View style={styles.bottomContainer}>
           <TouchableOpacity
@@ -255,6 +253,7 @@ const AddLocation = () => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -265,7 +264,6 @@ export default AddLocation;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -273,7 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     shadowColor: "#26589c",
@@ -304,7 +302,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    paddingBottom: 100,
   },
   imageContainer: {
     alignItems: "center",
@@ -405,13 +402,7 @@ const styles = StyleSheet.create({
     color: "#26589c",
   },
   bottomContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingVertical: 16,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     shadowColor: "#000",

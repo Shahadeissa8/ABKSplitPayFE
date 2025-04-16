@@ -13,32 +13,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
 
-// Sample product data
-// const sampleProducts = [
-//   {
-//     id: "1",
-//     name: "Product 1",
-//     price: "100 KD",
-//     image: "https://via.placeholder.com/150",
-//     quantity: 1,
-//   },
-//   {
-//     id: "2",
-//     name: "Product 2",
-//     price: "200 KD",
-//     image: "https://via.placeholder.com/150",
-//     quantity: 2,
-//   },
-// ];
 
 const MyCartScreen = () => {
   const navigation = useNavigation();
-  // const [products, setProducts] = useState(sampleProducts);
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const renderProductItem = ({ item }) => (
     <View style={styles.productItem}>
-      {/* <Image source={{ uri:  }} style={styles.productImage} /> */}
       <Image
         source={{ uri: item.pictureUrl }}
         style={styles.productImage}
@@ -46,23 +27,7 @@ const MyCartScreen = () => {
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName}>{item.name}</Text>
-        {/* <Text style={styles.productPrice}>{item.price}</Text> */}
         <Text style={styles.productPrice}>{item.price} KD</Text>
-        {/* <View style={styles.quantityContainer}>
-          <TouchableOpacity
-            style={styles.quantityButton}
-            onPress={() => handleQuantityChange(item.id, -1)}
-          >
-            <Ionicons name="remove" size={20} color="#2E3192" />
-          </TouchableOpacity>
-          <Text style={styles.quantityText}>{item.quantity}</Text>
-          <TouchableOpacity
-            style={styles.quantityButton}
-            onPress={() => handleQuantityChange(item.id, 1)}
-          >
-            <Ionicons name="add" size={20} color="#2E3192" />
-          </TouchableOpacity>
-        </View> */}
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             style={styles.quantityButton}
@@ -77,14 +42,8 @@ const MyCartScreen = () => {
           >
             <Ionicons name="add" size={20} color="#2E3192" />
           </TouchableOpacity>
-        </View>{" "}
+        </View>
       </View>
-      {/* <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => handleDeleteProduct(item.id)}
-      >
-        <Ionicons name="trash-outline" size={24} color="#ff4444" />
-      </TouchableOpacity> */}
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => removeFromCart(item.productId)}
@@ -112,10 +71,6 @@ const MyCartScreen = () => {
 
   const calculateTotal = () => {
     return (
-      // products.reduce(
-      //   (total, product) => total + parseInt(product.price) * product.quantity,
-      //   0
-      // ) + " KD"
       cartItems
         .reduce(
           (total, item) => total + parseFloat(item.price) * item.quantity,
@@ -124,7 +79,6 @@ const MyCartScreen = () => {
         .toFixed(2)
     );
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -136,8 +90,6 @@ const MyCartScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>Shopping Cart</Text>
       </View>
-
-      {/* {products.length > 0 ? ( */}
       {cartItems.length > 0 ? (
         <>
           <FlatList

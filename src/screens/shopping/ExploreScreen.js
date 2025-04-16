@@ -87,8 +87,12 @@ const ExploreScreen = () => {
               <View style={modalStyles.ButtonGradient}>
                 {/* <TouchableOpacity onPress={() => {}}> */}
                 <TouchableOpacity
+                  // onPress={() => {
+                  //   addToCart(selectedProduct);
+                  //   setModalVisible(false);
+                  // }}
                   onPress={() => {
-                    addToCart(selectedProduct);
+                    addToCart(selectedProduct.productId, 1); // <-- now you're only passing what backend expects
                     setModalVisible(false);
                   }}
                 >

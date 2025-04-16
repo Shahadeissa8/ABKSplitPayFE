@@ -50,7 +50,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     defaultProfilePicture,
     "https://th.bing.com/th/id/OIP.cMii7UGD3ywM1CuMBS-ZawAAAA?pid=ImgDet&w=198&h=198&c=7&dpr=3",
     "https://th.bing.com/th/id/OIP.p9fdQAE5JOscu5dUCsPifQHaIM?w=1735&h=1920&rs=1&pid=ImgDetMain",
-    "https://img.freepik.com/premium-vector/cute-woman-avatar-profile-vector-illustration_1058532-14592.jpg"
+    "https://img.freepik.com/premium-vector/cute-woman-avatar-profile-vector-illustration_1058532-14592.jpg",
   ];
 
   useEffect(() => {
@@ -206,7 +206,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           style={styles.editPictureGradient}
         >
           <Ionicons name="camera" size={18} color="#fff" />
-          <Text style={styles.editPictureText}>Edit picture</Text>
+          <Text style={styles.editPictureText}>Edit avatar</Text>
         </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
@@ -430,7 +430,6 @@ const styles = StyleSheet.create({
     borderRadius: 71,
     backgroundColor: "#fff",
     overflow: "hidden",
-
   },
   profilePicture: {
     width: 130,
@@ -460,7 +459,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 25,
-
   },
   editPictureText: {
     color: "#fff",
@@ -492,7 +490,7 @@ const styles = StyleSheet.create({
       },
     }),
     paddingHorizontal: 16,
-    
+
     borderWidth: 1,
     borderColor: "rgba(38, 88, 156, 0.1)",
   },
@@ -558,7 +556,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-   
   },
   saveButtonText: {
     color: "#fff",
@@ -611,7 +608,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-
-
-

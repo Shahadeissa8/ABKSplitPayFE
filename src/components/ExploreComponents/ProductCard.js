@@ -43,8 +43,6 @@ const styles = StyleSheet.create({
     width: "48%",
     marginVertical: 8,
     borderRadius: 15,
-    // overflow: "hidden",
-    // elevation: 4,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
@@ -53,13 +51,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 15,
   },
-  // imageContainer: {
-  //   alignItems: "center",
-  // },
   image: {
     width: "100%",
     height: 150,
-    // borderRadius: 10,
     resizeMode: "contain",
   },
   infoContainer: {

@@ -185,7 +185,7 @@ const HelpCenter = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      {/* <StatusBar barStyle="light-content" backgroundColor="#26589c" /> */}
       {renderHeader()}
       <ScrollView
         style={styles.content}

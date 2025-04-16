@@ -35,7 +35,7 @@ export default function App() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#26589c" />
-        <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+        {/* <StatusBar barStyle="light-content" backgroundColor="#26589c" /> */}
       </View>
     );
   }
@@ -46,7 +46,7 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false, 
     backgroundColor: "#f8f9fa",}}>
-            {isAuthenticated ? (
+            {/* {isAuthenticated ? ( */}
               <Stack.Screen
                 name="MainBottomNavigation"
                 children={() => (
@@ -55,14 +55,15 @@ export default function App() {
                   />
                 )}
               />
-            ) : (
+            {/* )  */}
+            {/* : (
               <Stack.Screen
                 name="AuthNavigation"
                 children={() => (
                   <AuthNavigation setIsAuthenticated={setIsAuthenticated} />
                 )}
               />
-            )}
+            )} */}
           </Stack.Navigator>
         </NavigationContainer>
       </QueryClientProvider>

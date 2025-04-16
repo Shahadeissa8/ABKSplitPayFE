@@ -108,7 +108,6 @@ const Feedback = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       <LinearGradient
         colors={["#26589c", "#26589c"]}
         style={styles.header}

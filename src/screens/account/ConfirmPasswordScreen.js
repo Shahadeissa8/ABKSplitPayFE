@@ -183,7 +183,6 @@ const ConfirmPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
 
       <LinearGradient
         colors={["#26589c", "#9cb2d8"]}
@@ -273,7 +272,6 @@ const ConfirmPasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   headerGradient: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
@@ -310,7 +308,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#fff",
     paddingTop: 30,
     justifyContent: "space-between",
   },
@@ -385,7 +382,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === "ios" ? 40 : 20,
     paddingTop: 20,
-    backgroundColor: "#fff",
+  
     width: "100%",
   },
   saveButton: {

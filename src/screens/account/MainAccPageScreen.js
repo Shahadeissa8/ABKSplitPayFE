@@ -281,11 +281,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         { marginTop: Platform.OS === "android" ? -35 : 0 },
       ]}
     >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="#26589c"
-        translucent={true}
-      />
       {renderHeader()}
 
       <Animated.ScrollView
@@ -336,7 +331,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,

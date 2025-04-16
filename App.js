@@ -44,7 +44,8 @@ export default function App() {
     <CartProvider>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Navigator screenOptions={{ headerShown: false, 
+    backgroundColor: "#f8f9fa",}}>
             {isAuthenticated ? (
               <Stack.Screen
                 name="MainBottomNavigation"
@@ -74,6 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#fffff",
   },
 });

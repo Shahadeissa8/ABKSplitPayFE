@@ -291,7 +291,6 @@ const EditProfileScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       {renderHeader()}
 
       <View style={styles.content}>
@@ -356,7 +355,6 @@ export default EditProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
@@ -388,7 +386,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   headerTitle: {
     fontSize: 24,
@@ -400,7 +397,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#fff",
     justifyContent: "space-between",
   },
   profilePictureContainer: {
@@ -532,7 +528,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === "ios" ? 40 : 20,
     paddingTop: 20,
-    backgroundColor: "#fff",
     width: "100%",
     borderTopWidth: 1,
     borderTopColor: "rgba(38, 88, 156, 0.05)",

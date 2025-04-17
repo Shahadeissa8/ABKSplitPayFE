@@ -52,13 +52,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   };
 
   const menuItems = [
-    // {
-    //   id: 1,
-    //   title: "Edit Profile",
-    //   icon: "person-outline",
-    //   color: "#26589c",
-    //   screen: "EditProfileScreen",
-    // },
     {
       id: 2,
       title: "Tiers & Rewards",
@@ -105,10 +98,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 100],
-    outputRange: [
-      Platform.OS === "android" ? 60 : 50,
-      Platform.OS === "android" ? 45 : 35,
-    ],
+    outputRange: [50, 35], // iPhone-specific values
     extrapolate: "clamp",
   });
 
@@ -203,12 +193,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   );
 
   const renderHeader = () => (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.header}
-    >
+    <View style={styles.header}>
       <View style={styles.headerContent}>
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity style={styles.notificationButton}>
@@ -225,7 +210,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       <Text style={styles.civilId}>
         Phone: {userProfile?.phoneNumber || "N/A"}
       </Text>
-    </LinearGradient>
+    </View>
   );
 
   const renderProfileSection = () => (
@@ -275,56 +260,53 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   );
 
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        { marginTop: Platform.OS === "android" ? -35 : 0 },
-      ]}
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.container}
     >
-      {renderHeader()}
+      <StatusBar barStyle="light-content" translucent={true} />
+      <SafeAreaView style={styles.innerContainer}>
+        {renderHeader()}
 
-      <Animated.ScrollView
-        ref={scrollViewRef}
-        style={styles.content}
-        contentContainerStyle={[styles.scrollContent, { marginTop: -10 }]}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor="#26589c"
-            colors={["#26589c", "#9cb2d8"]}
-            progressBackgroundColor="#fff"
-            progressViewOffset={Platform.OS === "android" ? 80 : 0}
-            size={Platform.OS === "ios" ? "large" : 40}
-          />
-        }
-      >
-        {renderProfileSection()}
+        <Animated.ScrollView
+          ref={scrollViewRef}
+          style={styles.content}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor="#26589c"
+              colors={["#26589c", "#9cb2d8"]}
+              progressBackgroundColor="#fff"
+            />
+          }
+        >
+          {renderProfileSection()}
 
-        <View style={styles.menuContainer}>
-          {menuItems.map(renderMenuItem)}
-        </View>
+          <View style={styles.menuContainer}>
+            {menuItems.map(renderMenuItem)}
+          </View>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <LinearGradient
-            colors={["#26589c", "#9cb2d8"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.logoutGradient}
-          >
-            <Ionicons name="log-out-outline" size={24} color="#fff" />
-            <Text style={styles.logoutText}>Logout</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-        <View style={styles.versionContainer}>
-          <Text style={styles.versionText}>Version 1.0.0</Text>
-        </View>
-      </Animated.ScrollView>
-    </SafeAreaView>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <LinearGradient
+              colors={["#26589c", "#9cb2d8"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.logoutGradient}
+            >
+              <Ionicons name="log-out-outline" size={24} color="#fff" />
+              <Text style={styles.logoutText}>Logout</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </Animated.ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -332,23 +314,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  innerContainer: {
+    flex: 1,
+  },
   header: {
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingHorizontal: 16,
     paddingBottom: 16,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
+    borderBottomLeftRadius: 30, // Keep the oval shape
+    borderBottomRightRadius: 30, // Keep the oval shape
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
   headerContent: {
     flexDirection: "row",
@@ -376,6 +353,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    backgroundColor: "#f5f5f5", // Keep the grayish background
   },
   scrollContent: {
     paddingBottom: 20,
@@ -394,17 +372,10 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 55,
     padding: 3,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   profileImageInner: {
     padding: 2,
@@ -463,17 +434,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     padding: 4,
     marginTop: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
   },
   menuItem: {
     flexDirection: "row",
@@ -515,17 +479,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 16,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   logoutGradient: {
     flexDirection: "row",

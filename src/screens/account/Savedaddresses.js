@@ -8,13 +8,13 @@ import {
   Alert,
   SafeAreaView,
   StatusBar,
-  Platform,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { getSavedAddresses } from "../../api/profile";
-import { deleteAddress } from "../../api/profile"; 
+import { deleteAddress } from "../../api/profile";
+
 const Savedaddresses = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -23,7 +23,7 @@ const Savedaddresses = () => {
 
   useEffect(() => {
     loadSavedAddresses();
-  }, [route.params?.refresh]); 
+  }, [route.params?.refresh]);
 
   const loadSavedAddresses = async () => {
     try {
@@ -81,7 +81,7 @@ const Savedaddresses = () => {
       Alert.alert("Error", "Invalid address. Please try again.");
       return;
     }
-  
+
     Alert.alert(
       "Delete Address",
       "Are you sure you want to delete this address?",
@@ -97,13 +97,13 @@ const Savedaddresses = () => {
             try {
               console.log("Deleting address with ID:", address.addressId); // Log the addressId
               await deleteAddress(address.addressId); // Call the deleteAddress API with addressId
-  
+
               // Remove the address from the local state
               const updatedAddresses = addresses.filter(
                 (addr) => addr.addressId !== address.addressId
               );
               setAddresses(updatedAddresses);
-  
+
               Alert.alert("Success", "Address deleted successfully.", [
                 { text: "OK" },
               ]);
@@ -122,98 +122,101 @@ const Savedaddresses = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+    >
+      <StatusBar barStyle="light-content" translucent={true} />
+      <SafeAreaView style={styles.innerContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="chevron-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Saved Addresses</Text>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => navigation.navigate("Addlocation")} // Navigate to AddAddress screen
+          >
+            <Ionicons name="add" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
 
-      <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Saved Addresses</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate("Addlocation")} // Navigate to AddAddress screen
-        >
-          <Ionicons name="add" size={24} color="#fff" />
-        </TouchableOpacity>
-      </LinearGradient>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {addresses.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Ionicons name="location-outline" size={64} color="#26589c" />
-            <Text style={styles.emptyText}>No Saved Addresses</Text>
-            <Text style={styles.emptySubtext}>
-              Press + to add a new address
-            </Text>
-          </View>
-        ) : (
-          addresses.map((address) => (
-            <View key={address.id} style={styles.addressCard}>
-              <View style={styles.addressHeader}>
-                <View style={styles.addressTitleContainer}>
-                  <Ionicons name="location" size={24} color="#26589c" />
-                  <Text style={styles.addressTitle}>
-                    {address.fullName}'s Address
-                  </Text>
-                  {address.isDefault && (
-                    <View style={styles.defaultBadge}>
-                      <Text style={styles.defaultText}>Default</Text>
-                    </View>
-                  )}
-                </View>
-                <View style={styles.actionButtons}>
-                  {!address.isDefault && (
-                    <TouchableOpacity
-                      onPress={() => handleSetDefaultAddress(address)}
-                      style={styles.actionButton}
-                    >
-                      <Ionicons
-                        name="star-outline"
-                        size={20}
-                        color="#26589c"
-                      />
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    onPress={() => handleDeleteAddress(address)}
-                    style={[styles.actionButton, styles.deleteButton]}
-                  >
-                    <Ionicons
-                      name="trash-outline"
-                      size={20}
-                      color="#ff4444"
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <Text style={[styles.addressDetails, { textAlign: "left" }]}>
-                {`${address.addressLine1}${
-                  address.addressLine2 ? `, ${address.addressLine2}` : ""
-                }, ${address.city}, ${address.state}, ${address.postalCode}, ${
-                  address.country
-                }`}
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {addresses.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Ionicons name="location-outline" size={64} color="#26589c" />
+              <Text style={styles.emptyText}>No Saved Addresses</Text>
+              <Text style={styles.emptySubtext}>
+                Press + to add a new address
               </Text>
             </View>
-          ))
-        )}
-      </ScrollView>
-    </SafeAreaView>
+          ) : (
+            addresses.map((address) => (
+              <View key={address.id} style={styles.addressCard}>
+                <View style={styles.addressHeader}>
+                  <View style={styles.addressTitleContainer}>
+                    <Ionicons name="location" size={24} color="#26589c" />
+                    <Text style={styles.addressTitle}>
+                      {address.fullName}'s Address
+                    </Text>
+                    {address.isDefault && (
+                      <View style={styles.defaultBadge}>
+                        <Text style={styles.defaultText}>Default</Text>
+                      </View>
+                    )}
+                  </View>
+                  <View style={styles.actionButtons}>
+                    {!address.isDefault && (
+                      <TouchableOpacity
+                        onPress={() => handleSetDefaultAddress(address)}
+                        style={styles.actionButton}
+                      >
+                        <Ionicons
+                          name="star-outline"
+                          size={20}
+                          color="#26589c"
+                        />
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      onPress={() => handleDeleteAddress(address)}
+                      style={[styles.actionButton, styles.deleteButton]}
+                    >
+                      <Ionicons
+                        name="trash-outline"
+                        size={20}
+                        color="#ff4444"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <Text style={[styles.addressDetails, { textAlign: "left" }]}>
+                  {`${address.addressLine1}${
+                    address.addressLine2 ? `, ${address.addressLine2}` : ""
+                  }, ${address.city}, ${address.state}, ${address.postalCode}, ${
+                    address.country
+                  }`}
+                </Text>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+  },
+  innerContainer: {
+    flex: 1,
   },
   header: {
     flexDirection: "row",
@@ -221,7 +224,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     shadowColor: "#26589c",
@@ -231,7 +233,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 10,
   },
   backButton: {
     padding: 8,
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#f8f9fa", // Keep the grayish background
   },
   emptyContainer: {
     flex: 1,
@@ -282,7 +284,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
   addressHeader: {
     flexDirection: "row",

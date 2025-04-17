@@ -61,7 +61,7 @@ const AddLocation = () => {
 
   const handleSubmit = async () => {
     const { fullName, addressLine1, city, state, postalCode, country, isDefault } = addressDetails;
-  
+
     // Validate required fields
     if (
       !fullName.trim() ||
@@ -74,7 +74,7 @@ const AddLocation = () => {
       Alert.alert("Missing Information", "Please fill in all required address fields", [{ text: "OK" }]);
       return;
     }
-  
+
     try {
       setIsSaving(true);
       // Call the createAddress API
@@ -88,7 +88,7 @@ const AddLocation = () => {
         country,
         isDefault,
       });
-  
+
       Alert.alert("Success", "Address saved successfully", [
         {
           text: "OK",
@@ -128,134 +128,137 @@ const AddLocation = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          style={styles.header}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+    >
+      <StatusBar barStyle="light-content" translucent={true} />
+      <SafeAreaView style={styles.innerContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
         >
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="chevron-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Location</Text>
-          <View style={styles.placeholder} />
-        </LinearGradient>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="chevron-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Add Location</Text>
+            <View style={styles.placeholder} />
+          </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-        >
-          <Animated.View
-            style={[
-              styles.content,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
-              },
-            ]}
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
           >
-            <View style={styles.imageContainer}>
-              <LinearGradient
-                colors={["rgba(38, 88, 156, 0.1)", "rgba(156, 178, 216, 0.1)"]}
-                style={styles.gradientOverlay}
-              >
-                <Animated.View
-                  style={[
-                    styles.locationIcon,
-                    { transform: [{ scale: fadeAnim }] },
-                  ]}
+            <Animated.View
+              style={[
+                styles.content,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+                },
+              ]}
+            >
+              <View style={styles.imageContainer}>
+                <LinearGradient
+                  colors={["rgba(38, 88, 156, 0.1)", "rgba(156, 178, 216, 0.1)"]}
+                  style={styles.gradientOverlay}
                 >
-                  <Ionicons name="location" size={48} color="#26589c" />
-                </Animated.View>
-              </LinearGradient>
-            </View>
+                  <Animated.View
+                    style={[
+                      styles.locationIcon,
+                      { transform: [{ scale: fadeAnim }] },
+                    ]}
+                  >
+                    <Ionicons name="location" size={48} color="#26589c" />
+                  </Animated.View>
+                </LinearGradient>
+              </View>
 
-            <View style={styles.formContainer}>
-              <Text style={styles.formTitle}>Address Details</Text>
-              <Text style={styles.formSubtitle}>
-                Please fill in your address information
-              </Text>
+              <View style={styles.formContainer}>
+                <Text style={styles.formTitle}>Address Details</Text>
+                <Text style={styles.formSubtitle}>
+                  Please fill in your address information
+                </Text>
 
-              {renderInputField("Full Name", "Enter full name", "fullName")}
-              {renderInputField(
-                "Address Line 1",
-                "Enter address line 1",
-                "addressLine1"
-              )}
-              {renderInputField(
-                "Address Line 2",
-                "Enter address line 2 (optional)",
-                "addressLine2",
-                false
-              )}
-              {renderInputField("City", "Enter city", "city")}
-              {renderInputField("State", "Enter state", "state")}
-              {renderInputField(
-                "Postal Code",
-                "Enter postal code",
-                "postalCode"
-              )}
-              {renderInputField("Country", "Enter country", "country")}
+                {renderInputField("Full Name", "Enter full name", "fullName")}
+                {renderInputField(
+                  "Address Line 1",
+                  "Enter address line 1",
+                  "addressLine1"
+                )}
+                {renderInputField(
+                  "Address Line 2",
+                  "Enter address line 2 (optional)",
+                  "addressLine2",
+                  false
+                )}
+                {renderInputField("City", "Enter city", "city")}
+                {renderInputField("State", "Enter state", "state")}
+                {renderInputField(
+                  "Postal Code",
+                  "Enter postal code",
+                  "postalCode"
+                )}
+                {renderInputField("Country", "Enter country", "country")}
 
-              {/* Checkbox for isDefault */}
+                {/* Checkbox for isDefault */}
+                <TouchableOpacity
+                  style={styles.checkboxContainer}
+                  onPress={toggleIsDefault}
+                >
+                  <Ionicons
+                    name={
+                      addressDetails.isDefault
+                        ? "checkbox-outline"
+                        : "square-outline"
+                    }
+                    size={24}
+                    color="#26589c"
+                    style={styles.checkboxIcon}
+                  />
+                  <Text style={styles.checkboxLabel}>Set as Default Address</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+
+            <View style={styles.bottomContainer}>
               <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={toggleIsDefault}
+                style={[
+                  styles.submitButton,
+                  isSaving && styles.submitButtonDisabled,
+                ]}
+                onPress={handleSubmit}
+                disabled={isSaving}
+                activeOpacity={0.8}
               >
-                <Ionicons
-                  name={
-                    addressDetails.isDefault
-                      ? "checkbox-outline"
-                      : "square-outline"
-                  }
-                  size={24}
-                  color="#26589c"
-                  style={styles.checkboxIcon}
-                />
-                <Text style={styles.checkboxLabel}>Set as Default Address</Text>
+                <LinearGradient
+                  colors={["#26589c", "#9cb2d8"]}
+                  style={styles.gradientButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <Ionicons
+                    name={isSaving ? "sync" : "save-outline"}
+                    size={24}
+                    color="#fff"
+                    style={styles.buttonIcon}
+                  />
+                  <Text style={styles.submitButtonText}>
+                    {isSaving ? "Saving..." : "Save Address"}
+                  </Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
-          </Animated.View>
-
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              isSaving && styles.submitButtonDisabled,
-            ]}
-            onPress={handleSubmit}
-            disabled={isSaving}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={["#26589c", "#9cb2d8"]}
-              style={styles.gradientButton}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              <Ionicons
-                name={isSaving ? "sync" : "save-outline"}
-                size={24}
-                color="#fff"
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.submitButtonText}>
-                {isSaving ? "Saving..." : "Save Address"}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -265,13 +268,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  innerContainer: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     shadowColor: "#26589c",
@@ -281,7 +289,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 10,
   },
   backButton: {
     padding: 8,
@@ -299,6 +306,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    backgroundColor: "#f8f9fa", // Grayish background to match Savedaddresses
   },
   content: {
     padding: 20,
@@ -320,7 +328,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 12,
-    elevation: 8,
   },
   locationIcon: {
     backgroundColor: "rgba(255, 255, 255, 0.95)",
@@ -333,7 +340,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 5,
   },
   formContainer: {
     flex: 1,
@@ -379,7 +385,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
   },
   input: {
     fontSize: 16,
@@ -412,7 +417,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 16,
   },
   submitButton: {
     borderRadius: 16,
@@ -424,7 +428,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 8,
   },
   gradientButton: {
     flexDirection: "row",

@@ -30,14 +30,7 @@ const MyCartScreen = () => {
   const navigation = useNavigation();
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
-  const calculateTotal = () => {
-    return cartItems
-      .reduce(
-        (total, item) => total + parseFloat(item.price) * item.quantity,
-        0
-      )
-      .toFixed(2);
-  };
+ 
 
   const handleCheckout = () => {
     navigation.navigate("CheckoutScreen");
@@ -280,5 +273,5 @@ const styles = StyleSheet.create({
 });
 
 export default MyCartScreen;
-});
+
 

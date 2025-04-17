@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,148 +7,74 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
-  Dimensions,
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-
-const { width } = Dimensions.get("window");
+import { getOrders } from "../../api/installment";
 
 const InstallmentsScreen = () => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState("all");
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleTabPress = (tab) => {
-    setActiveTab(tab);
+  // Function to fetch orders
+  const fetchOrders = async () => {
+    try {
+      setIsLoading(true);
+      const fetchedOrders = await getOrders();
+      setOrders(fetchedOrders);
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to load orders.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const installments = [
-    {
-      id: 1,
-      orderNumber: "#ORD-2024-001",
-      productName: "iPhone 15 Pro",
-      storeName: "X-Site",
-      remaining: "500",
-      totalAmount: "1000",
-      progress: 50,
-      date: "Due Date: 12/03/2024",
-      icon: "phone-portrait",
-      status: "Processing",
-    },
-    {
-      id: 2,
-      orderNumber: "#ORD-2024-002",
-      productName: "MacBook Air M2",
-      storeName: "JetIr",
-      remaining: "500",
-      totalAmount: "1000",
-      progress: 30,
-      date: "Due Date: 15/03/2024",
-      icon: "laptop-outline",
-      status: "Processing",
-    },
-    {
-      id: 3,
-      orderNumber: "#ORD-2024-003",
-      productName: "Samsung S24 Ultra",
-      storeName: "Al-fuhood",
-      remaining: "500",
-      totalAmount: "1000",
-      progress: 70,
-      date: "Due Date: 20/03/2024",
-      icon: "phone-portrait",
-      status: "Processing",
-    },
-  ];
+  // Fetch orders on mount
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-  const filteredInstallments = installments.filter((item) => {
-    if (activeTab === "all") return true;
-    if (activeTab === "active") return item.status === "Processing";
-    if (activeTab === "completed") return item.status === "Paid";
-    return true;
-  });
-
-  const ProgressBar = ({ progress }) => {
-    return (
-      <View style={styles.progressBarContainer}>
-        <View style={styles.progressBarBackground}>
-          <LinearGradient
-            colors={["#26589c", "#9cb2d8"]}
-            style={[styles.progressBar, { width: `${progress}%` }]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          />
-        </View>
-        <Text style={styles.progressText}>{progress}% Paid</Text>
-      </View>
-    );
+  // Callback to update orders after an installment is paid and refetch
+  const onInstallmentUpdate = async () => {
+    // Refetch orders to ensure the UI reflects the latest status
+    await fetchOrders();
   };
 
-  const StatusBadge = ({ status }) => {
-    return (
-      <View
-        style={[
-          styles.statusBadge,
-          status === "Processing" ? styles.processingBadge : styles.paidBadge,
-        ]}
-      >
-        <Text style={styles.statusText}>{status}</Text>
-      </View>
-    );
+  // Get product names from orderItems
+  const getProductNames = (orderItems) => {
+    if (!orderItems || orderItems.length === 0) return "No Products";
+    return orderItems.map((item) => item.product.name).join(", ");
   };
 
-  const renderInstallmentCard = (item) => (
+  const renderOrderCard = (item) => (
     <TouchableOpacity
-      key={item.id}
+      key={item.orderId}
       style={styles.card}
-      onPress={() => navigation.navigate("SingleInstallmentScreen", { item })}
+      onPress={() =>
+        navigation.navigate("SingleInstallmentScreen", { item, onInstallmentUpdate })
+      }
     >
       <View style={styles.cardHeader}>
         <View style={styles.productIcon}>
-          <Ionicons name={item.icon} size={24} color="#fff" />
+          <Ionicons name="cart-outline" size={24} color="#fff" />
         </View>
         <View style={styles.cardTitleContainer}>
-          <Text style={styles.cardTitle}>{item.productName}</Text>
-          <Text style={styles.cardSubtitle}>{item.storeName}</Text>
+          <Text style={styles.cardTitle}>{getProductNames(item.orderItems)}</Text>
+          <Text style={styles.cardSubtitle}>Order #{item.orderId}</Text>
         </View>
         <View
           style={[
             styles.statusBadge,
             {
               backgroundColor:
-                item.status === "Processing" ? "#26589c" : "#4CAF50",
+                item.status === "Pending" ? "#26589c" : "#4CAF50",
             },
           ]}
         >
           <Text style={styles.statusText}>{item.status}</Text>
-        </View>
-      </View>
-
-      <View style={styles.progressContainer}>
-        <View style={styles.progressHeader}>
-          <Text style={styles.progressText}>Payment Progress</Text>
-          <Text style={styles.progressPercentage}>{item.progress}%</Text>
-        </View>
-        <View style={styles.progressBarContainer}>
-          <LinearGradient
-            colors={["#4CAF50", "#8BC34A"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[styles.progressBar, { width: `${item.progress}%` }]}
-          />
-        </View>
-      </View>
-
-      <View style={styles.cardFooter}>
-        <View style={styles.amountContainer}>
-          <Text style={styles.amountLabel}>Remaining Amount</Text>
-          <Text style={styles.amountValue}>{item.remaining} KD</Text>
-        </View>
-        <View style={styles.dateContainer}>
-          <Text style={styles.dateLabel}>Due Date</Text>
-          <Text style={styles.dateValue}>{item.date}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -162,80 +87,22 @@ const InstallmentsScreen = () => {
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>My Installments</Text>
         </View>
-
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "all" && styles.activeTab]}
-            onPress={() => handleTabPress("all")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "all" && styles.activeTabText,
-              ]}
-            >
-              All
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "active" && styles.activeTab]}
-            onPress={() => handleTabPress("active")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "active" && styles.activeTabText,
-              ]}
-            >
-              Processing
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "completed" && styles.activeTab]}
-            onPress={() => handleTabPress("completed")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === "completed" && styles.activeTabText,
-              ]}
-            >
-              Paid
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.headerStats}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>
-              {
-                installments.filter((item) => item.status === "Processing")
-                  .length
-              }
-            </Text>
-            <Text style={styles.statLabel}>Processing</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>
-              {installments.reduce(
-                (sum, item) => sum + parseFloat(item.remaining),
-                0
-              )}{" "}
-              KD
-            </Text>
-            <Text style={styles.statLabel}>Remaining</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>
-              {installments.filter((item) => item.status === "Paid").length}
-            </Text>
-            <Text style={styles.statLabel}>Paid</Text>
-          </View>
-        </View>
       </LinearGradient>
 
       <ScrollView style={styles.content}>
-        {filteredInstallments.map(renderInstallmentCard)}
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading...</Text>
+          </View>
+        ) : orders.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Ionicons name="cart-outline" size={64} color="#26589c" />
+            <Text style={styles.emptyText}>No Installments Found</Text>
+            <Text style={styles.emptySubtext}>Your orders will appear here.</Text>
+          </View>
+        ) : (
+          orders.map(renderOrderCard)
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -277,71 +144,35 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
-  tabContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 15,
-  },
-  tab: {
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 25,
-    marginHorizontal: 8,
-    backgroundColor: "rgba(255,255,255,0.1)",
-  },
-  activeTab: {
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  tabText: {
-    color: "rgba(255,255,255,0.7)",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  activeTabText: {
-    color: "#26589c",
-  },
-  headerStats: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 15,
-    paddingBottom: 10,
-  },
-  statItem: {
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.1)",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 20,
-    minWidth: 100,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    textShadowColor: "rgba(0, 0, 0, 0.2)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.9)",
-    marginTop: 5,
-  },
   content: {
     flex: 1,
     padding: 15,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 18,
+    color: "#666",
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#26589c",
+    marginTop: 16,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 8,
   },
   card: {
     backgroundColor: "#fff",
@@ -360,7 +191,6 @@ const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
   },
   productIcon: {
     width: 50,
@@ -389,75 +219,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 15,
   },
-  processingBadge: {
-    backgroundColor: "rgba(38, 88, 156, 0.1)",
-  },
-  paidBadge: {
-    backgroundColor: "rgba(76, 175, 80, 0.1)",
-  },
   statusText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "600",
-  },
-  progressContainer: {
-    marginBottom: 20,
-  },
-  progressHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  progressText: {
-    fontSize: 14,
-    color: "#666",
-  },
-  progressPercentage: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#26589c",
-  },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  progressBar: {
-    height: "100%",
-    borderRadius: 4,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderTopWidth: 1,
-    borderTopColor: "#f0f0f0",
-    paddingTop: 15,
-  },
-  amountContainer: {
-    alignItems: "flex-start",
-  },
-  dateContainer: {
-    alignItems: "flex-end",
-  },
-  amountLabel: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 4,
-  },
-  amountValue: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#1a237e",
-  },
-  dateLabel: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 4,
-  },
-  dateValue: {
-    fontSize: 14,
-    color: "#333",
   },
 });

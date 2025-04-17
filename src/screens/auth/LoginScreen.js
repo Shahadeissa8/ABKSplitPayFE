@@ -23,7 +23,6 @@ import { setToken } from "../../api/storage";
 import { handleBiometricLogin } from "../auth/auth-utils/handleBiometricLogin";
 import { IconButton } from "react-native-paper";
 
-
 const { width } = Dimensions.get("window");
 
 const LoginScreen = ({ setIsAuthenticated }) => {

@@ -43,6 +43,7 @@ const MyCartScreen = () => {
       .toFixed(2);
   };
 
+
   const handleCheckout = () => {
     const total = calculateTotal();
     console.log("Total calculated in MyCartScreen:", total, "KD"); // Debug log
@@ -260,4 +261,8 @@ const styles = StyleSheet.create({
   },
 });
 
+
+
+
 export default MyCartScreen;
+

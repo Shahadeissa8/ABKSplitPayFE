@@ -14,7 +14,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { getSavedAddresses } from "../../api/profile";
-import { deleteAddress } from "../../api/profile"; 
+import { deleteAddress } from "../../api/profile";
 const Savedaddresses = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -23,7 +23,7 @@ const Savedaddresses = () => {
 
   useEffect(() => {
     loadSavedAddresses();
-  }, [route.params?.refresh]); 
+  }, [route.params?.refresh]);
 
   const loadSavedAddresses = async () => {
     try {
@@ -81,7 +81,7 @@ const Savedaddresses = () => {
       Alert.alert("Error", "Invalid address. Please try again.");
       return;
     }
-  
+
     Alert.alert(
       "Delete Address",
       "Are you sure you want to delete this address?",
@@ -97,13 +97,13 @@ const Savedaddresses = () => {
             try {
               console.log("Deleting address with ID:", address.addressId); // Log the addressId
               await deleteAddress(address.addressId); // Call the deleteAddress API with addressId
-  
+
               // Remove the address from the local state
               const updatedAddresses = addresses.filter(
                 (addr) => addr.addressId !== address.addressId
               );
               setAddresses(updatedAddresses);
-  
+
               Alert.alert("Success", "Address deleted successfully.", [
                 { text: "OK" },
               ]);
@@ -176,22 +176,14 @@ const Savedaddresses = () => {
                       onPress={() => handleSetDefaultAddress(address)}
                       style={styles.actionButton}
                     >
-                      <Ionicons
-                        name="star-outline"
-                        size={20}
-                        color="#26589c"
-                      />
+                      <Ionicons name="star-outline" size={20} color="#26589c" />
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity
                     onPress={() => handleDeleteAddress(address)}
                     style={[styles.actionButton, styles.deleteButton]}
                   >
-                    <Ionicons
-                      name="trash-outline"
-                      size={20}
-                      color="#ff4444"
-                    />
+                    <Ionicons name="trash-outline" size={20} color="#ff4444" />
                   </TouchableOpacity>
                 </View>
               </View>

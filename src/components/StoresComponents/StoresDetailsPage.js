@@ -70,7 +70,7 @@ const StoresDetailsPage = ({ StoreDetails }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
   },
   contentContainer: {
     flex: 1,

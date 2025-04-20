@@ -13,7 +13,7 @@ import React, { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { Video } from "expo-av"; // Corrected import
+import { Video } from "expo-av";
 
 const { width, height } = Dimensions.get("window");
 
@@ -45,121 +45,115 @@ const OnBoardingScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={["#9cb2d8", "#26589c"]}
+      style={styles.gradientBackground}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="dark-content" backgroundColor="#9cb2d8" />
-      <LinearGradient
-        colors={["#9cb2d8", "#26589c"]}
-        style={styles.gradientBackground}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <View style={styles.contentContainer}>
-          <Animated.View
-            style={[
-              styles.logoContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
-              },
-            ]}
+      <SafeAreaView style={styles.contentContainer}>
+        <Animated.View
+          style={[
+            styles.logoContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+            },
+          ]}
+        >
+          <LinearGradient
+            colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]}
+            style={styles.logoBackground}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <View style={styles.logoWrapper}>
+              <Video
+                ref={videoRef}
+                source={require("../../../assets/SplitPay_1.mp4")}
+                style={styles.video}
+                resizeMode="cover"
+                shouldPlay
+                isLooping
+                isMuted
+                onError={(error) => console.log("Video Error:", error)}
+              />
+            </View>
+          </LinearGradient>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.textContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <Text style={styles.title}>Welcome To{"\n"}ABK SplitPay</Text>
+          <Text style={styles.subtitle}>
+            Split your bills easily and securely
+          </Text>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.buttonContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("RegisterScreen")}
+            activeOpacity={0.8}
           >
             <LinearGradient
-              colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]}
-              style={styles.logoBackground}
+              colors={["#26589c", "#1a3b6c"]}
+              style={styles.gradientButton}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              end={{ x: 1, y: 0 }}
             >
-              <View style={styles.logoWrapper}>
-                <Video
-                  ref={videoRef}
-                  source={require("../../../assets/SplitPay_1.mp4")}
-                  style={styles.video}
-                  resizeMode="cover"
-                  shouldPlay
-                  isLooping
-                  isMuted
-                  onError={(error) => console.log("Video Error:", error)}
-                />
-              </View>
+              <Text style={styles.buttonText}>Get Started</Text>
+              <Ionicons
+                name="arrow-forward-outline"
+                size={24}
+                color="#fff"
+                style={styles.buttonIcon}
+              />
             </LinearGradient>
-          </Animated.View>
+          </TouchableOpacity>
 
-          <Animated.View
-            style={[
-              styles.textContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              },
-            ]}
+          <TouchableOpacity
+            style={[styles.button, styles.loginButton]}
+            onPress={() => navigation.navigate("LoginScreen")}
+            activeOpacity={0.8}
           >
-            <Text style={styles.title}>Welcome To{"\n"}ABK SplitPay</Text>
-            <Text style={styles.subtitle}>
-              Split your bills easily and securely
-            </Text>
-          </Animated.View>
-
-          <Animated.View
-            style={[
-              styles.buttonContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              },
-            ]}
-          >
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate("RegisterScreen")}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={["#26589c", "#1a3b6c"]}
-                style={styles.gradientButton}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
-                <Text style={styles.buttonText}>Get Started</Text>
-                <Ionicons
-                  name="arrow-forward-outline"
-                  size={24}
-                  color="#fff"
-                  style={styles.buttonIcon}
-                />
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.loginButton]}
-              onPress={() => navigation.navigate("LoginScreen")}
-              activeOpacity={0.8}
-            >
-              <View style={styles.gradientButton}>
-                <Text style={styles.loginButtonText}>
-                  I already have an account
-                </Text>
-                <Ionicons
-                  name="log-in-outline"
-                  size={24}
-                  color="#26589c"
-                  style={styles.buttonIcon}
-                />
-              </View>
-            </TouchableOpacity>
-          </Animated.View>
-        </View>
-      </LinearGradient>
-    </SafeAreaView>
+            <View style={styles.gradientButton}>
+              <Text style={styles.loginButtonText}>
+                I already have an account
+              </Text>
+              <Ionicons
+                name="log-in-outline"
+                size={24}
+                color="#26589c"
+                style={styles.buttonIcon}
+              />
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 export default OnBoardingScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
   gradientBackground: {
     flex: 1,
   },

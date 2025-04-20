@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Platform,
   Dimensions,
   TextInput,
   Modal,
@@ -111,7 +110,8 @@ const PaymentMethods = () => {
       Alert.alert("Success", "Payment method added successfully", [
         {
           text: "OK",
-          onPress: () => navigation.navigate("PaymentMethods", { refresh: Date.now() }),        },
+          onPress: () => navigation.navigate("PaymentMethods", { refresh: Date.now() }),
+        },
       ]);
     } catch (error) {
       Alert.alert("Error", "Failed to add payment method. Please try again.", [
@@ -159,265 +159,267 @@ const PaymentMethods = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      <LinearGradient
-        colors={["#26589c", "#26589c"]}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Payment Method</Text>
-          <View style={{ width: 40 }} />
-        </View>
-      </LinearGradient>
-
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.mainContent}>
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>CHOOSE CARD TYPE</Text>
+    <LinearGradient
+      colors={["#26589c", "#26589c"]}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+    >
+      <StatusBar barStyle="light-content" translucent={true} />
+      <SafeAreaView style={styles.innerContainer}>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
             <TouchableOpacity
-              style={[
-                styles.cardTypeSelector,
-                selectedCardType && { borderColor: selectedCardType.color },
-              ]}
-              onPress={() => setShowCardTypeModal(true)}
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
             >
-              <View style={styles.cardTypeSelectorContent}>
-                {selectedCardType ? (
-                  <View style={styles.selectedCardTypeInfo}>
-                    <LinearGradient
-                      colors={[selectedCardType.color, selectedCardType.secondaryColor]}
-                      style={styles.selectedCardTypeLogo}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                    >
-                      <Text style={[styles.cardTypeShortName, { color: "#fff" }]}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Add Payment Method</Text>
+            <View style={{ width: 40 }} />
+          </View>
+        </View>
+
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.mainContent}>
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>CHOOSE CARD TYPE</Text>
+              <TouchableOpacity
+                style={[
+                  styles.cardTypeSelector,
+                  selectedCardType && { borderColor: selectedCardType.color },
+                ]}
+                onPress={() => setShowCardTypeModal(true)}
+              >
+                <View style={styles.cardTypeSelectorContent}>
+                  {selectedCardType ? (
+                    <View style={styles.selectedCardTypeInfo}>
+                      <LinearGradient
+                        colors={[selectedCardType.color, selectedCardType.secondaryColor]}
+                        style={styles.selectedCardTypeLogo}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                      >
+                        <Text style={[styles.cardTypeShortName, { color: "#fff" }]}>
+                          {selectedCardType.name}
+                        </Text>
+                      </LinearGradient>
+                      <Text style={styles.selectedCardTypeName}>
                         {selectedCardType.name}
                       </Text>
-                    </LinearGradient>
-                    <Text style={styles.selectedCardTypeName}>
-                      {selectedCardType.name}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={styles.cardTypeSelectorLabel}>Choose card type</Text>
-                )}
-                <Ionicons
-                  name="chevron-down"
-                  size={24}
-                  color={selectedCardType?.color || "#26589c"}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>CARD DETAILS</Text>
-            <View style={styles.cardForm}>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Card Number</Text>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    focusedInput === "cardNumber" &&
-                      styles.inputContainerFocused,
-                    focusedInput === "cardNumber" &&
-                      selectedCardType && { borderColor: selectedCardType.color },
-                  ]}
-                >
+                    </View>
+                  ) : (
+                    <Text style={styles.cardTypeSelectorLabel}>Choose card type</Text>
+                  )}
                   <Ionicons
-                    name="card-outline"
-                    size={20}
-                    color="#666"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="1234 5678 9012 3456"
-                    value={cardNumber}
-                    onChangeText={(text) =>
-                      setCardNumber(formatCardNumber(text))
-                    }
-                    keyboardType="numeric"
-                    maxLength={19}
-                    onFocus={() => setFocusedInput("cardNumber")}
-                    onBlur={() => setFocusedInput(null)}
+                    name="chevron-down"
+                    size={24}
+                    color={selectedCardType?.color || "#26589c"}
                   />
                 </View>
-              </View>
+              </TouchableOpacity>
+            </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Cardholder Name</Text>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    focusedInput === "cardHolder" &&
-                      styles.inputContainerFocused,
-                    focusedInput === "cardHolder" &&
-                      selectedCardType && { borderColor: selectedCardType.color },
-                  ]}
-                >
-                  <Ionicons
-                    name="person-outline"
-                    size={20}
-                    color="#666"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Name"
-                    value={cardHolder}
-                    onChangeText={setCardHolder}
-                    autoCapitalize="characters"
-                    onFocus={() => setFocusedInput("cardHolder")}
-                    onBlur={() => setFocusedInput(null)}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={[styles.inputGroup, { flex: 1, marginRight: 12 }]}>
-                  <Text style={styles.label}>Expiry Date</Text>
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>CARD DETAILS</Text>
+              <View style={styles.cardForm}>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.label}>Card Number</Text>
                   <View
                     style={[
                       styles.inputContainer,
-                      focusedInput === "expiryDate" &&
+                      focusedInput === "cardNumber" &&
                         styles.inputContainerFocused,
-                      focusedInput === "expiryDate" &&
+                      focusedInput === "cardNumber" &&
                         selectedCardType && { borderColor: selectedCardType.color },
                     ]}
                   >
                     <Ionicons
-                      name="calendar-outline"
+                      name="card-outline"
                       size={20}
                       color="#666"
                       style={styles.inputIcon}
                     />
                     <TextInput
                       style={styles.input}
-                      placeholder="MM/YY"
-                      value={expiryDate}
+                      placeholder="1234 5678 9012 3456"
+                      value={cardNumber}
                       onChangeText={(text) =>
-                        setExpiryDate(formatExpiryDate(text))
+                        setCardNumber(formatCardNumber(text))
                       }
                       keyboardType="numeric"
-                      maxLength={5}
-                      onFocus={() => setFocusedInput("expiryDate")}
+                      maxLength={19}
+                      onFocus={() => setFocusedInput("cardNumber")}
                       onBlur={() => setFocusedInput(null)}
                     />
                   </View>
                 </View>
-                <View style={[styles.inputGroup, { flex: 1 }]}>
-                  <Text style={styles.label}>CVV</Text>
+
+                <View style={styles.inputGroup}>
+                  <Text style={styles.label}>Cardholder Name</Text>
                   <View
                     style={[
                       styles.inputContainer,
-                      focusedInput === "cvv" && styles.inputContainerFocused,
-                      focusedInput === "cvv" &&
+                      focusedInput === "cardHolder" &&
+                        styles.inputContainerFocused,
+                      focusedInput === "cardHolder" &&
                         selectedCardType && { borderColor: selectedCardType.color },
                     ]}
                   >
                     <Ionicons
-                      name="lock-closed-outline"
+                      name="person-outline"
                       size={20}
                       color="#666"
                       style={styles.inputIcon}
                     />
                     <TextInput
                       style={styles.input}
-                      placeholder="123"
-                      value={cvv}
-                      onChangeText={setCvv}
-                      keyboardType="numeric"
-                      maxLength={3}
-                      secureTextEntry
-                      onFocus={() => setFocusedInput("cvv")}
+                      placeholder="Name"
+                      value={cardHolder}
+                      onChangeText={setCardHolder}
+                      autoCapitalize="characters"
+                      onFocus={() => setFocusedInput("cardHolder")}
                       onBlur={() => setFocusedInput(null)}
                     />
                   </View>
                 </View>
+
+                <View style={styles.row}>
+                  <View style={[styles.inputGroup, { flex: 1, marginRight: 12 }]}>
+                    <Text style={styles.label}>Expiry Date</Text>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        focusedInput === "expiryDate" &&
+                          styles.inputContainerFocused,
+                        focusedInput === "expiryDate" &&
+                          selectedCardType && { borderColor: selectedCardType.color },
+                      ]}
+                    >
+                      <Ionicons
+                        name="calendar-outline"
+                        size={20}
+                        color="#666"
+                        style={styles.inputIcon}
+                      />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="MM/YY"
+                        value={expiryDate}
+                        onChangeText={(text) =>
+                          setExpiryDate(formatExpiryDate(text))
+                        }
+                        keyboardType="numeric"
+                        maxLength={5}
+                        onFocus={() => setFocusedInput("expiryDate")}
+                        onBlur={() => setFocusedInput(null)}
+                      />
+                    </View>
+                  </View>
+                  <View style={[styles.inputGroup, { flex: 1 }]}>
+                    <Text style={styles.label}>CVV</Text>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        focusedInput === "cvv" && styles.inputContainerFocused,
+                        focusedInput === "cvv" &&
+                          selectedCardType && { borderColor: selectedCardType.color },
+                      ]}
+                    >
+                      <Ionicons
+                        name="lock-closed-outline"
+                        size={20}
+                        color="#666"
+                        style={styles.inputIcon}
+                      />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="123"
+                        value={cvv}
+                        onChangeText={setCvv}
+                        keyboardType="numeric"
+                        maxLength={3}
+                        secureTextEntry
+                        onFocus={() => setFocusedInput("cvv")}
+                        onBlur={() => setFocusedInput(null)}
+                      />
+                    </View>
+                  </View>
+                </View>
+
+                {/* Checkbox for isDefault */}
+                <TouchableOpacity
+                  style={styles.checkboxContainer}
+                  onPress={() => setIsDefault(!isDefault)}
+                >
+                  <Ionicons
+                    name={isDefault ? "checkbox-outline" : "square-outline"}
+                    size={24}
+                    color="#26589c"
+                    style={styles.checkboxIcon}
+                  />
+                  <Text style={styles.checkboxLabel}>Set as Default Payment Method</Text>
+                </TouchableOpacity>
               </View>
-
-              {/* Checkbox for isDefault */}
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={() => setIsDefault(!isDefault)}
-              >
-                <Ionicons
-                  name={isDefault ? "checkbox-outline" : "square-outline"}
-                  size={24}
-                  color="#26589c"
-                  style={styles.checkboxIcon}
-                />
-                <Text style={styles.checkboxLabel}>Set as Default Payment Method</Text>
-              </TouchableOpacity>
             </View>
           </View>
-        </View>
 
-        <TouchableOpacity
-          style={[
-            styles.saveButton,
-            { backgroundColor: selectedCardType?.color || "#26589c" },
-          ]}
-          onPress={handleSave}
-        >
-          <LinearGradient
-            colors={[
-              selectedCardType?.color || "#26589c",
-              (selectedCardType?.color || "#26589c") + "CC",
+          <TouchableOpacity
+            style={[
+              styles.saveButton,
+              { backgroundColor: selectedCardType?.color || "#26589c" },
             ]}
-            style={styles.saveButtonGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+            onPress={handleSave}
           >
-            <Text style={styles.saveButtonText}>Save Card</Text>
-            <View style={styles.saveButtonIcon}>
-              <Ionicons name="arrow-forward" size={20} color="#fff" />
-            </View>
-          </LinearGradient>
-        </TouchableOpacity>
-      </ScrollView>
-
-      <Modal
-        visible={showCardTypeModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowCardTypeModal(false)}
-      >
-        <BlurView intensity={20} style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Card Type</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setShowCardTypeModal(false)}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-            <ScrollView
-              style={styles.cardTypeList}
-              showsVerticalScrollIndicator={false}
+            <LinearGradient
+              colors={[
+                selectedCardType?.color || "#26589c",
+                (selectedCardType?.color || "#26589c") + "CC",
+              ]}
+              style={styles.saveButtonGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
             >
-              {cardTypes.map(renderCardTypeOption)}
-            </ScrollView>
-          </View>
-        </BlurView>
-      </Modal>
-    </SafeAreaView>
+              <Text style={styles.saveButtonText}>Save Card</Text>
+              <View style={styles.saveButtonIcon}>
+                <Ionicons name="arrow-forward" size={20} color="#fff" />
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        </ScrollView>
+
+        <Modal
+          visible={showCardTypeModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowCardTypeModal(false)}
+        >
+          <BlurView intensity={20} style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Card Type</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setShowCardTypeModal(false)}
+                >
+                  <Ionicons name="close" size={24} color="#666" />
+                </TouchableOpacity>
+              </View>
+              <ScrollView
+                style={styles.cardTypeList}
+                showsVerticalScrollIndicator={false}
+              >
+                {cardTypes.map(renderCardTypeOption)}
+              </ScrollView>
+            </View>
+          </BlurView>
+        </Modal>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -426,10 +428,11 @@ export default PaymentMethods;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: "#f8f9fa",
+  },
+  innerContainer: {
+    flex: 1,
   },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingBottom: 16,
   },
   headerContent: {
@@ -453,6 +456,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    backgroundColor: "#f8f9fa", // Preserve the grayish background
   },
   scrollContent: {
     padding: 16,
@@ -462,17 +466,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 24,
     padding: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
   },
   section: {
     marginBottom: 24,
@@ -508,17 +505,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   selectedCardTypeName: {
     fontSize: 16,
@@ -583,17 +573,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   cardTypeInfo: {
     flex: 1,
@@ -673,17 +656,10 @@ const styles = StyleSheet.create({
     marginTop: 24,
     borderRadius: 16,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   saveButtonGradient: {
     padding: 16,

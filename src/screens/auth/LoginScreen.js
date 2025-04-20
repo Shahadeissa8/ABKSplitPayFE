@@ -18,11 +18,10 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { login } from "../../api/auth";
-import { getToken } from "../../api/storage";
+//import { getToken } from "../../api/storage";
 import { setToken } from "../../api/storage";
-import { handleBiometricLogin } from "../auth/auth-utils/handleBiometricLogin";
-import { IconButton } from "react-native-paper";
-
+//import { handleBiometricLogin } from "../auth/auth-utils/handleBiometricLogin";
+//import { IconButton } from "react-native-paper";
 
 const { width } = Dimensions.get("window");
 
@@ -87,49 +86,55 @@ const LoginScreen = ({ setIsAuthenticated }) => {
     } catch (error) {
       Alert.alert("Error", error.message || "Login failed. Please try again.");
     }
-
   }, [userName, password, navigation, setIsAuthenticated]);
+
   // biometric login
-  const authenticate = async () => {
-    // call function to check authentication
-    setLogin("Logging in");
+  // const authenticate = async () => {
+  //   // call function to check authentication
+  //   setLogin("Logging in");
 
-    const refreshToken = await getToken("refresh");
+  //   const refreshToken = await getToken("refresh");
 
-    try {
-      if (refreshToken) {
-        const status = await handleBiometricLogin();
+  //   try {
+  //     if (refreshToken) {
+  //       const status = await handleBiometricLogin();
 
-        if (status) {
-          // over here is where the refresh token will be used to obtain a new access token to login with
-          // For now, "setAuthenticated" is turned true to hide "AuthNaviagtor" component without actually
-          // retrieving any actual user information from backend
+  //       if (status) {
+  //         // over here is where the refresh token will be used to obtain a new access token to login with
+  //         // For now, "setAuthenticated" is turned true to hide "AuthNaviagtor" component without actually
+  //         // retrieving any actual user information from backend
 
-          const response = await refreshTokenAPI(refreshToken);
+  //         const response = await refreshTokenAPI(refreshToken);
 
-          await setToken(response.accessToken, "access");
-          await setToken(response.refreshToken, "refresh");
+  //         await setToken(response.accessToken, "access");
+  //         await setToken(response.refreshToken, "refresh");
 
-          checkToken();
-        }
-      } else {
-        setNotificationMessage("Biometric data not found");
-        setNotificationVisible(true);
-        setTimeout(() => {
-          setNotificationVisible(false);
-        }, 3000); // Hide the banner after 3 seconds
-      }
-    } catch (error) {
-      setNotificationMessage(error.message || "An error occurred during biometric authentication.");
-      setNotificationVisible(true);
-      setTimeout(() => {
-        setNotificationVisible(false);
-      }, 3000); // Hide the banner after 3 seconds
-    }
-    setLogin("Login");
-  };
+  //         checkToken();
+  //       }
+  //     } else {
+  //       setNotificationMessage("Biometric data not found");
+  //       setNotificationVisible(true);
+  //       setTimeout(() => {
+  //         setNotificationVisible(false);
+  //       }, 3000); // Hide the banner after 3 seconds
+  //     }
+  //   } catch (error) {
+  //     setNotificationMessage(error.message || "An error occurred during biometric authentication.");
+  //     setNotificationVisible(true);
+  //     setTimeout(() => {
+  //       setNotificationVisible(false);
+  //     }, 3000); // Hide the banner after 3 seconds
+  //   }
+  //   setLogin("Login");
+  // };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      style={styles.gradientBackground}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -138,12 +143,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
           Platform.OS === "ios" ? 0 : StatusBar.currentHeight
         }
       >
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          style={styles.gradientBackground}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
+        <SafeAreaView style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <Animated.View
               style={[
@@ -266,17 +266,17 @@ const LoginScreen = ({ setIsAuthenticated }) => {
             </Animated.View>
           </ScrollView>
           {/* Biometric Login Button */}
-          <IconButton
+          {/* <IconButton
             icon="fingerprint"
             size={70}
             style={styles.biometric}
             onPress={authenticate}
             iconColor="rgba(255, 255, 255, 0.2)" // Set the icon color to white
           />
-          <Text style={styles.biometricText}>Login with Fingerprint</Text>
-        </LinearGradient>
+          <Text style={styles.biometricText}>Login with Fingerprint</Text> */}
+        </SafeAreaView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -289,7 +289,6 @@ const styles = StyleSheet.create({
   gradientBackground: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headerContainer: {
     alignItems: "center",
@@ -419,14 +418,14 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     marginLeft: 4,
   },
-  biometric: {
-    alignSelf: "center",
-    marginTop: 40,
-  },
-  biometricText: {
-    fontSize: 14,
-    textAlign: "center",
-    marginTop: 8,
-    color: "rgba(255, 255, 255, 0.22)",
-  },
+  // biometric: {
+  //   alignSelf: "center",
+  //   marginTop: 40,
+  // },
+  // biometricText: {
+  //   fontSize: 14,
+  //   textAlign: "center",
+  //   marginTop: 8,
+  //   color: "rgba(255, 255, 255, 0.22)",
+  // },
 });

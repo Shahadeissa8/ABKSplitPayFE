@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from "react";
+
 import {
   StyleSheet,
   Text,
@@ -81,30 +83,96 @@ const InstallmentsScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>My Installments</Text>
-        </View>
-      </LinearGradient>
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
+      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
+      <SafeAreaView style={styles.innerContainer}>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <Text style={styles.headerTitle}>My Installments</Text>
+          </View>
 
-      <ScrollView style={styles.content}>
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Loading...</Text>
+          <View style={styles.tabContainer}>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === "all" && styles.activeTab]}
+              onPress={() => handleTabPress("all")}
+            >
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === "all" && styles.activeTabText,
+                ]}
+              >
+                All
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === "active" && styles.activeTab]}
+              onPress={() => handleTabPress("active")}
+            >
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === "active" && styles.activeTabText,
+                ]}
+              >
+                Processing
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === "completed" && styles.activeTab]}
+              onPress={() => handleTabPress("completed")}
+            >
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === "completed" && styles.activeTabText,
+                ]}
+              >
+                Paid
+              </Text>
+            </TouchableOpacity>
           </View>
-        ) : orders.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Ionicons name="cart-outline" size={64} color="#26589c" />
-            <Text style={styles.emptyText}>No Installments Found</Text>
-            <Text style={styles.emptySubtext}>Your orders will appear here.</Text>
+
+          <View style={styles.headerStats}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>
+                {
+                  installments.filter((item) => item.status === "Processing")
+                    .length
+                }
+              </Text>
+              <Text style={styles.statLabel}>Processing</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>
+                {installments.reduce(
+                  (sum, item) => sum + parseFloat(item.remaining),
+                  0
+                )}{" "}
+                KD
+              </Text>
+              <Text style={styles.statLabel}>Remaining</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>
+                {installments.filter((item) => item.status === "Paid").length}
+              </Text>
+              <Text style={styles.statLabel}>Paid</Text>
+            </View>
           </View>
-        ) : (
-          orders.map(renderOrderCard)
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        </View>
+
+        <ScrollView style={styles.content}>
+          {filteredInstallments.map(renderInstallmentCard)}
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
+
   );
 };
 
@@ -113,13 +181,14 @@ export default InstallmentsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+  },
+  innerContainer: {
+    flex: 1,
   },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingBottom: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30, // Keep the oval shape
+    borderBottomRightRadius: 30, // Keep the oval shape
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -171,8 +240,15 @@ const styles = StyleSheet.create({
   },
   emptySubtext: {
     fontSize: 14,
-    color: "#666",
-    marginTop: 8,
+
+    color: "rgba(255,255,255,0.9)",
+    marginTop: 5,
+  },
+  content: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: "#f5f5f5", // Match the original container background
+
   },
   card: {
     backgroundColor: "#fff",
@@ -224,4 +300,66 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
+
+  progressContainer: {
+    marginBottom: 20,
+  },
+  progressHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  progressText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  progressPercentage: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#26589c",
+  },
+  progressBarContainer: {
+    height: 8,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 4,
+    overflow: "hidden",
+  },
+  progressBar: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  cardFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+    paddingTop: 15,
+  },
+  amountContainer: {
+    alignItems: "flex-start",
+  },
+  dateContainer: {
+    alignItems: "flex-end",
+  },
+  amountLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 4,
+  },
+  amountValue: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1a237e",
+  },
+  dateLabel: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 4,
+  },
+  dateValue: {
+    fontSize: 14,
+    color: "#333",
+  },
+
 });

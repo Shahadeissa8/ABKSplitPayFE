@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
-  Platform,
   SafeAreaView,
   Modal,
   Alert,
@@ -138,8 +137,12 @@ const SingleInstallmentScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
         <View style={styles.headerContent}>
           <TouchableOpacity
@@ -214,10 +217,12 @@ const SingleInstallmentScreen = () => {
                       </Text>
                     </TouchableOpacity>
                   )}
+
                 </View>
               </View>
             ))}
           </View>
+
         </View>
       </ScrollView>
 
@@ -243,6 +248,7 @@ const SingleInstallmentScreen = () => {
         </View>
       </Modal>
     </SafeAreaView>
+
   );
 };
 
@@ -251,8 +257,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingBottom: 20,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
@@ -263,13 +272,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
-    elevation: 8,
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 15,
+    paddingTop: 44, // Adjusted for status bar height on iOS
   },
   backButton: {
     marginRight: 15,
@@ -319,13 +327,23 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
-    elevation: 5,
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
   },
+
+  productIcon: {
+    width: 50,
+    height: 50,
+    planeradius: 25,
+    backgroundColor: "#26589c",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+  },
+
   cardTitleContainer: {
     flex: 1,
   },
@@ -359,6 +377,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
+  },
+  detailIcon: {
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  detailInfo: {
+    flex: 1,
   },
   detailLabel: {
     fontSize: 14,
@@ -426,6 +454,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
+
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -468,3 +497,4 @@ const styles = StyleSheet.create({
 });
 
 export default SingleInstallmentScreen;
+

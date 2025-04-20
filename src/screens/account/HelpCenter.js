@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Platform,
   TextInput,
   Dimensions,
 } from "react-native";
@@ -75,12 +74,7 @@ const HelpCenter = () => {
       : faqItems.filter((item) => item.category === activeCategory);
 
   const renderHeader = () => (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      style={styles.header}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-    >
+    <View style={styles.header}>
       <View style={styles.headerContent}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -91,7 +85,7 @@ const HelpCenter = () => {
         <Text style={styles.headerTitle}>Help Center</Text>
         <View style={{ width: 40 }} />
       </View>
-    </LinearGradient>
+    </View>
   );
 
   const renderSearchBar = () => (
@@ -184,20 +178,27 @@ const HelpCenter = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* <StatusBar barStyle="light-content" backgroundColor="#26589c" /> */}
-      {renderHeader()}
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {renderSearchBar()}
-        {renderCategories()}
-        {renderFaqItems()}
-        {renderContactSupport()}
-      </ScrollView>
-    </SafeAreaView>
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+    >
+      <StatusBar barStyle="light-content" translucent={true} />
+      <SafeAreaView style={styles.innerContainer}>
+        {renderHeader()}
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {renderSearchBar()}
+          {renderCategories()}
+          {renderFaqItems()}
+          {renderContactSupport()}
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -206,10 +207,11 @@ export default HelpCenter;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+  },
+  innerContainer: {
+    flex: 1,
   },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingBottom: 16,
   },
   headerContent: {
@@ -233,6 +235,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    backgroundColor: "#f8f9fa", // Preserve the grayish background
   },
   scrollContent: {
     paddingBottom: 32,
@@ -249,17 +252,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 50,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   searchIcon: {
     marginRight: 8,
@@ -293,17 +289,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
     marginRight: 8,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   activeCategoryButton: {
     backgroundColor: "#26589c",
@@ -324,17 +313,10 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 24,
     marginHorizontal: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   faqTitle: {
     fontSize: 18,
@@ -368,17 +350,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   contactGradient: {
     flexDirection: "row",

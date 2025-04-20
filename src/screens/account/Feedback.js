@@ -1,4 +1,3 @@
-//
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -6,7 +5,6 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  Platform,
   StatusBar,
   TextInput,
   ScrollView,
@@ -107,7 +105,12 @@ const Feedback = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <LinearGradient
         colors={["#26589c", "#26589c"]}
         style={styles.header}
@@ -125,111 +128,112 @@ const Feedback = () => {
           <View style={{ width: 40 }} />
         </View>
       </LinearGradient>
-
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>We'd love to hear from you!</Text>
-          <Text style={styles.subtitle}>
-            Your feedback helps us improve our services and provide a better
-            experience.
-          </Text>
-        </View>
-
-        <View style={styles.categoriesContainer}>
-          <Text style={styles.sectionTitle}>What would you like to rate?</Text>
-          <View style={styles.categories}>
-            {categories.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={[
-                  styles.categoryButton,
-                  selectedCategory?.id === category.id &&
-                    styles.selectedCategory,
-                ]}
-                onPress={() => setSelectedCategory(category)}
-              >
-                <LinearGradient
-                  colors={
-                    selectedCategory?.id === category.id
-                      ? category.gradient
-                      : ["#fff", "#fff"]
-                  }
-                  style={styles.categoryGradient}
-                >
-                  <Ionicons
-                    name={category.icon}
-                    size={32}
-                    color={
-                      selectedCategory?.id === category.id ? "#fff" : "#26589c"
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.categoryText,
-                      selectedCategory?.id === category.id &&
-                        styles.selectedCategoryText,
-                    ]}
-                  >
-                    {category.title}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.ratingContainer}>
-          <Text style={styles.sectionTitle}>How was your experience?</Text>
-          {renderStars()}
-        </View>
-
-        <View style={styles.feedbackContainer}>
-          <Text style={styles.sectionTitle}>Tell us more (Optional)</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.feedbackInput}
-              placeholder="Share your thoughts..."
-              placeholderTextColor="#999"
-              multiline
-              value={feedback}
-              onChangeText={setFeedback}
-              textAlignVertical="top"
-            />
-          </View>
-        </View>
-
-        <TouchableOpacity
-          style={[
-            styles.submitButton,
-            (!selectedCategory || rating === 0) && styles.submitButtonDisabled,
-          ]}
-          onPress={handleSubmit}
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          <LinearGradient
-            colors={
-              !selectedCategory || rating === 0
-                ? ["#ccc", "#999"]
-                : ["#26589c", "#9cb2d8"]
-            }
-            style={styles.submitGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>We'd love to hear from you!</Text>
+            <Text style={styles.subtitle}>
+              Your feedback helps us improve our services and provide a better
+              experience.
+            </Text>
+          </View>
+
+          <View style={styles.categoriesContainer}>
+            <Text style={styles.sectionTitle}>What would you like to rate?</Text>
+            <View style={styles.categories}>
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category.id}
+                  style={[
+                    styles.categoryButton,
+                    selectedCategory?.id === category.id &&
+                      styles.selectedCategory,
+                  ]}
+                  onPress={() => setSelectedCategory(category)}
+                >
+                  <LinearGradient
+                    colors={
+                      selectedCategory?.id === category.id
+                        ? category.gradient
+                        : ["#fff", "#fff"]
+                    }
+                    style={styles.categoryGradient}
+                  >
+                    <Ionicons
+                      name={category.icon}
+                      size={32}
+                      color={
+                        selectedCategory?.id === category.id ? "#fff" : "#26589c"
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        selectedCategory?.id === category.id &&
+                          styles.selectedCategoryText,
+                      ]}
+                    >
+                      {category.title}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.ratingContainer}>
+            <Text style={styles.sectionTitle}>How was your experience?</Text>
+            {renderStars()}
+          </View>
+
+          <View style={styles.feedbackContainer}>
+            <Text style={styles.sectionTitle}>Tell us more (Optional)</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.feedbackInput}
+                placeholder="Share your thoughts..."
+                placeholderTextColor="#999"
+                multiline
+                value={feedback}
+                onChangeText={setFeedback}
+                textAlignVertical="top"
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              (!selectedCategory || rating === 0) && styles.submitButtonDisabled,
+            ]}
+            onPress={handleSubmit}
           >
-            <Text style={styles.submitText}>Submit Feedback</Text>
-            <Ionicons
-              name="send"
-              size={20}
-              color="#fff"
-              style={styles.submitIcon}
-            />
-          </LinearGradient>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+            <LinearGradient
+              colors={
+                !selectedCategory || rating === 0
+                  ? ["#ccc", "#999"]
+                  : ["#26589c", "#9cb2d8"]
+              }
+              style={styles.submitGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text style={styles.submitText}>Submit Feedback</Text>
+              <Ionicons
+                name="send"
+                size={20}
+                color="#fff"
+                style={styles.submitIcon}
+              />
+            </LinearGradient>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
 
@@ -240,8 +244,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f9fa",
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
   header: {
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingBottom: 16,
   },
   headerContent: {
@@ -249,6 +256,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    paddingTop: 44, // Adjusted for status bar height on iOS
   },
   backButton: {
     width: 40,
@@ -276,17 +284,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 15,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   title: {
     fontSize: 26,
@@ -321,17 +322,10 @@ const styles = StyleSheet.create({
     width: width * 0.43,
     borderRadius: 15,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   categoryGradient: {
     padding: 20,
@@ -353,17 +347,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 25,
     borderRadius: 15,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   starsContainer: {
     alignItems: "center",
@@ -400,17 +387,10 @@ const styles = StyleSheet.create({
   inputWrapper: {
     backgroundColor: "#fff",
     borderRadius: 15,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   feedbackInput: {
     height: 150,
@@ -423,17 +403,10 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: "hidden",
     marginBottom: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    shadowColor: "#26589c",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   submitButtonDisabled: {
     opacity: 0.7,
@@ -454,4 +427,3 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
-

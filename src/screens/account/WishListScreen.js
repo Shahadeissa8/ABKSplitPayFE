@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
-  Platform,
   Image,
   Dimensions,
   FlatList,
@@ -72,12 +71,7 @@ const WishListScreen = () => {
   };
 
   const renderHeader = () => (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      style={styles.header}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-    >
+    <View style={styles.header}>
       <View style={styles.headerContent}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -88,7 +82,7 @@ const WishListScreen = () => {
         <Text style={styles.headerTitle}>Wishlist</Text>
         <View style={{ width: 40 }} />
       </View>
-    </LinearGradient>
+    </View>
   );
 
   const renderEmptyState = () => (
@@ -144,33 +138,42 @@ const WishListScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      {renderHeader()}
-      {loading ? (
-        <ActivityIndicator size="large" color="#26589c" style={{ marginTop: 20 }} />
-      ) : wishlistItems.length === 0 ? (
-        renderEmptyState()
-      ) : (
-        <FlatList
-          data={wishlistItems}
-          renderItem={renderWishlistItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </SafeAreaView>
+
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+    >
+      <StatusBar barStyle="light-content" translucent={true} />
+      <SafeAreaView style={styles.innerContainer}>
+        {renderHeader()}
+        {wishlistItems.length === 0 ? (
+          renderEmptyState()
+        ) : (
+          <FlatList
+            data={wishlistItems}
+            renderItem={renderWishlistItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            style={styles.list}
+          />
+        )}
+      </SafeAreaView>
+    </LinearGradient>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+  },
+  innerContainer: {
+    flex: 1,
   },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingBottom: 16,
   },
   headerContent: {
@@ -192,6 +195,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
   },
+  list: {
+    flex: 1,
+    backgroundColor: "#f8f9fa", // Preserve the grayish background
+  },
   listContent: {
     padding: 16,
   },
@@ -201,17 +208,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   itemImage: {
     width: 80,
@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 32,
+    backgroundColor: "#f8f9fa", // Preserve the grayish background
   },
   emptyStateIconContainer: {
     width: 100,

@@ -20,17 +20,21 @@ const AuthNavigation = ({ setIsAuthenticated }) => {
         component={OnBoardingScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="LoginScreen"
-        options={{ headerShown: false }}
-      >
-        {props => <LoginScreen {...props} setIsAuthenticated={setIsAuthenticated} />}
+      <Stack.Screen name="LoginScreen" options={{ headerShown: false }}>
+        {(props) => (
+          <LoginScreen {...props} setIsAuthenticated={setIsAuthenticated} />
+        )}
       </Stack.Screen>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="RegisterScreen"
         component={RegisterScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
+      <Stack.Screen name="RegisterScreen" options={{ headerShown: false }}>
+        {(props) => (
+          <RegisterScreen {...props} setIsAuthenticated={setIsAuthenticated} />
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

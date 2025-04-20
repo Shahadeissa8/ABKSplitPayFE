@@ -17,11 +17,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { register } from "../../api/auth";
+import { setToken } from "../../api/storage";
 
 const { width } = Dimensions.get("window");
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ setIsAuthenticated }) => {
   const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
@@ -31,8 +34,6 @@ const RegisterScreen = () => {
     confirmPassword: "",
     profilePictureUrl: " ", // Set default value to a single space
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validateForm = () => {
     if (!formData.userName.trim()) {
@@ -74,14 +75,34 @@ const RegisterScreen = () => {
         password: formData.password,
         profilePictureUrl: formData.profilePictureUrl, // This will now be " "
       };
+      const response = await register(userInfo);
+      const { token } = response;
+      if (token) {
+        await setToken(token); // Store the token after successful login
+        console.log("Stored Token:", token);
+        Alert.alert("Registration Successful");
 
-      await register(userInfo);
-      Alert.alert("Success", "Registration successful! Please log in.");
-      navigation.navigate("LoginScreen");
+        // Update authentication state
+        setIsAuthenticated(true);
+
+        // Reset the navigation stack and navigate to MainBottomNavigation
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MainBottomNavigation" }],
+        });
+      } else {
+        Alert.alert("Error", "Failed to retrieve token. Please try again.");
+      }
+      // await register(userInfo);
+      // Alert.alert("Success", "Registration successful! Please log in.");
+      // navigation.navigate("LoginScreen");
     } catch (error) {
-      Alert.alert("Error", error.message || "Registration failed. Please try again.");
+      Alert.alert(
+        "Error",
+        error.message || "Registration failed. Please try again."
+      );
     }
-  }, [formData, navigation]);
+  }, [formData, navigation, setIsAuthenticated]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,7 +110,9 @@ const RegisterScreen = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : StatusBar.currentHeight}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? 0 : StatusBar.currentHeight
+        }
       >
         <LinearGradient
           colors={["#26589c", "#9cb2d8"]}
@@ -250,7 +273,9 @@ const RegisterScreen = () => {
                   style={styles.eyeIcon}
                 >
                   <Ionicons
-                    name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+                    name={
+                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
+                    }
                     size={24}
                     color="#26589c"
                   />

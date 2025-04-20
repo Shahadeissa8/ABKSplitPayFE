@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,49 +9,65 @@ import {
   Image,
   Dimensions,
   FlatList,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { getWishList, addToCart, deleteWishListItem } from "../../api/CartAPI"; // Import required functions
 
 const { width } = Dimensions.get("window");
 
-// Sample data - replace with your actual data
-const sampleWishlistItems = [
-  {
-    id: "1",
-    name: "Premium Coffee Beans",
-    price: 12.99,
-    image: "https://via.placeholder.com/150",
-    inStock: true,
-  },
-  {
-    id: "2",
-    name: "Wireless Headphones",
-    price: 89.99,
-    image: "https://via.placeholder.com/150",
-    inStock: true,
-  },
-  {
-    id: "3",
-    name: "Smart Watch",
-    price: 199.99,
-    image: "https://via.placeholder.com/150",
-    inStock: false,
-  },
-];
-
 const WishListScreen = () => {
   const navigation = useNavigation();
-  const [wishlistItems, setWishlistItems] = useState(sampleWishlistItems);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const removeFromWishlist = (itemId) => {
-    setWishlistItems(wishlistItems.filter((item) => item.id !== itemId));
+  // Fetch wishlist items from the backend
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const data = await getWishList(); // Fetch wishlist from the API
+        const formattedItems = data.map((item) => ({
+          id: item.wishListId,
+          productId: item.product.productId,
+          name: item.product.name,
+          price: item.product.price,
+          image: item.product.pictureUrl,
+          inStock: item.product.stockQuantity > 0,
+        }));
+        setWishlistItems(formattedItems);
+      } catch (error) {
+        console.error("Error fetching wishlist:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
+
+  const removeFromWishlist = async (itemId) => {
+    try {
+      await deleteWishListItem(itemId); // Call the delete endpoint
+      setWishlistItems(wishlistItems.filter((item) => item.id !== itemId)); // Update local state
+      Alert.alert("Success", "Item removed from wishlist.");
+    } catch (error) {
+      console.error("Error removing item from wishlist:", error.message);
+      Alert.alert("Error", "Failed to remove item from wishlist.");
+    }
   };
 
-  const moveToCart = (item) => {
-    // Implement move to cart logic here
-    console.log("Moving to cart:", item);
+  const moveToCart = async (item) => {
+    try {
+      await addToCart(item.productId, 1); // Add the item to the cart
+      await removeFromWishlist(item.id); // Remove the item from the wishlist
+      Alert.alert("Success", "Item moved to cart.");
+    } catch (error) {
+      console.error("Error moving item to cart:", error.message);
+      Alert.alert("Error", "Failed to move item to cart.");
+    }
   };
 
   const renderHeader = () => (
@@ -97,7 +113,7 @@ const WishListScreen = () => {
       <Image source={{ uri: item.image }} style={styles.itemImage} />
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+        <Text style={styles.itemPrice}>{item.price.toFixed(2)} KD</Text>
         {!item.inStock && (
           <Text style={styles.outOfStockText}>Out of Stock</Text>
         )}
@@ -122,6 +138,7 @@ const WishListScreen = () => {
   );
 
   return (
+
     <LinearGradient
       colors={["#26589c", "#9cb2d8"]}
       style={styles.container}
@@ -145,6 +162,7 @@ const WishListScreen = () => {
         )}
       </SafeAreaView>
     </LinearGradient>
+
   );
 };
 

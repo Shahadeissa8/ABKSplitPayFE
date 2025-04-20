@@ -1,82 +1,126 @@
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
   TouchableOpacity,
-  StatusBar,
   TextInput,
-  Platform,
   ScrollView,
-  Dimensions,
   Alert,
-  Animated,
+  ActivityIndicator,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { createAddress } from "../../api/profile";
-
-const { width, height } = Dimensions.get("window");
+import * as Location from "expo-location";
+import MapView from "react-native-maps";
 
 const AddLocation = () => {
   const navigation = useNavigation();
   const [addressDetails, setAddressDetails] = useState({
     fullName: "",
     addressLine1: "",
-    addressLine2: "",
     city: "",
     state: "",
     postalCode: "",
     country: "",
-    isDefault: false, // Added isDefault to state
+    latitude: null,
+    longitude: null,
   });
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(50);
-  const scaleAnim = new Animated.Value(0.95);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 20,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    getLocation();
   }, []);
 
-  const handleSubmit = async () => {
-    const { fullName, addressLine1, city, state, postalCode, country, isDefault } = addressDetails;
+  const getLocation = async () => {
+    try {
+      setIsLoadingLocation(true);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Please allow location access to use this feature");
+        return;
+      }
 
-    // Validate required fields
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      setLocation(location);
+      updateLocationDetails(
+        location.coords.latitude,
+        location.coords.longitude
+      );
+    } catch (error) {
+      setErrorMsg("Unable to get your location. Please try again.");
+    } finally {
+      setIsLoadingLocation(false);
+    }
+  };
+
+  const updateLocationDetails = async (latitude, longitude) => {
+    try {
+      const [address] = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+      if (address) {
+        setAddressDetails((prev) => ({
+          ...prev,
+          addressLine1: address.street || "",
+          city: address.city || "",
+          state: address.region || "",
+          postalCode: address.postalCode || "",
+          country: address.country || "",
+          latitude,
+          longitude,
+        }));
+      }
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "Could not fetch address details. Please enter manually."
+      );
+    }
+  };
+
+  const handleMapPress = async (event) => {
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+    updateLocationDetails(latitude, longitude);
+  };
+
+  const handleSubmit = async () => {
+
+    const { fullName, addressLine1, city, state, postalCode, country, isDefault } = addressDetails;
     if (
-      !fullName.trim() ||
-      !addressLine1.trim() ||
-      !city.trim() ||
-      !state.trim() ||
-      !postalCode.trim() ||
-      !country.trim()
+      !addressDetails.fullName ||
+      !addressDetails.addressLine1 ||
+      !addressDetails.city
     ) {
-      Alert.alert("Missing Information", "Please fill in all required address fields", [{ text: "OK" }]);
+      Alert.alert(
+        "Missing Information",
+        "Please fill in at least: Full Name, Address, and City",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
+    if (!addressDetails.latitude || !addressDetails.longitude) {
+      Alert.alert("Location Required", "Please select a location on the map", [
+        { text: "OK" },
+      ]);
       return;
     }
 
     try {
       setIsSaving(true);
+
       // Call the createAddress API
       await createAddress({
         fullName,
@@ -96,38 +140,36 @@ const AddLocation = () => {
             navigation.navigate("Savedaddresses", { refresh: Date.now() }); // Pass refresh parameter
           },
         },
+
       ]);
     } catch (error) {
-      Alert.alert("Error", "Failed to save address. Please try again.", [{ text: "OK" }]);
+      Alert.alert("Error", "Could not save the address. Please try again.", [
+        { text: "OK" },
+      ]);
     } finally {
       setIsSaving(false);
     }
   };
 
-  const renderInputField = (label, placeholder, key, required = true) => (
-    <View style={styles.inputField}>
-      <Text style={styles.inputLabel}>
-        {label} {required && <Text style={styles.requiredStar}>*</Text>}
+  const renderInput = (label, key, placeholder, isRequired = true) => (
+    <View style={styles.inputContainer}>
+      <Text style={styles.label}>
+        {label} {isRequired && <Text style={styles.required}>*</Text>}
       </Text>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder={placeholder}
-          value={addressDetails[key]}
-          onChangeText={(text) =>
-            setAddressDetails((prev) => ({ ...prev, [key]: text }))
-          }
-          placeholderTextColor="#999"
-        />
-      </View>
+      <TextInput
+        style={[styles.input, addressDetails[key] ? styles.inputFilled : null]}
+        value={addressDetails[key]}
+        onChangeText={(text) =>
+          setAddressDetails((prev) => ({ ...prev, [key]: text }))
+        }
+        placeholder={placeholder}
+        placeholderTextColor="#999"
+      />
     </View>
   );
 
-  const toggleIsDefault = () => {
-    setAddressDetails((prev) => ({ ...prev, isDefault: !prev.isDefault }));
-  };
-
   return (
+
     <LinearGradient
       colors={["#26589c", "#9cb2d8"]}
       style={styles.container}
@@ -259,14 +301,14 @@ const AddLocation = () => {
         </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>
+
   );
 };
-
-export default AddLocation;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
   },
   innerContainer: {
     flex: 1,
@@ -278,17 +320,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+
     paddingVertical: 16,
     paddingHorizontal: 20,
+
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    shadowColor: "#26589c",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
+
     shadowRadius: 8,
+
   },
   backButton: {
     padding: 8,
@@ -299,22 +343,35 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#fff",
-    letterSpacing: 0.5,
   },
   placeholder: {
     width: 40,
   },
-  scrollView: {
-    flex: 1,
-    backgroundColor: "#f8f9fa", // Grayish background to match Savedaddresses
-  },
   content: {
-    padding: 20,
+    flex: 1,
+
+    backgroundColor: "#f8f9fa", // Grayish background to match Savedaddresses
+
   },
-  imageContainer: {
+  mapContainer: {
+    height: 220,
+    borderRadius: 15,
+    overflow: "hidden",
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
+    backgroundColor: "#fff",
   },
+
   gradientOverlay: {
     width: width * 0.3,
     height: width * 0.3,
@@ -328,10 +385,14 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 12,
+
   },
-  locationIcon: {
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
+
     borderRadius: 40,
     shadowColor: "#000",
     shadowOffset: {
@@ -340,43 +401,81 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 6,
+
   },
-  formContainer: {
-    flex: 1,
-    alignItems: "center",
-    width: "100%",
+  retryButton: {
+    marginTop: 12,
+    padding: 10,
+    backgroundColor: "#26589c",
+    borderRadius: 8,
   },
-  formTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#26589c",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  formSubtitle: {
-    fontSize: 14,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  inputField: {
-    width: "100%",
-    marginBottom: 16,
-  },
-  inputLabel: {
-    fontSize: 14,
+  retryText: {
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
+  },
+  map: {
+    flex: 1,
+  },
+  mapOverlay: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    right: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  mapText: {
+    fontSize: 14,
     color: "#26589c",
-    marginBottom: 8,
-    paddingLeft: 4,
+    fontWeight: "500",
+    textAlign: "center",
   },
-  requiredStar: {
-    color: "#ff4444",
+  marker: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#26589c",
+    borderWidth: 3,
+    borderColor: "#fff",
   },
-  inputWrapper: {
+  errorText: {
+    color: "#e74c3c",
+    textAlign: "center",
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  form: {
+    gap: 16,
     backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 15,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  inputContainer: {
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 8,
+  },
+  required: {
+    color: "#e74c3c",
+  },
+  input: {
+    backgroundColor: "#f8f9fa",
     borderRadius: 12,
+    padding: 12,
     borderWidth: 1,
+
     borderColor: "rgba(38, 88, 156, 0.2)",
     shadowColor: "#26589c",
     shadowOffset: {
@@ -387,17 +486,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   input: {
+
     fontSize: 16,
-    color: "#26589c",
-    padding: 12,
-    textAlign: "left",
+    color: "#333",
   },
-  checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 16,
-  },
+
   checkboxIcon: {
     marginRight: 8,
   },
@@ -418,9 +511,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
   },
-  submitButton: {
-    borderRadius: 16,
+  saveButton: {
+    margin: 16,
+    borderRadius: 12,
     overflow: "hidden",
+
     shadowColor: "#26589c",
     shadowOffset: {
       width: 0,
@@ -428,23 +523,20 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+
   },
   gradientButton: {
-    flexDirection: "row",
+    padding: 16,
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 16,
   },
-  buttonIcon: {
-    marginRight: 8,
-  },
-  submitButtonText: {
-    fontSize: 18,
-    fontWeight: "700",
+  buttonText: {
     color: "#fff",
-    letterSpacing: 0.5,
+    fontSize: 18,
+    fontWeight: "600",
   },
-  submitButtonDisabled: {
+  saveButtonDisabled: {
     opacity: 0.7,
   },
 });
+
+export default AddLocation;

@@ -6,7 +6,9 @@ const DealsList = () => {
   return (
     <View>
       <Text style={styles.Text}>Deals</Text>
-      <DealsCard /> 
+      <View style={styles.containerScroll}>
+        <DealsCard />
+      </View>
     </View>
   );
 };
@@ -19,5 +21,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontSize: 30,
     fontWeight: "bold",
+  },
+
+  containerScroll: {
+    // marginTop: -3,
+    // paddingHorizontal: 10,
+    marginRight: -10,
+    marginLeft: 0,
   },
 });

@@ -187,6 +187,7 @@ const Savedaddresses = () => {
                       onPress={() => handleDeleteAddress(address)}
                       style={[styles.actionButton, styles.deleteButton]}
                     >
+
                       <Ionicons
                         name="trash-outline"
                         size={20}
@@ -194,6 +195,7 @@ const Savedaddresses = () => {
                       />
                     </TouchableOpacity>
                   </View>
+
                 </View>
                 <Text style={[styles.addressDetails, { textAlign: "left" }]}>
                   {`${address.addressLine1}${

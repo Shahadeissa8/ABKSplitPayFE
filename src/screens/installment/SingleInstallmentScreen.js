@@ -6,16 +6,135 @@ import {
   TouchableOpacity,
   StatusBar,
   SafeAreaView,
+  Modal,
+  Alert,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { getOrderDetails, updateInstallmentStatus, updateOrderStatus } from "../../api/installment";
 
 const SingleInstallmentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { item } = route.params;
+  const { item, onInstallmentUpdate } = route.params; // Contains orderId, orderNumber, and onInstallmentUpdate callback
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  // Fetch order details on mount
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      try {
+        setIsLoading(true);
+        const details = await getOrderDetails(item.orderId);
+        setOrderDetails(details);
+      } catch (error) {
+        Alert.alert("Error", error.message || "Failed to load order details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOrderDetails();
+  }, [item.orderId]);
+
+  // Handle updating installment status to "Paid"
+  const handleUpdateStatus = async (installmentId) => {
+    try {
+      setIsUpdating((prev) => ({ ...prev, [installmentId]: true }));
+      await updateInstallmentStatus(installmentId);
+
+      // Fetch updated order details
+      const updatedDetails = await getOrderDetails(item.orderId);
+      setOrderDetails(updatedDetails);
+
+      // Check if all installments are paid
+      const allPaid = updatedDetails.installments.every(
+        (installment) => installment.paymentStatus === "Paid"
+      );
+      if (allPaid) {
+        await updateOrderStatus(item.orderId);
+        updatedDetails.order.status = "Paid";
+      }
+
+      // Update parent screen (InstallmentsScreen) and trigger refetch
+      onInstallmentUpdate();
+
+      // Show confirmation modal
+      setModalMessage("Payment successful! Installment status updated to Paid.");
+      setModalVisible(true);
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to update installment status.");
+    } finally {
+      setIsUpdating((prev) => ({ ...prev, [installmentId]: false }));
+    }
+  };
+
+  // Format date to a readable string
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Installment Details</Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!orderDetails) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Installment Details</Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="alert-circle-outline" size={64} color="#26589c" />
+          <Text style={styles.emptyText}>Order Not Found</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const { order, installments } = orderDetails;
+
+  // Get product names from orderItems (passed from InstallmentsScreen)
+  const getProductNames = (orderItems) => {
+    if (!orderItems || orderItems.length === 0) return "No Products";
+    return orderItems.map((item) => item.product.name).join(", ");
+  };
 
   return (
     <View style={styles.container}>
@@ -35,108 +154,103 @@ const SingleInstallmentScreen = () => {
           <Text style={styles.headerTitle}>Installment Details</Text>
         </View>
       </LinearGradient>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View style={styles.productIcon}>
-                <Ionicons name={item.icon} size={24} color="#fff" />
-              </View>
-              <View style={styles.cardTitleContainer}>
-                <Text style={styles.cardTitle}>{item.productName}</Text>
-                <Text style={styles.cardSubtitle}>{item.storeName}</Text>
-              </View>
-              <View
-                style={[
-                  styles.statusBadge,
-                  {
-                    backgroundColor:
-                      item.status === "Processing" ? "#26589c" : "#4CAF50",
-                  },
-                ]}
-              >
-                <Text style={styles.statusText}>{item.status}</Text>
-              </View>
-            </View>
 
-            <View style={styles.progressContainer}>
-              <View style={styles.progressHeader}>
-                <Text style={styles.progressText}>Payment Progress</Text>
-                <Text style={styles.progressPercentage}>{item.progress}%</Text>
-              </View>
-              <View style={styles.progressBarContainer}>
-                <LinearGradient
-                  colors={["#4CAF50", "#8BC34A"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.progressBar, { width: `${item.progress}%` }]}
-                />
-              </View>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={styles.cardTitleContainer}>
+              <Text style={styles.cardTitle}>{getProductNames(item.orderItems)}</Text>
+              <Text style={styles.cardSubtitle}>{item.orderNumber}</Text>
             </View>
-
-            <View style={styles.detailsContainer}>
-              <View style={styles.detailRow}>
-                <View style={styles.detailIcon}>
-                  <Ionicons name="document-text" size={20} color="#26589c" />
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={styles.detailLabel}>Order Number</Text>
-                  <Text style={styles.detailValue}>{item.orderNumber}</Text>
-                </View>
-              </View>
-              <View style={styles.detailRow}>
-                <View style={styles.detailIcon}>
-                  <Ionicons name="cash" size={20} color="#26589c" />
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={styles.detailLabel}>Total Amount</Text>
-                  <Text style={styles.detailValue}>{item.totalAmount} KD</Text>
-                </View>
-              </View>
-              <View style={styles.detailRow}>
-                <View style={styles.detailIcon}>
-                  <Ionicons name="wallet" size={20} color="#26589c" />
-                </View>
-                <View style={styles.detailInfo}>
-                  <Text style={styles.detailLabel}>Remaining Amount</Text>
-                  <Text style={styles.detailValue}>{item.remaining} KD</Text>
-                </View>
-              </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Due Date</Text>
-                <Text style={styles.detailValue}>{item.date}</Text>
-              </View>
-            </View>
-
-            <View style={styles.paymentHistory}>
-              <Text style={styles.sectionTitle}>Payment History</Text>
-              <View style={styles.paymentItem}>
-                <View style={styles.paymentInfo}>
-                  <Text style={styles.paymentDate}>15/02/2024</Text>
-                  <Text style={styles.paymentAmount}>500 KD</Text>
-                </View>
-                <View style={styles.paymentStatus}>
-                  <Text style={styles.paymentStatusText}>Paid</Text>
-                </View>
-              </View>
-              <View style={styles.paymentItem}>
-                <View style={styles.paymentInfo}>
-                  <Text style={styles.paymentDate}>15/01/2024</Text>
-                  <Text style={styles.paymentAmount}>500 KD</Text>
-                </View>
-                <View style={styles.paymentStatus}>
-                  <Text style={styles.paymentStatusText}>Paid</Text>
-                </View>
-              </View>
+            <View
+              style={[
+                styles.statusBadge,
+                {
+                  backgroundColor:
+                    order.status === "Pending" ? "#26589c" : "#4CAF50",
+                },
+              ]}
+            >
+              <Text style={styles.statusText}>{order.status}</Text>
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+
+          <View style={styles.detailsContainer}>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Total Amount</Text>
+              <Text style={styles.detailValue}>{order.totalAmount} {order.currency.toUpperCase()}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Order Date</Text>
+              <Text style={styles.detailValue}>{formatDate(order.orderDate)}</Text>
+            </View>
+          </View>
+
+          <View style={styles.paymentHistory}>
+            <Text style={styles.sectionTitle}>Installments</Text>
+            {installments.map((installment) => (
+              <View key={installment.installmentId} style={styles.paymentItem}>
+                <View style={styles.paymentInfo}>
+                  <Text style={styles.paymentDate}>
+                    Installment #{installment.installmentNumber} - Due: {formatDate(installment.dueDate)}
+                  </Text>
+                  <Text style={styles.paymentAmount}>
+                    {installment.amount} {installment.currency.toUpperCase()}
+                  </Text>
+                  {/* Display transactionId only for paid installments */}
+                  {installment.paymentStatus === "Paid" && installment.transactionId && (
+                    <Text style={styles.transactionId}>
+                      Transaction ID: {installment.transactionId}
+                    </Text>
+                  )}
+                </View>
+                <View style={styles.paymentStatus}>
+                  <Text style={styles.paymentStatusText}>{installment.paymentStatus}</Text>
+                  {installment.paymentStatus === "Pending" && (
+                    <TouchableOpacity
+                      style={styles.payButton}
+                      onPress={() => handleUpdateStatus(installment.installmentId)}
+                      disabled={isUpdating[installment.installmentId]}
+                    >
+                      <Text style={styles.payButtonText}>
+                        {isUpdating[installment.installmentId] ? "Paying..." : "Pay Now"}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                </View>
+              </View>
+            ))}
+          </View>
+
+        </View>
+      </ScrollView>
+
+      {/* Confirmation Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Ionicons name="checkmark-circle" size={48} color="#4CAF50" style={styles.modalIcon} />
+            <Text style={styles.modalTitle}>Payment Confirmed</Text>
+            <Text style={styles.modalMessage}>{modalMessage}</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+
   );
 };
-
-export default SingleInstallmentScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -180,6 +294,27 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 18,
+    color: "#666",
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#26589c",
+    marginTop: 16,
+  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -198,6 +333,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
+
   productIcon: {
     width: 50,
     height: 50,
@@ -207,6 +343,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 15,
   },
+
   cardTitleContainer: {
     flex: 1,
   },
@@ -229,34 +366,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 12,
     fontWeight: "600",
-  },
-  progressContainer: {
-    marginBottom: 20,
-  },
-  progressHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  progressText: {
-    fontSize: 14,
-    color: "#666",
-  },
-  progressPercentage: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#26589c",
-  },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  progressBar: {
-    height: "100%",
-    borderRadius: 4,
   },
   detailsContainer: {
     marginBottom: 20,
@@ -318,15 +427,74 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#333",
   },
+  transactionId: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 4,
+    fontStyle: "italic",
+  },
   paymentStatus: {
-    backgroundColor: "#4CAF50",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  paymentStatusText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#666",
+  },
+  payButton: {
+    backgroundColor: "#26589c",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 15,
   },
-  paymentStatusText: {
+  payButtonText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "600",
   },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalIcon: {
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: "#26589c",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 15,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });
+
+export default SingleInstallmentScreen;
+

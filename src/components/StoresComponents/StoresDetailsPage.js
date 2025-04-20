@@ -32,15 +32,8 @@ const StoresDetailsPage = ({ StoreDetails }) => {
   };
 
   return (
-    <View>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "flex-start",
-          alignItems: "center",
-          padding: 120,
-        }}
-      >
+    <View style={styles.container}>
+      <View style={styles.contentContainer}>
         <View style={{ alignItems: "center", justifyContent: "flex-start" }}>
           <Image
             source={{ uri: StoreDetails.logoUrl }}
@@ -49,52 +42,63 @@ const StoresDetailsPage = ({ StoreDetails }) => {
           />
         </View>
 
-        <Text
-          style={{
-            // flex: 1,
-            textAlign: "center",
-            marginTop: 5,
-            fontWeight: "bold",
-            fontSize: 40,
-            // padding: 50,
-          }}
-        >
-          {StoreDetails.name}
-        </Text>
+        <Text style={styles.storeName}>{StoreDetails.name}</Text>
 
         <Text style={styles.description}>{StoreDetails.description}</Text>
+      </View>
 
-        {/* View Website Button */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => openWebsite(StoreDetails.websiteUrl)} // Passing websiteUrl to the function
-            style={styles.Button}
+      {/* View Website Button */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={() => openWebsite(StoreDetails.websiteUrl)}
+          style={styles.Button}
+        >
+          <LinearGradient
+            colors={["#26589c", "#9cb2d8"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.Gradient}
           >
-            <LinearGradient
-              colors={["#26589c", "#9cb2d8"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.Gradient}
-            >
-              <Text style={styles.buttonText}>View Website</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.buttonText}>View Website</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 120,
+  },
+  storeName: {
+    textAlign: "center",
+    marginTop: 5,
+    fontWeight: "bold",
+    fontSize: 40,
+  },
   description: {
     textAlign: "center",
     marginTop: 50,
-    marginBottom: 310,
     fontWeight: "bold",
     fontSize: 20,
   },
+  buttonContainer: {
+    position: "absolute",
+    top: "50%", // Position the button container in the middle of the screen vertically
+    left: 0,
+    right: 0,
+    alignItems: "center", // Center the button horizontally
+    paddingHorizontal: 10,
+  },
   Button: {
-    margin: -40,
     borderRadius: 16,
     overflow: "hidden",
     ...Platform.select({
@@ -120,34 +124,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 16,
     gap: 8,
-  },
-  buttonContainer: {
-    width: "100%",
-    paddingHorizontal: 10,
-    marginTop: 50,
-  },
-  gradient: {
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 20,
-    width: "100%",
-    borderRadius: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#26589c",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
   },
 });
 

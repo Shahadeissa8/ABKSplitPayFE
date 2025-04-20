@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     //backgroundColor: '#000', // Optional: Set a background color
   },
   video: {
-    width: '100%',
+    width: '200%',
     height: '100%',
   },
 });

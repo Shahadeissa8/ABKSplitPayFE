@@ -105,7 +105,12 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
   }, [formData, navigation, setIsAuthenticated]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={["#26589c", "#9cb2d8"]}
+      style={styles.gradientBackground}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -114,12 +119,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
           Platform.OS === "ios" ? 0 : StatusBar.currentHeight
         }
       >
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          style={styles.gradientBackground}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
+        <SafeAreaView style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.headerContainer}>
               <Text style={styles.welcomeText}>Create Account</Text>
@@ -308,9 +308,9 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               </TouchableOpacity>
             </View>
           </ScrollView>
-        </LinearGradient>
+        </SafeAreaView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -323,7 +323,6 @@ const styles = StyleSheet.create({
   gradientBackground: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headerContainer: {
     alignItems: "center",

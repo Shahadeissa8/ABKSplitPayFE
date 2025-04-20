@@ -4,8 +4,8 @@ import { View, StyleSheet, Animated } from "react-native";
 const ImageLoader = () => {
   // Array of images you want to display; add as many as you want here
   const images = [
-    require("../../../assets/Ordernowpaylater.png"),
-    require("../../../assets/Ordernowpaylater2.png"),
+    require("../../../assets/pic1.png"),
+    require("../../../assets/pic2.png"),
     // Add more images as required
   ];
 
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   image: {
-    width: 380,
-    height: 110,
+    width: 370,
+    height: 150,
     borderRadius: 15,
     alignSelf: "center",
     position: "absolute", // Stack images on top of each other

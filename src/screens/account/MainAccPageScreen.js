@@ -311,6 +311,21 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 };
 
 const styles = StyleSheet.create({
+  header1: {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+    flexDirection: "row",
+  },
   container: {
     flex: 1,
   },

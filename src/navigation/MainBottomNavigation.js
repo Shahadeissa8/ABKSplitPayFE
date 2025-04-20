@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, StyleSheet } from 'react-native'; // Import Platform and StyleSheet
+import { Platform, StyleSheet } from "react-native"; // Import Platform and StyleSheet
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ShoppingNavigation from "./ShoppingNavigation";
 import InstallmentNavigation from "./InstallmentNavigation";
@@ -20,7 +20,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         tabBarShowLabel: true, // Set to false if you DON'T want labels like in the image
         tabBarStyle: {
           elevation: 5, // Shadow for Android
-          backgroundColor: '#ffffff', // Background color of the tab bar (change as needed)
+          backgroundColor: "#ffffff", // Background color of the tab bar (change as needed)
           borderRadius: 30, // Rounded corners (adjust as needed)
           margin: 12,
           ...styles.shadow, // Apply shadow styles for iOS
@@ -31,6 +31,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         name="Explore"
         component={ExploreNavigation}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="compass-outline" size={24} color={color} />
           ),
@@ -59,7 +60,9 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         // Use component prop directly if AccountNavigation doesn't need setIsAuthenticated
         // component={AccountNavigation}
         // If it needs props, use children like you did:
-        children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />}
+        children={() => (
+          <AccountNavigation setIsAuthenticated={setIsAuthenticated} />
+        )}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
@@ -78,7 +81,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
 // Styles for the shadow effect (especially for iOS)
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: '#3C66B5', // Shadow color (adjust as needed)
+    shadowColor: "#3C66B5", // Shadow color (adjust as needed)
     shadowOffset: {
       width: 0,
       height: 10,
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.5,
     // elevation: 5 // Already set inline for Android
-  }
+  },
 });
 
 export default MainBottomNavigation;

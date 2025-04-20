@@ -13,7 +13,21 @@ const InstallmentNavigation = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="InstallmentScreen" component={InstallmentScreen} />
+      <Stack.Screen
+        name="InstallmentScreen"
+        component={InstallmentScreen}
+        // options={{
+        //   tabBarIcon: ({ color, size }) => (
+        //     <MaterialCommunityIcons
+        //       name="account-outline"
+        //       size={24}
+        //       color={color}
+        //     />
+        //   ),
+        //   // Note: headerShown is usually set in screenOptions, not here
+        // }}
+        
+      />
       <Stack.Screen
         name="SingleInstallmentScreen"
         component={SingleInstallmentScreen}

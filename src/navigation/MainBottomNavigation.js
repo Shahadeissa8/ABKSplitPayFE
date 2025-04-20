@@ -15,14 +15,23 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "red", // Active icon color
-        tabBarInactiveTintColor: "gray", // Inactive icon color
-        tabBarShowLabel: true, // Set to false if you DON'T want labels like in the image
+        tabBarActiveTintColor: "#4A90E2", // Modern Blue Active Icon Color
+        tabBarInactiveTintColor: "#B0BEC5", // Light Gray Inactive Icon Color
+        tabBarShowLabel: true,
         tabBarStyle: {
-          elevation: 5, // Shadow for Android
-          backgroundColor: '#ffffff', // Background color of the tab bar (change as needed)
-          borderRadius: 30, // Rounded corners (adjust as needed)
-          margin: 12,
+          elevation: 8, // Increased shadow for Android
+          // backgroundColor: '#ffffff', // Still transparent as requested
+          borderRadius: 30, // Keep rounded corners
+          marginHorizontal: 10, // Add horizontal margin
+          marginBottom: 15, // Add bottom margin
+          paddingVertical: 20, // Add vertical padding to make it taller
+          position: 'absolute', // Position absolutely to float above content
+          bottom: 0, // Stick to the bottom
+          left: 0,
+          right: 0,
+          alignContent:"center",
+          justifyContent:"center",
+          paddingTop: 15,
           ...styles.shadow, // Apply shadow styles for iOS
         },
       }}
@@ -32,7 +41,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         component={ExploreNavigation}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="compass-outline" size={24} color={color} />
+            <Ionicons name="compass-outline" size={30} color={color} />
           ),
         }}
       />
@@ -41,7 +50,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         component={ShoppingNavigation}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="storefront-outline" size={24} color={color} />
+            <Ionicons name="storefront-outline" size={30} color={color} />
           ),
         }}
       />
@@ -50,25 +59,21 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         component={InstallmentNavigation}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="cash-outline" size={24} color={color} />
+            <Ionicons name="cash-outline" size={30} color={color} />
           ),
         }}
       />
       <Tab.Screen
         name="Account"
-        // Use component prop directly if AccountNavigation doesn't need setIsAuthenticated
-        // component={AccountNavigation}
-        // If it needs props, use children like you did:
         children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-outline"
-              size={24}
+              size={30}
               color={color}
             />
           ),
-          // Note: headerShown is usually set in screenOptions, not here
         }}
       />
     </Tab.Navigator>
@@ -78,14 +83,13 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
 // Styles for the shadow effect (especially for iOS)
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: '#3C66B5', // Shadow color (adjust as needed)
+    shadowColor: '#000', // Darker shadow color
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 5, // Adjusted shadow offset
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    // elevation: 5 // Already set inline for Android
+    shadowOpacity: 0.15, // Reduced shadow opacity
+    shadowRadius: 6.84, // Adjusted shadow radius
   }
 });
 

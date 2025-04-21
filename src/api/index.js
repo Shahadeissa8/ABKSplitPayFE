@@ -2,6 +2,8 @@ import axios from "axios";
 import { getToken } from "./storage";
 
 const instance = axios.create({
+
+  
   baseURL: "http://192.168.2.120:5137/api", // Updated IP address
 
   timeout: 10000, // 10 seconds timeout

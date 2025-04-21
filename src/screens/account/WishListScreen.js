@@ -53,7 +53,6 @@ const WishListScreen = () => {
     try {
       await deleteWishListItem(itemId); // Call the delete endpoint
       setWishlistItems(wishlistItems.filter((item) => item.id !== itemId)); // Update local state
-      Alert.alert("Success", "Item removed from wishlist.");
     } catch (error) {
       console.error("Error removing item from wishlist:", error.message);
       Alert.alert("Error", "Failed to remove item from wishlist.");

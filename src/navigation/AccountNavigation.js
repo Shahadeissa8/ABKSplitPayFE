@@ -11,6 +11,7 @@ import Payment from "../screens/account/Payment";
 import Feedback from "../screens/account/Feedback";
 import HelpCenter from "../screens/account/HelpCenter";
 import WishListScreen from "../screens/account/WishListScreen";
+import TierScreen from "../screens/account/TierScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -66,13 +67,7 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
       <Stack.Screen name="PaymentMethods" component={Payment} />
 
       <Stack.Screen name="Payment" component={PaymentMethods} />
-      {/* <Stack.Screen
-        name="WishListScreen"
-        component={WishListScreen}
-        options={{
-          animationEnabled: true,
-        }}
-      /> */}
+      
 
       <Stack.Screen name="WishListScreen" component={WishListScreen} />
       <Stack.Screen
@@ -97,7 +92,15 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
           animationEnabled: true,
         }}
       />
-    </Stack.Navigator>
+
+    <Stack.Screen
+  name="TierScreen"
+  component={TierScreen}
+  options={{
+    animationEnabled: true,
+  }}
+ />
+  </Stack.Navigator>
   );
 };
 

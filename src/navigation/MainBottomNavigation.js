@@ -21,7 +21,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         tabBarStyle: {
 
           elevation: 8, // Increased shadow for Android
-          // backgroundColor: '#ffffff', // Still transparent as requested
+         
           borderRadius: 30, // Keep rounded corners
           marginHorizontal: 10, // Add horizontal margin
           marginBottom: 15, // Add bottom margin

@@ -57,7 +57,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       title: "Tiers & Rewards",
       icon: "star-outline",
       color: "#9cb2d8",
-      screen: "Rewards",
+      screen: "TierScreen",
     },
     {
       id: 3,

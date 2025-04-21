@@ -92,13 +92,13 @@ const CategoryList = ({ onSelectCategory }) => {
 
   return (
     <View>
-      <Text style={styles.text}>Categories</Text>
+      {/* <Text style={styles.text}>Categories</Text> */}
       <View style={styles.containerScroll}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {/* "All" category - Reset category */}
           <CategoryCard
             name="All"
-            gradient={["#26589c", "#9cb2d8"]} // Default gradient
+            gradient={["#4a6fa1", "#9cb2d8"]} // Default gradient
             selected={selectedCategoryId === null} // "All" is selected if ID is null
             onPress={() => handlePress(null)} // Reset filter
           />

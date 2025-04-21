@@ -18,7 +18,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { createPaymentMethod } from "../../api/profile";
-
+import { Header } from "../../components/Header";
 const { width, height } = Dimensions.get("window");
 
 const cardTypes = [
@@ -77,7 +77,10 @@ const PaymentMethods = () => {
     }
     const [month, year] = expiryDate.split("/");
     if (!month || !year || month > 12 || month < 1) {
-      Alert.alert("Invalid Expiry Date", "Please enter a valid expiry date (MM/YY).");
+      Alert.alert(
+        "Invalid Expiry Date",
+        "Please enter a valid expiry date (MM/YY)."
+      );
       return false;
     }
     if (cvv.length !== 3) {
@@ -110,7 +113,8 @@ const PaymentMethods = () => {
       Alert.alert("Success", "Payment method added successfully", [
         {
           text: "OK",
-          onPress: () => navigation.navigate("PaymentMethods", { refresh: Date.now() }),
+          onPress: () =>
+            navigation.navigate("PaymentMethods", { refresh: Date.now() }),
         },
       ]);
     } catch (error) {
@@ -150,7 +154,10 @@ const PaymentMethods = () => {
       </View>
       {selectedCardType?.id === cardType.id && (
         <View
-          style={[styles.checkmarkContainer, { backgroundColor: cardType.color }]}
+          style={[
+            styles.checkmarkContainer,
+            { backgroundColor: cardType.color },
+          ]}
         >
           <Ionicons name="checkmark" size={16} color="#fff" />
         </View>
@@ -159,13 +166,13 @@ const PaymentMethods = () => {
   );
 
   return (
-    <LinearGradient
-      colors={["#26589c", "#26589c"]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-    >
-      <StatusBar barStyle="light-content" translucent={true} />
+    // <LinearGradient
+    //   colors={["#26589c", "#26589c"]}
+    //   style={styles.container}
+    //   start={{ x: 0, y: 0 }}
+    //   end={{ x: 1, y: 0 }}
+    // >
+      <View   style={styles.container}>      <StatusBar barStyle="light-content" translucent={true} />
       <SafeAreaView style={styles.innerContainer}>
         <View style={styles.header}>
           <View style={styles.headerContent}>
@@ -199,12 +206,17 @@ const PaymentMethods = () => {
                   {selectedCardType ? (
                     <View style={styles.selectedCardTypeInfo}>
                       <LinearGradient
-                        colors={[selectedCardType.color, selectedCardType.secondaryColor]}
+                        colors={[
+                          selectedCardType.color,
+                          selectedCardType.secondaryColor,
+                        ]}
                         style={styles.selectedCardTypeLogo}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                       >
-                        <Text style={[styles.cardTypeShortName, { color: "#fff" }]}>
+                        <Text
+                          style={[styles.cardTypeShortName, { color: "#fff" }]}
+                        >
                           {selectedCardType.name}
                         </Text>
                       </LinearGradient>
@@ -213,7 +225,9 @@ const PaymentMethods = () => {
                       </Text>
                     </View>
                   ) : (
-                    <Text style={styles.cardTypeSelectorLabel}>Choose card type</Text>
+                    <Text style={styles.cardTypeSelectorLabel}>
+                      Choose card type
+                    </Text>
                   )}
                   <Ionicons
                     name="chevron-down"
@@ -235,7 +249,9 @@ const PaymentMethods = () => {
                       focusedInput === "cardNumber" &&
                         styles.inputContainerFocused,
                       focusedInput === "cardNumber" &&
-                        selectedCardType && { borderColor: selectedCardType.color },
+                        selectedCardType && {
+                          borderColor: selectedCardType.color,
+                        },
                     ]}
                   >
                     <Ionicons
@@ -267,7 +283,9 @@ const PaymentMethods = () => {
                       focusedInput === "cardHolder" &&
                         styles.inputContainerFocused,
                       focusedInput === "cardHolder" &&
-                        selectedCardType && { borderColor: selectedCardType.color },
+                        selectedCardType && {
+                          borderColor: selectedCardType.color,
+                        },
                     ]}
                   >
                     <Ionicons
@@ -289,7 +307,9 @@ const PaymentMethods = () => {
                 </View>
 
                 <View style={styles.row}>
-                  <View style={[styles.inputGroup, { flex: 1, marginRight: 12 }]}>
+                  <View
+                    style={[styles.inputGroup, { flex: 1, marginRight: 12 }]}
+                  >
                     <Text style={styles.label}>Expiry Date</Text>
                     <View
                       style={[
@@ -297,7 +317,9 @@ const PaymentMethods = () => {
                         focusedInput === "expiryDate" &&
                           styles.inputContainerFocused,
                         focusedInput === "expiryDate" &&
-                          selectedCardType && { borderColor: selectedCardType.color },
+                          selectedCardType && {
+                            borderColor: selectedCardType.color,
+                          },
                       ]}
                     >
                       <Ionicons
@@ -327,7 +349,9 @@ const PaymentMethods = () => {
                         styles.inputContainer,
                         focusedInput === "cvv" && styles.inputContainerFocused,
                         focusedInput === "cvv" &&
-                          selectedCardType && { borderColor: selectedCardType.color },
+                          selectedCardType && {
+                            borderColor: selectedCardType.color,
+                          },
                       ]}
                     >
                       <Ionicons
@@ -362,7 +386,9 @@ const PaymentMethods = () => {
                     color="#26589c"
                     style={styles.checkboxIcon}
                   />
-                  <Text style={styles.checkboxLabel}>Set as Default Payment Method</Text>
+                  <Text style={styles.checkboxLabel}>
+                    Set as Default Payment Method
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -419,7 +445,8 @@ const PaymentMethods = () => {
           </BlurView>
         </Modal>
       </SafeAreaView>
-    </LinearGradient>
+      </View>
+    //  </LinearGradient> 
   );
 };
 

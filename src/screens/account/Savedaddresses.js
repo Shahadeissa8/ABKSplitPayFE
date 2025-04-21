@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { getSavedAddresses } from "../../api/profile";
 import { deleteAddress } from "../../api/profile";
+import { Header } from "../../components/Header";
 
 const Savedaddresses = () => {
   const route = useRoute();
@@ -122,15 +123,15 @@ const Savedaddresses = () => {
   };
 
   return (
-    <LinearGradient
+    <View
       colors={["#26589c", "#9cb2d8"]}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
     >
       <StatusBar barStyle="light-content" translucent={true} />
-      <SafeAreaView style={styles.innerContainer}>
-        <View style={styles.header}>
+      <View style={styles.innerContainer}>
+        {/* <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
@@ -144,7 +145,11 @@ const Savedaddresses = () => {
           >
             <Ionicons name="add" size={24} color="#fff" />
           </TouchableOpacity>
-        </View>
+        </View> */}
+        <Header
+          title="Saved addresses"
+          backButtonAction={() => navigation.goBack()}
+        />
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {addresses.length === 0 ? (
@@ -187,7 +192,6 @@ const Savedaddresses = () => {
                       onPress={() => handleDeleteAddress(address)}
                       style={[styles.actionButton, styles.deleteButton]}
                     >
-
                       <Ionicons
                         name="trash-outline"
                         size={20}
@@ -195,21 +199,20 @@ const Savedaddresses = () => {
                       />
                     </TouchableOpacity>
                   </View>
-
                 </View>
                 <Text style={[styles.addressDetails, { textAlign: "left" }]}>
                   {`${address.addressLine1}${
                     address.addressLine2 ? `, ${address.addressLine2}` : ""
-                  }, ${address.city}, ${address.state}, ${address.postalCode}, ${
-                    address.country
-                  }`}
+                  }, ${address.city}, ${address.state}, ${
+                    address.postalCode
+                  }, ${address.country}`}
                 </Text>
               </View>
             ))
           )}
         </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
+      </View>
+    </View>
   );
 };
 

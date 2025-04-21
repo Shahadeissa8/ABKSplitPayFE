@@ -22,6 +22,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../../context/CartContext";
 import { addToWishList } from "../../api/CartAPI"; // Import the addToWishList function
+import { Header, actionIcons } from "../../components/Header";
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
@@ -48,45 +49,19 @@ const ExploreScreen = () => {
   };
 
   const handleProductPress = (product) => {
-    console.log("Pressed product:", product.name); // Debug log
-    setSelectedProduct(product); // Set the selected product
-    setModalVisible(true); // Show the modal
+    console.log("Pressed product:", product.name);
+    setSelectedProduct(product);
+    setModalVisible(true);
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      {/* backgroundColor="#2E3192" /> */}
-      <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Explore</Text>
-          <TouchableOpacity
-            style={styles.cartButton}
-            onPress={() => navigation.navigate("MyCartScreen")}
-          >
-            <View style={styles.theView}>
-              <LinearGradient
-                colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.cartGradient}
-              >
-                <Ionicons name="cart-outline" size={30} color="white" />
-              </LinearGradient>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-      {/* <View style={styles.header}> */}
-      {/* <TouchableOpacity
-          style={styles.cartButton}
-          onPress={() => navigation.navigate("MyCartScreen")}
-
-          //cart stayle
-        >
-          <Ionicons name="cart-outline" size={30} color="#2E3192" />
-        </TouchableOpacity> */}
-      {/* </View> */}
+      <Header
+        title="Explore"
+        action={() => navigation.navigate("MyCartScreen")}
+        actionIconName={actionIcons.cart}
+      />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.instructionsContainer}>
           <InstructionsCard />
@@ -129,10 +104,9 @@ const ExploreScreen = () => {
                 resizeMode="cover"
               />
               <View style={modalStyles.ButtonGradient}>
-                {/* Add to Cart Button */}
                 <TouchableOpacity
                   onPress={() => {
-                    addToCart(selectedProduct.productId, 1); // Add to cart
+                    addToCart(selectedProduct.productId, 1);
                     setModalVisible(false);
                   }}
                 >
@@ -148,8 +122,6 @@ const ExploreScreen = () => {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-
-                {/* Add to Wishlist Button */}
                 <TouchableOpacity
                   onPress={() => handleAddToWishlist(selectedProduct.productId)} // Add to wishlist
                 >
@@ -182,22 +154,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  // header1: {
-  //   flexDirection: "row",
-  //   justifyContent: "flex-end",
-  //   alignItems: "center",
-  //   paddingHorizontal: 20,
-  //   paddingVertical: 15,
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "#eee",
-  // },
   theView: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginLeft: 210,
-    marginBottom:-10,
-    marginTop:5
+    marginBottom: -10,
+    marginTop: 5,
   },
   cartButton: {
     padding: 8,
@@ -245,13 +208,14 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    marginBottom:-30,marginLeft:5
+    marginBottom: -30,
+    marginLeft: 5,
   },
 });
 const modalStyles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -260,8 +224,8 @@ const modalStyles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 20,
-    elevation: 5, // Android shadow
-    shadowColor: "#000", // iOS shadow
+    elevation: 5,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,

@@ -1,20 +1,17 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
+import { LinearGradient } from "expo-linear-gradient"; 
 import { useNavigation } from "@react-navigation/native";
 
 const StoresCard = ({ name, gradient, logo, id }) => {
   const navigation = useNavigation();
   return (
-    // Apply the cardContainer style here for the shadow effect
     <TouchableOpacity
-      style={styles.cardContainer} // Changed from inline style to styles.cardContainer
+      style={styles.cardContainer}
       activeOpacity={0.8}
       onPress={() => navigation.navigate("StoreDetailsScreen", { StoreId: id })}
     >
-      {/* LinearGradient remains inside for the background */}
       <LinearGradient colors={gradient} style={styles.gradientBackground}>
-        {/* Image container */}
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: logo }}
@@ -22,7 +19,6 @@ const StoresCard = ({ name, gradient, logo, id }) => {
             resizeMode="contain"
           />
         </View>
-        {/* Info container */}
         <View style={styles.infoContainer}>
           <Text style={styles.text}>{name}</Text>
         </View>
@@ -34,58 +30,45 @@ const StoresCard = ({ name, gradient, logo, id }) => {
 export default StoresCard;
 
 const styles = StyleSheet.create({
-  // Style for the main TouchableOpacity container, including shadow
   cardContainer: {
-    backgroundColor: "#FFFFFF", // Needed for shadow visibility on iOS
-    borderRadius: 18, // Keep the rounded rectangle shape
-    marginBottom: 15, // Spacing below the card
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    marginBottom: 15,
     flex: 1,
-    margin: 8, // Spacing around the card
-    maxWidth: "100%", // Max width for grid layout
-
-    // --- Shadow Properties ---
-    // iOS Shadow
-    shadowColor: "#000", // Shadow color
+    margin: 8,
+    maxWidth: "100%",
+    shadowColor: "#000",
     shadowOffset: {
-      width: 0, // Horizontal offset
-      height: 4, // Vertical offset (positive value puts shadow below)
+      width: 0,
+      height: 4,
     },
-    shadowOpacity: 0.3, // Opacity of the shadow
-    shadowRadius: 4.65, // Blur radius of the shadow
-    // Android Shadow
-    elevation: 8, // Elevation for Android shadow effect
-    // Important: Do NOT use overflow: 'hidden' here if you want the shadow to be visible
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
-  // Style for the gradient background inside the card
   gradientBackground: {
-    flex: 1, // Ensure the gradient takes up the entire container
-    borderRadius: 18, // Match the container's border radius
-    // marginTop: 10, // Removed marginTop, adjust if needed
-    overflow: "hidden", // Clip the inner content (image, text) to the rounded corners
+    flex: 1,
+    borderRadius: 18,
+    overflow: "hidden",
   },
-  // Style for the container holding the image
   imageContainer: {
     height: 150,
     width: "100%",
-    backgroundColor: "#ffff", // White background for the image area
-    alignItems: "center", // Center the logo horizontally
-    justifyContent: "center", // Center the logo vertically
+    backgroundColor: "#ffff",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  // Style for the store logo image
   logo: {
-    width: "80%", // Adjust width as needed
-    height: "80%", // Adjust height as needed
-    // Removed borderRadius from logo to let imageContainer handle background/shape if needed
+    width: "80%",
+    height: "80%",
   },
-  // Style for the container holding the store name text
   infoContainer: {
-    padding: 12, // Padding around the text
+    padding: 12,
   },
-  // Style for the store name text
   text: {
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333", // Added a default text color for better visibility
+    color: "#333",
   },
 });

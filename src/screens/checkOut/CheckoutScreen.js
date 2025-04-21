@@ -14,8 +14,27 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
 import { LinearGradient } from "expo-linear-gradient";
-import { getPaymentPlans, getAllAddresses, getDefaultAddress, getAllPaymentMethods, getDefaultPaymentMethod, placeOrder } from "../../api/order";
+import {
+  getPaymentPlans,
+  getAllAddresses,
+  getDefaultAddress,
+  getAllPaymentMethods,
+  getDefaultPaymentMethod,
+  placeOrder,
+} from "../../api/order";
+import { Header } from "../../components/Header";
 
+const color = {
+  primary: "#2E3192",
+  secondary: "#26589c",
+  background: "#FFFFFF",
+  backgroundLight: "#F5F5F5",
+  textPrimary: "#333333",
+  textSecondary: "#666666",
+  border: "#EEEEEE",
+  white: "#FFFFFF",
+  gradientColors: ["#fffff", "#ffff"],
+};
 const colors = {
   primary: "#2E3192",
   secondary: "#26589c",
@@ -42,9 +61,9 @@ const CheckoutScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentPlanModalVisible, setPaymentPlanModalVisible] = useState(false);
   const [addressModalVisible, setAddressModalVisible] = useState(false);
-  const [paymentMethodModalVisible, setPaymentMethodModalVisible] = useState(false);
+  const [paymentMethodModalVisible, setPaymentMethodModalVisible] =
+    useState(false);
 
-  // Fallback function to calculate total if passedTotal is invalid
   const calculateTotal = () => {
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return "0.00";
@@ -58,35 +77,30 @@ const CheckoutScreen = () => {
       .toFixed(2);
   };
 
-  // Use the passed total, or recalculate if invalid
-  const displayTotal = (passedTotal && parseFloat(passedTotal) > 0) ? passedTotal : calculateTotal();
+  const displayTotal =
+    passedTotal && parseFloat(passedTotal) > 0 ? passedTotal : calculateTotal();
 
-  // Fetch payment plans, addresses, and payment methods on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
 
-        // Fetch payment plans
         const plans = await getPaymentPlans();
         setPaymentPlans(plans);
         if (plans.length > 0) {
           setSelectedPaymentPlan(plans[0]);
         }
 
-        // Fetch all addresses and set the default
         const addresses = await getAllAddresses();
         setAllAddresses(addresses);
         const defaultAddress = await getDefaultAddress();
         setSelectedAddress(defaultAddress);
 
-        // Fetch all payment methods and set the default
         const paymentMethods = await getAllPaymentMethods();
         setAllPaymentMethods(paymentMethods);
         const defaultPaymentMethod = await getDefaultPaymentMethod();
         setSelectedPaymentMethod(defaultPaymentMethod);
 
-        // Log the total amount
         console.log("Total amount in CheckoutScreen:", displayTotal, "KD");
       } catch (error) {
         Alert.alert("Error", error.message || "Failed to load checkout data.");
@@ -108,8 +122,16 @@ const CheckoutScreen = () => {
   };
 
   const handleConfirmOrder = async () => {
-    if (!selectedPaymentPlan || !selectedAddress || !selectedPaymentMethod || cartItems.length === 0) {
-      Alert.alert("Error", "Please select a payment plan, shipping address, payment method, and ensure your cart is not empty.");
+    if (
+      !selectedPaymentPlan ||
+      !selectedAddress ||
+      !selectedPaymentMethod ||
+      cartItems.length === 0
+    ) {
+      Alert.alert(
+        "Error",
+        "Please select a payment plan, shipping address, payment method, and ensure your cart is not empty."
+      );
       return;
     }
 
@@ -158,20 +180,6 @@ const CheckoutScreen = () => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
-        <LinearGradient
-          colors={colors.gradientColors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.header}
-        >
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.white} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Checkout</Text>
-        </LinearGradient>
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
@@ -180,22 +188,8 @@ const CheckoutScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={colors.gradientColors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.header}
-      >
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Checkout</Text>
-      </LinearGradient>
-
+    <View style={styles.container}>
+      <Header title="Checkout" backButtonAction={() => navigation.goBack()} />
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
@@ -214,10 +208,15 @@ const CheckoutScreen = () => {
           <View style={styles.card}>
             {selectedAddress ? (
               <>
-                <Text style={styles.cardText}>{selectedAddress.addressLine1}</Text>
-                <Text style={styles.cardText}>{selectedAddress.addressLine2}</Text>
                 <Text style={styles.cardText}>
-                  {selectedAddress.city}, {selectedAddress.state} {selectedAddress.postalCode}, {selectedAddress.country}
+                  {selectedAddress.addressLine1}
+                </Text>
+                <Text style={styles.cardText}>
+                  {selectedAddress.addressLine2}
+                </Text>
+                <Text style={styles.cardText}>
+                  {selectedAddress.city}, {selectedAddress.state}{" "}
+                  {selectedAddress.postalCode}, {selectedAddress.country}
                 </Text>
               </>
             ) : (
@@ -257,13 +256,19 @@ const CheckoutScreen = () => {
               <View>
                 {selectedPaymentMethod ? (
                   <>
-                    <Text style={styles.cardText}>**** **** **** {selectedPaymentMethod.lastFourDigits}</Text>
                     <Text style={styles.cardText}>
-                      {selectedPaymentMethod.cardType} - Expires {selectedPaymentMethod.expiryMonth}/{selectedPaymentMethod.expiryYear}
+                      **** **** **** {selectedPaymentMethod.lastFourDigits}
+                    </Text>
+                    <Text style={styles.cardText}>
+                      {selectedPaymentMethod.cardType} - Expires{" "}
+                      {selectedPaymentMethod.expiryMonth}/
+                      {selectedPaymentMethod.expiryYear}
                     </Text>
                   </>
                 ) : (
-                  <Text style={styles.cardText}>No payment method selected</Text>
+                  <Text style={styles.cardText}>
+                    No payment method selected
+                  </Text>
                 )}
               </View>
             </View>
@@ -298,7 +303,9 @@ const CheckoutScreen = () => {
               />
               <View>
                 <Text style={styles.cardText}>
-                  {selectedPaymentPlan ? selectedPaymentPlan.name : "Select Payment Plan"}
+                  {selectedPaymentPlan
+                    ? selectedPaymentPlan.name
+                    : "Select Payment Plan"}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -314,7 +321,7 @@ const CheckoutScreen = () => {
             </View>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryText}>Shipping</Text>
-              <Text style={[styles.summaryValue, { color: "#4CAF50" }]}>
+              <Text style={[styles.summaryValue, { colors: "#4CAF50" }]}>
                 Free
               </Text>
             </View>
@@ -363,7 +370,11 @@ const CheckoutScreen = () => {
                     {address.addressLine1}, {address.city}, {address.country}
                   </Text>
                   {selectedAddress?.addressId === address.addressId && (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
+                    <Ionicons
+                      name="checkmark"
+                      size={20}
+                      color={colors.primary}
+                    />
                   )}
                 </TouchableOpacity>
               ))}
@@ -398,8 +409,13 @@ const CheckoutScreen = () => {
                   <Text style={styles.modalOptionText}>
                     {method.cardType} - **** **** **** {method.lastFourDigits}
                   </Text>
-                  {selectedPaymentMethod?.paymentMethodId === method.paymentMethodId && (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
+                  {selectedPaymentMethod?.paymentMethodId ===
+                    method.paymentMethodId && (
+                    <Ionicons
+                      name="checkmark"
+                      size={20}
+                      color={colors.primary}
+                    />
                   )}
                 </TouchableOpacity>
               ))}
@@ -432,8 +448,13 @@ const CheckoutScreen = () => {
                   onPress={() => handleSelectPaymentPlan(plan)}
                 >
                   <Text style={styles.modalOptionText}>{plan.name}</Text>
-                  {selectedPaymentPlan?.paymentPlanId === plan.paymentPlanId && (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
+                  {selectedPaymentPlan?.paymentPlanId ===
+                    plan.paymentPlanId && (
+                    <Ionicons
+                      name="checkmark"
+                      size={20}
+                      color={colors.primary}
+                    />
                   )}
                 </TouchableOpacity>
               ))}
@@ -447,7 +468,7 @@ const CheckoutScreen = () => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -472,18 +493,39 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 8,
+    backgroundColor: colors.backgroundLight,
+    marginTop: -50,
   },
   backButton: {
-    padding: 10,
+    // padding: 10,
     marginRight: 12,
     backgroundColor: "rgba(255,255,255,0.2)",
     borderRadius: 12,
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // marginTop:35
   },
+  // headerTitle: {
+  //   fontSize: 24,
+  //   fontWeight: "700",
+  //   color: colors.white,
+  //   letterSpacing: 0.5,
+  // },
+
   headerTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.white,
-    letterSpacing: 0.5,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    marginBottom: -30,
+    marginLeft: 5,
   },
   content: {
     flex: 1,
@@ -627,7 +669,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 15,
     overflow: "hidden",
-    marginBottom: 65,
+    // marginBottom: 65,
     shadowColor: colors.primary,
     shadowOffset: {
       width: 0,

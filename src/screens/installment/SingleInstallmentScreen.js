@@ -14,7 +14,12 @@ import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { getOrderDetails, updateInstallmentStatus, updateOrderStatus } from "../../api/installment";
+import {
+  getOrderDetails,
+  updateInstallmentStatus,
+  updateOrderStatus,
+} from "../../api/installment";
+import { Header } from "../../components/Header";
 
 const SingleInstallmentScreen = () => {
   const navigation = useNavigation();
@@ -65,10 +70,15 @@ const SingleInstallmentScreen = () => {
       onInstallmentUpdate();
 
       // Show confirmation modal
-      setModalMessage("Payment successful! Installment status updated to Paid.");
+      setModalMessage(
+        "Payment successful! Installment status updated to Paid."
+      );
       setModalVisible(true);
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to update installment status.");
+      Alert.alert(
+        "Error",
+        error.message || "Failed to update installment status."
+      );
     } finally {
       setIsUpdating((prev) => ({ ...prev, [installmentId]: false }));
     }
@@ -88,7 +98,6 @@ const SingleInstallmentScreen = () => {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity
               style={styles.backButton}
@@ -98,7 +107,6 @@ const SingleInstallmentScreen = () => {
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Installment Details</Text>
           </View>
-        </LinearGradient>
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
@@ -138,25 +146,19 @@ const SingleInstallmentScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Installment Details</Text>
-        </View>
-      </LinearGradient>
-
+      <Header
+        title="Installment details"
+        backButtonAction={() => navigation.goBack()}
+      />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardTitleContainer}>
-              <Text style={styles.cardTitle}>{getProductNames(item.orderItems)}</Text>
+              <Text style={styles.cardTitle}>
+                {getProductNames(item.orderItems)}
+              </Text>
               <Text style={styles.cardSubtitle}>{item.orderNumber}</Text>
             </View>
             <View
@@ -175,11 +177,15 @@ const SingleInstallmentScreen = () => {
           <View style={styles.detailsContainer}>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Total Amount</Text>
-              <Text style={styles.detailValue}>{order.totalAmount} {order.currency.toUpperCase()}</Text>
+              <Text style={styles.detailValue}>
+                {order.totalAmount} {order.currency.toUpperCase()}
+              </Text>
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Order Date</Text>
-              <Text style={styles.detailValue}>{formatDate(order.orderDate)}</Text>
+              <Text style={styles.detailValue}>
+                {formatDate(order.orderDate)}
+              </Text>
             </View>
           </View>
 
@@ -189,28 +195,35 @@ const SingleInstallmentScreen = () => {
               <View key={installment.installmentId} style={styles.paymentItem}>
                 <View style={styles.paymentInfo}>
                   <Text style={styles.paymentDate}>
-                    Installment #{installment.installmentNumber} - Due: {formatDate(installment.dueDate)}
+                    Installment #{installment.installmentNumber} - Due:{" "}
+                    {formatDate(installment.dueDate)}
                   </Text>
                   <Text style={styles.paymentAmount}>
                     {installment.amount} {installment.currency.toUpperCase()}
                   </Text>
-                  {/* Display transactionId only for paid installments */}
-                  {installment.paymentStatus === "Paid" && installment.transactionId && (
-                    <Text style={styles.transactionId}>
-                      Transaction ID: {installment.transactionId}
-                    </Text>
-                  )}
+                  {installment.paymentStatus === "Paid" &&
+                    installment.transactionId && (
+                      <Text style={styles.transactionId}>
+                        Transaction ID: {installment.transactionId}
+                      </Text>
+                    )}
                 </View>
                 <View style={styles.paymentStatus}>
-                  <Text style={styles.paymentStatusText}>{installment.paymentStatus}</Text>
+                  <Text style={styles.paymentStatusText}>
+                    {installment.paymentStatus}
+                  </Text>
                   {installment.paymentStatus === "Pending" && (
                     <TouchableOpacity
                       style={styles.payButton}
-                      onPress={() => handleUpdateStatus(installment.installmentId)}
+                      onPress={() =>
+                        handleUpdateStatus(installment.installmentId)
+                      }
                       disabled={isUpdating[installment.installmentId]}
                     >
                       <Text style={styles.payButtonText}>
-                        {isUpdating[installment.installmentId] ? "Paying..." : "Pay Now"}
+                        {isUpdating[installment.installmentId]
+                          ? "Paying..."
+                          : "Pay Now"}
                       </Text>
                     </TouchableOpacity>
                   )}
@@ -220,8 +233,6 @@ const SingleInstallmentScreen = () => {
           </View>
         </View>
       </ScrollView>
-
-      {/* Confirmation Modal */}
       <Modal
         visible={modalVisible}
         transparent
@@ -230,7 +241,12 @@ const SingleInstallmentScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Ionicons name="checkmark-circle" size={48} color="#4CAF50" style={styles.modalIcon} />
+            <Ionicons
+              name="checkmark-circle"
+              size={48}
+              color="#4CAF50"
+              style={styles.modalIcon}
+            />
             <Text style={styles.modalTitle}>Payment Confirmed</Text>
             <Text style={styles.modalMessage}>{modalMessage}</Text>
             <TouchableOpacity
@@ -242,7 +258,7 @@ const SingleInstallmentScreen = () => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 

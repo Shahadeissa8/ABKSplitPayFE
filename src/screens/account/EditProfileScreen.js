@@ -18,6 +18,7 @@ import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { updateUserProfile } from "../../api/profile"; // Import the API function
+import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -157,20 +158,26 @@ const EditProfileScreen = ({ route, navigation }) => {
   };
 
   const renderHeader = () => (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.header}
-    >
-      <View style={styles.headerContent}>
-        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Profile</Text>
-        <View style={{ width: 40 }} />
-      </View>
-    </LinearGradient>
+    // <LinearGradient
+    //   colors={["#26589c", "#9cb2d8"]}
+    //   start={{ x: 0, y: 0 }}
+    //   end={{ x: 1, y: 0 }}
+    //   style={styles.header}
+    // >
+    //   <View style={styles.headerContent}>
+    //     <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+    //       <Ionicons name="chevron-back" size={28} color="#fff" />
+    //     </TouchableOpacity>
+    //     <Text style={styles.headerTitle}>Edit Profile</Text>
+    //     <View style={{ width: 40 }} />
+    //   </View>
+    // </LinearGradient>
+    <View>
+      <Header
+        title="Installment details"
+        backButtonAction={() => navigation.goBack()}
+      />
+    </View>
   );
 
   // Add the missing renderProfilePicture function
@@ -290,7 +297,7 @@ const EditProfileScreen = ({ route, navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {renderHeader()}
 
       <View style={styles.content}>
@@ -346,7 +353,7 @@ const EditProfileScreen = ({ route, navigation }) => {
       </View>
 
       {renderImagePickerModal()}
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -13,13 +13,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { getOrders } from "../../api/installment";
+import { Header } from "../../components/Header";
 
 const InstallmentsScreen = () => {
   const navigation = useNavigation();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Function to fetch orders
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
@@ -31,19 +30,12 @@ const InstallmentsScreen = () => {
       setIsLoading(false);
     }
   };
-
-  // Fetch orders on mount
   useEffect(() => {
     fetchOrders();
   }, []);
-
-  // Callback to update orders after an installment is paid and refetch
   const onInstallmentUpdate = async () => {
-    // Refetch orders to ensure the UI reflects the latest status
     await fetchOrders();
   };
-
-  // Get product names from orderItems
   const getProductNames = (orderItems) => {
     if (!orderItems || orderItems.length === 0) return "No Products";
     return orderItems.map((item) => item.product.name).join(", ");
@@ -51,7 +43,7 @@ const InstallmentsScreen = () => {
 
   const renderOrderCard = (item) => (
     <TouchableOpacity
-      key={item.orderId}
+      key={item.orderId} 
       style={styles.card}
       onPress={() =>
         navigation.navigate("SingleInstallmentScreen", {
@@ -88,13 +80,15 @@ const InstallmentsScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
-        <View style={styles.headerContent}>
+      {/* <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}> */}
+        {/* <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>My Installments</Text>
-        </View>
-      </LinearGradient>
-
-      <ScrollView style={styles.content}>
+        </View> */}
+      {/* </LinearGradient> */}
+     <Header
+        title="My installments"
+      />
+      <ScrollView>
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
@@ -152,10 +146,10 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
     marginRight:180
   },
-  content: {
-    flex: 1,
-    padding: 15,
-  },
+  // content: {
+  //   flex: 1,
+  //   padding: 15,
+  // },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",

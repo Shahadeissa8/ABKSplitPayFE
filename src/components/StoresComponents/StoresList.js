@@ -11,8 +11,7 @@ import StoresCard from "./StoresCard";
 
 const StoresList = ({ stores = [], onStorePress }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Stores</Text>
+    <View>
       <ScrollView>
         {stores.map((store) => (
           <StoresCard
@@ -31,18 +30,4 @@ const StoresList = ({ stores = [], onStorePress }) => {
 export default StoresList;
 
 const styles = StyleSheet.create({
-  listContainer: {
-    padding: 8,
-    paddingBottom: 20,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
 });

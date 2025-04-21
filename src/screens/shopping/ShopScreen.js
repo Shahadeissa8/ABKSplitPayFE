@@ -6,6 +6,7 @@ import StoresList from "../../components/StoresComponents/StoresList";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native";
 import { GetStores } from "../../api/StoreAPI"; // Adjust the import path as necessary
+import { actionIcons, Header } from "../../components/Header";
 const ShopScreen = ({}) => {
   // const navigation = useNavigation();
   const [stores, setStores] = useState([]);
@@ -27,14 +28,15 @@ const ShopScreen = ({}) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.instructionsContainer}>
-          {!loading && <StoresList stores={stores} />}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
+      <Header title="Stores" />
+      <View style={styles.instructionsContainer}>
+        {!loading && <StoresList stores={stores} />}
+      </View>
+      {/* </ScrollView> */}
+    </View>
   );
 };
 

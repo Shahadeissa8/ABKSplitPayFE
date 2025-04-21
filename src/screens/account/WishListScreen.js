@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { getWishList, addToCart, deleteWishListItem } from "../../api/CartAPI"; // Import required functions
+import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -144,9 +145,12 @@ const WishListScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      {renderHeader()}
+      <Header
+        title="Installment details"
+        backButtonAction={() => navigation.goBack()}/>
+      {/* {renderHeader()} */}
       {loading ? (
         <ActivityIndicator size="large" color="#26589c" style={{ marginTop: 20 }} />
       ) : wishlistItems.length === 0 ? (
@@ -160,7 +164,7 @@ const WishListScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

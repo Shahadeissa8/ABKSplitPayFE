@@ -5,7 +5,7 @@ import DealsCard from "./DealsCard";
 const DealsList = () => {
   return (
     <View>
-      <Text style={styles.Text}>Deals</Text>
+      {/* <Text style={styles.Text}>Deals</Text> */}
       <View style={styles.containerScroll}>
         <DealsCard />
       </View>

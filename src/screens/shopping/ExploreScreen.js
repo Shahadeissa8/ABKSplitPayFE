@@ -404,7 +404,10 @@ const ExploreScreen = () => {
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
 
       <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
+      // blue with gradient
+        // colors={["#26589c", "#9cb2d8"]}
+        //blue 
+        colors={["#4a6fa1", "#9cb2d8"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.header}
@@ -417,7 +420,10 @@ const ExploreScreen = () => {
               onPress={() => navigation.navigate("MyCartScreen")}
             >
               <LinearGradient
-                colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
+              //
+                // colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
+
+                colors={["#4a6fa1", "#9cb2d8"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.cartGradient}
@@ -682,10 +688,13 @@ const modalStyles = StyleSheet.create({
     overflow: "hidden",
   },
   image: {
-    width: "100%",
-    height: 300,
+    width: "97%",
+    height: 250,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    marginTop: 8,
+    marginRight: 8,
+    marginLeft: 8,
   },
   contentContainer: {
     padding: 20,

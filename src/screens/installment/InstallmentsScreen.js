@@ -54,7 +54,10 @@ const InstallmentsScreen = () => {
       key={item.orderId}
       style={styles.card}
       onPress={() =>
-        navigation.navigate("SingleInstallmentScreen", { item, onInstallmentUpdate })
+        navigation.navigate("SingleInstallmentScreen", {
+          item,
+          onInstallmentUpdate,
+        })
       }
     >
       <View style={styles.cardHeader}>
@@ -62,7 +65,9 @@ const InstallmentsScreen = () => {
           <Ionicons name="cart-outline" size={24} color="#fff" />
         </View>
         <View style={styles.cardTitleContainer}>
-          <Text style={styles.cardTitle}>{getProductNames(item.orderItems)}</Text>
+          <Text style={styles.cardTitle}>
+            {getProductNames(item.orderItems)}
+          </Text>
           <Text style={styles.cardSubtitle}>Order #{item.orderId}</Text>
         </View>
         <View
@@ -81,7 +86,7 @@ const InstallmentsScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
         <View style={styles.headerContent}>
@@ -98,13 +103,15 @@ const InstallmentsScreen = () => {
           <View style={styles.emptyContainer}>
             <Ionicons name="cart-outline" size={64} color="#26589c" />
             <Text style={styles.emptyText}>No Installments Found</Text>
-            <Text style={styles.emptySubtext}>Your orders will appear here.</Text>
+            <Text style={styles.emptySubtext}>
+              Your orders will appear here.
+            </Text>
           </View>
         ) : (
           orders.map(renderOrderCard)
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -134,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    paddingTop: 15,
+    paddingTop: 65,
   },
   headerTitle: {
     fontSize: 28,
@@ -143,6 +150,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    marginRight:180
   },
   content: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, StyleSheet } from 'react-native'; // Import Platform and StyleSheet
+import { Platform, StyleSheet } from "react-native"; // Import Platform and StyleSheet
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ShoppingNavigation from "./ShoppingNavigation";
 import InstallmentNavigation from "./InstallmentNavigation";
@@ -19,6 +19,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         tabBarInactiveTintColor: "#B0BEC5", // Light Gray Inactive Icon Color
         tabBarShowLabel: true,
         tabBarStyle: {
+
           elevation: 8, // Increased shadow for Android
           // backgroundColor: '#ffffff', // Still transparent as requested
           borderRadius: 30, // Keep rounded corners
@@ -40,6 +41,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         name="Explore"
         component={ExploreNavigation}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="compass-outline" size={30} color={color} />
           ),
@@ -65,6 +67,7 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
       />
       <Tab.Screen
         name="Account"
+
         children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -88,9 +91,11 @@ const styles = StyleSheet.create({
       width: 0,
       height: 5, // Adjusted shadow offset
     },
+
     shadowOpacity: 0.15, // Reduced shadow opacity
     shadowRadius: 6.84, // Adjusted shadow radius
   }
+
 });
 
 export default MainBottomNavigation;

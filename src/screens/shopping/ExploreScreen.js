@@ -8,7 +8,8 @@ import {
   Modal,
   Image,
   TouchableOpacity,
-  Alert, // Import Alert
+  Alert,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import CategoryList from "../../components/ExploreComponents/CategoryList";
@@ -35,7 +36,10 @@ const ExploreScreen = () => {
       await addToWishList({ productId }); // Call the endpoint with the productId
       Alert.alert("Success", "Product added to wishlist!");
     } catch (error) {
-      console.error("Error adding product to wishlist:", error.response?.data || error.message);
+      console.error(
+        "Error adding product to wishlist:",
+        error.response?.data || error.message
+      );
       Alert.alert(
         "Error",
         error.response?.data?.message || "Failed to add product to wishlist."
@@ -50,19 +54,39 @@ const ExploreScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
-      <View style={styles.header}>
-        <TouchableOpacity
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      {/* backgroundColor="#2E3192" /> */}
+      <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>Explore</Text>
+          <TouchableOpacity
+            style={styles.cartButton}
+            onPress={() => navigation.navigate("MyCartScreen")}
+          >
+            <View style={styles.theView}>
+              <LinearGradient
+                colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.cartGradient}
+              >
+                <Ionicons name="cart-outline" size={30} color="white" />
+              </LinearGradient>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+      {/* <View style={styles.header}> */}
+      {/* <TouchableOpacity
           style={styles.cartButton}
           onPress={() => navigation.navigate("MyCartScreen")}
 
-          //cart stayle 
-          
+          //cart stayle
         >
           <Ionicons name="cart-outline" size={30} color="#2E3192" />
-        </TouchableOpacity>
-      </View>
+        </TouchableOpacity> */}
+      {/* </View> */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.instructionsContainer}>
           <InstructionsCard />
@@ -148,7 +172,7 @@ const ExploreScreen = () => {
           </View>
         </Modal>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -158,17 +182,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  // header1: {
+  //   flexDirection: "row",
+  //   justifyContent: "flex-end",
+  //   alignItems: "center",
+  //   paddingHorizontal: 20,
+  //   paddingVertical: 15,
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: "#eee",
+  // },
+  theView: {
     flexDirection: "row",
-    justifyContent: "flex-end",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    justifyContent: "space-between",
+    marginLeft: 210,
+    marginBottom:-10,
+    marginTop:5
   },
   cartButton: {
     padding: 8,
+  },
+  cartGradient: {
+    padding: 8,
+    borderRadius: 20,
   },
   scrollContent: {
     flexGrow: 1,
@@ -179,6 +215,37 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     marginTop: 30,
+  },
+  header: {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+    flexDirection: "row",
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingTop: 15,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    marginBottom:-30,marginLeft:5
   },
 });
 const modalStyles = StyleSheet.create({

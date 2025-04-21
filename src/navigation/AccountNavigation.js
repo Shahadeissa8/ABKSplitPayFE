@@ -12,7 +12,6 @@ import Feedback from "../screens/account/Feedback";
 import HelpCenter from "../screens/account/HelpCenter";
 import WishListScreen from "../screens/account/WishListScreen";
 
-
 const Stack = createNativeStackNavigator();
 
 const AccountNavigation = ({ setIsAuthenticated }) => {
@@ -24,15 +23,16 @@ const AccountNavigation = ({ setIsAuthenticated }) => {
         presentation: "card",
         gestureEnabled: true,
         gestureDirection: "horizontal",
-        headerShown: false,
+        // headerShown: false,
         header: () => null,
       }}
       initialRouteName="MainAccPageScreen"
-      
     >
       <Stack.Screen
         name="MainAccPageScreen"
-        children={() => <MainAccPageScreen setIsAuthenticated={setIsAuthenticated} />} // Pass setIsAuthenticated to MainAccPageScreen
+        component={() => (
+          <MainAccPageScreen setIsAuthenticated={setIsAuthenticated} />
+        )} // Pass setIsAuthenticated to MainAccPageScreen
         options={{
           animationEnabled: true,
           headerShown: false,

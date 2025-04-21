@@ -1,47 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Platform,
   StatusBar,
+  Alert,
 } from "react-native";
+import { useCallback } from "react";
+
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getOrders } from "../../api/installment";
 
 const InstallmentsScreen = () => {
   const navigation = useNavigation();
-  const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [orders, setOrders] = useState([]); // Initialize as an empty array
+  const [isLoading, setIsLoading] = useState(false); // Show loading indicator only during fetch
 
   // Function to fetch orders
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
       const fetchedOrders = await getOrders();
-      setOrders(fetchedOrders);
+      const sortedOrders = Array.isArray(fetchedOrders)
+        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1)) // Sort Pending first
+        : [];
+      setOrders(sortedOrders);
     } catch (error) {
+      console.error("Error fetching orders:", error);
       Alert.alert("Error", error.message || "Failed to load orders.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch orders on mount
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  // Callback to update orders after an installment is paid and refetch
-  const onInstallmentUpdate = async () => {
-    // Refetch orders to ensure the UI reflects the latest status
-    await fetchOrders();
-  };
+  // Fetch orders when the screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchOrders(); // Fetch data when the screen gains focus
+    }, [])
+  );
 
   // Get product names from orderItems
   const getProductNames = (orderItems) => {
@@ -56,7 +58,7 @@ const InstallmentsScreen = () => {
       onPress={() =>
         navigation.navigate("SingleInstallmentScreen", {
           item,
-          onInstallmentUpdate,
+          onInstallmentUpdate: fetchOrders, // Pass fetchOrders to refresh data after updates
         })
       }
     >
@@ -95,7 +97,7 @@ const InstallmentsScreen = () => {
       </LinearGradient>
 
       <ScrollView style={styles.content}>
-        {isLoading ? (
+        {isLoading && orders.length === 0 ? ( // Show loading only if no data exists
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
           </View>
@@ -150,7 +152,6 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    marginRight:180
   },
   content: {
     flex: 1,

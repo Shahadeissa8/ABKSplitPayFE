@@ -92,7 +92,7 @@ const CategoryList = ({ onSelectCategory }) => {
 
   return (
     <View>
-      <Text style={styles.text}>Categories</Text>
+      {/* <Text style={styles.text}>Categories</Text> */}
       <View style={styles.containerScroll}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {/* "All" category - Reset category */}

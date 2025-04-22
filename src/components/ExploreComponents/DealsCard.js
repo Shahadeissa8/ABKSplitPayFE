@@ -1,5 +1,3 @@
-
-
 import {
   StyleSheet,
   Text,
@@ -19,17 +17,10 @@ const DealCard = ({ name, price, image, onPress }) => (
   >
     <View style={styles.imageContainer}>
       <Image source={image} style={styles.image} resizeMode="contain" />
-    </View>
-    {/* <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      style={styles.gradientBackground}
-    >
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.price}>Price: {price} KD</Text>
+      <View style={styles.dealBadge}>
+        <Text style={styles.dealBadgeText}>50% Off</Text>
       </View>
-    </LinearGradient> */}
+    </View>
   </TouchableOpacity>
 );
 
@@ -100,10 +91,25 @@ const styles = StyleSheet.create({
     width: "100%",
     overflow: "hidden",
     borderRadius: 15,
+    position: "relative", // Added to position the badge
   },
   image: {
     width: "100%",
     height: 150,
+  },
+  dealBadge: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    backgroundColor: "rgba(255, 69, 58, 0.9)", // Red color for emphasis, semi-transparent
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  dealBadgeText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "600",
   },
   infoContainer: {
     marginTop: 10,

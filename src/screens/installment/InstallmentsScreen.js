@@ -20,6 +20,7 @@ const InstallmentsScreen = () => {
   const navigation = useNavigation();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
@@ -34,14 +35,16 @@ const InstallmentsScreen = () => {
       setIsLoading(false);
     }
   };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchOrders();
     }, [])
   );
-  const getProductNames = (orderItems) => {
-    if (!orderItems || orderItems.length === 0) return "No Products";
-    return orderItems.map((item) => item.product.name).join(", ");
+
+  const getProductNames = (productNames) => {
+    if (!productNames || productNames.length === 0) return "No Products";
+    return productNames.join(", ");
   };
 
   const renderOrderCard = (item) => (
@@ -61,7 +64,7 @@ const InstallmentsScreen = () => {
         </View>
         <View style={styles.cardTitleContainer}>
           <Text style={styles.cardTitle}>
-            {getProductNames(item.orderItems)}
+            {getProductNames(item.productNames)}
           </Text>
           <Text style={styles.cardSubtitle}>Order #{item.orderId}</Text>
         </View>

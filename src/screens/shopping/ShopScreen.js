@@ -8,6 +8,7 @@ import {
   TextInput,
   Dimensions,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,6 +18,7 @@ import StoreDetailsModal from "../../components/StoresComponents/StoreDetailsMod
 import { GetStores } from "../../api/StoreAPI";
 
 const { width } = Dimensions.get("window");
+
 const ShopScreen = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +45,10 @@ const ShopScreen = () => {
     setModalVisible(true);
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
@@ -60,6 +66,11 @@ const ShopScreen = () => {
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+              <Ionicons name="close-circle" size={20} color="#999" />
+            </TouchableOpacity>
+          )}
         </View>
         {!loading ? (
           <StoresList
@@ -113,8 +124,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     marginTop: 1,
-    
-
   },
   searchContainer: {
     flexDirection: "row",
@@ -122,19 +131,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     borderRadius: 12,
     marginHorizontal: 15,
-    marginTop: 20, 
+    marginTop: 20,
     marginBottom: 10,
     paddingHorizontal: 12,
-    paddingVertical: 12, 
+    paddingVertical: 12,
   },
   searchIcon: {
     marginRight: 12,
   },
   searchInput: {
     flex: 1,
-    fontSize: 18, 
+    fontSize: 18,
     color: "#333",
     paddingVertical: 10,
+  },
+  clearButton: {
+    padding: 5,
+    marginLeft: 10,
   },
   contentContainer: {
     flex: 1,

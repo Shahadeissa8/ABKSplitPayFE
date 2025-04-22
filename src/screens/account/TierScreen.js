@@ -40,7 +40,7 @@ const tiers = [
     image: require("../../../assets/Elite.png"),
     installmentLimit: "1500KD",
     earnedPoint: 3,
-    pointsToNextTier: null, // No next tier
+    pointsToNextTier: null, 
   },
 ];
 
@@ -151,10 +151,10 @@ export default TierScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff", //
+    backgroundColor: "#fff", 
   },
   content: {
-    marginTop: 40,
+    marginTop: 20,
     width: width * 0.9,
     alignItems: "center",
     backgroundColor: "#fff", // White background for the content card
@@ -165,10 +165,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 8,
-    // justifyContent: "center",
     alignSelf: "center",
-    // alignContent:"center"
-    // alignItems:"center"
+
   },
   tierItem: {
     width: width * 0.9 - 40, // Adjust for padding

@@ -22,7 +22,7 @@ const CategoryCard = ({ name, selected, onPress }) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    marginHorizontal: 2,
+    marginHorizontal: 5,
   },
   card: {
     borderRadius: 10,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
   },

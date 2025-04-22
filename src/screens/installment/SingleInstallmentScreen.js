@@ -64,7 +64,6 @@ const SingleInstallmentScreen = () => {
     }
   };
 
-  // Format date to a readable string
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -118,9 +117,9 @@ const SingleInstallmentScreen = () => {
   }
 
   const { order, installments } = orderDetails;
-  const getProductNames = (orderItems) => {
-    if (!orderItems || orderItems.length === 0) return "No Products";
-    return orderItems.map((item) => item.product.name).join(", ");
+  const getProductNames = (productNames) => {
+    if (!productNames || productNames.length === 0) return "No Products";
+    return productNames.join(", ");
   };
 
   return (
@@ -135,9 +134,9 @@ const SingleInstallmentScreen = () => {
           <View style={styles.cardHeader}>
             <View style={styles.cardTitleContainer}>
               <Text style={styles.cardTitle}>
-                {getProductNames(item.orderItems)}
+                {getProductNames(item.productNames)}
               </Text>
-              <Text style={styles.cardSubtitle}>{item.orderNumber}</Text>
+              <Text style={styles.cardSubtitle}>Order #{item.orderId}</Text>
             </View>
             <View
               style={[
@@ -244,6 +243,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    marginBottom: 100
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,

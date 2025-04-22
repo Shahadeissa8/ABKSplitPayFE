@@ -25,20 +25,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
   },
   card: {
-    borderRadius: 20,
+    borderRadius: 10,
     overflow: "hidden",
     elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+    height: 40,
+    width: 160,
   },
   background: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
-    borderRadius: 20,
   },
   text: {
     fontSize: 18,

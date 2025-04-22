@@ -187,6 +187,24 @@ const deletePaymentMethod = async (id) => {
     );
   }
 };
+const getPoints = async () => {
+  try {
+    const token = await getToken(); // Retrieve the token from storage
+    if (!token) {
+      throw new Error("Token is missing. Please log in again.");
+    }
+    const response = await instance.get(`/Order/points`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+      },
+    });
+    return response.data.points;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.title || "Failed to fetch points. Please try again."
+    );
+  }
+};
 
 export {
   getPaymentMethods,
@@ -198,4 +216,5 @@ export {
   createAddress,
   getSavedAddresses,
   deleteAddress,
+  getPoints,
 };

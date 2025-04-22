@@ -33,37 +33,44 @@ const Header = ({
   actionIconName,
   description,
   backButtonAction,
+  cartItemCount,
+  renderAction,
 }) => {
   return (
     <View style={styles.header}>
       <View style={styles.headerContent}>
         <View style={styles.side}>
           {backButtonAction != null && (
-            <View>
-              <TouchableOpacity onPress={backButtonAction}>
-                <Ionicons
-                  name={actionIcons.backButton}
-                  size={24}
-                  color={colors.white}
-                />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={backButtonAction}>
+              <Ionicons
+                name={actionIcons.backButton}
+                size={24}
+                color={colors.white}
+              />
+            </TouchableOpacity>
           )}
         </View>
         <View style={styles.titleContainer}>
           <Text style={styles.headerTitle}>{title}</Text>
         </View>
         <View style={styles.side}>
-          {actionIconName != null && (
-            <TouchableOpacity onPress={action}>
-              <View>
-                <Ionicons name={actionIconName} size={25} color="white" />
-              </View>
+          {renderAction ? (
+            renderAction()
+          ) : actionIconName != null ? (
+            <TouchableOpacity onPress={action} style={styles.cartIconContainer}>
+              <Ionicons name={actionIconName} size={25} color="white" />
+              {cartItemCount > 0 && actionIconName === actionIcons.cart && (
+                <View style={styles.cartBadge}>
+                  <Text style={styles.cartBadgeText}>{cartItemCount}</Text>
+                </View>
+              )}
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
       </View>
-      {/* if (description) {<Text style={styles.description}>{description}</Text>} */}
+      {description && (
+        <Text style={styles.description}>{description}</Text>
+      )}
     </View>
   );
 };
@@ -124,5 +131,25 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     alignItems: "center",
+  },
+  cartIconContainer: {
+    position: "relative",
+  },
+  cartBadge: {
+    top: -50,
+    right: -100,
+    backgroundColor: "#ff4444",
+    borderRadius: 12,
+    minWidth: 18,
+    height: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  cartBadgeText: {
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "bold",
   },
 });

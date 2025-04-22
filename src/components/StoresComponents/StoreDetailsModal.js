@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   button: {
     position: "absolute",
-    bottom: 20, // Position at bottom of modal
+    bottom: 40, // Position at bottom of modal
     borderRadius: 12,
     overflow: "hidden",
     width: width * 0.8, // Increased width

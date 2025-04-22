@@ -11,9 +11,9 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const actionIcons = {
   cart: "cart-outline",
-  backButton: "arrow-back",
+  backButton: "chevron-back",
   notification: "notifications-outline",
-  addCard:"add-circle-outline"
+  addButton: "add",
 };
 
 const colors = {
@@ -25,7 +25,6 @@ const colors = {
   textSecondary: "#666666",
   border: "#EEEEEE",
   white: "#FFFFFF",
-  gradientColors: ["#26589c", "#9cb2d8"],
 };
 
 const Header = ({
@@ -38,40 +37,33 @@ const Header = ({
   return (
     <View style={styles.header}>
       <View style={styles.headerContent}>
-        {backButtonAction != null && (
-          <LinearGradient
-            colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.gradient}
-          >
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={backButtonAction}
-            >
-              <Ionicons
-                name={actionIcons.backButton}
-                size={24}
-                color={colors.white}
-              />
+        <View style={styles.side}>
+          {backButtonAction != null && (
+            <View>
+              <TouchableOpacity onPress={backButtonAction}>
+                <Ionicons
+                  name={actionIcons.backButton}
+                  size={24}
+                  color={colors.white}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.headerTitle}>{title}</Text>
+        </View>
+        <View style={styles.side}>
+          {actionIconName != null && (
+            <TouchableOpacity onPress={action}>
+              <View>
+                <Ionicons name={actionIconName} size={30} color="white" />
+              </View>
             </TouchableOpacity>
-          </LinearGradient>
-        )}
-        <Text style={styles.headerTitle}>{title}</Text>
-        {actionIconName != null && (
-          <TouchableOpacity style={styles.actionButton} onPress={action}>
-            <LinearGradient
-              colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.gradient}
-            >
-              <Ionicons name={actionIconName} size={30} color="white" />
-            </LinearGradient>
-          </TouchableOpacity>
-        )}
+          )}
+        </View>
       </View>
-      if (description) {<Text style={styles.civilId}>{description}</Text>}
+      if (description) {<Text style={styles.description}>{description}</Text>}
     </View>
   );
 };
@@ -79,26 +71,13 @@ const Header = ({
 export { Header, actionIcons };
 
 const styles = StyleSheet.create({
-  actionButton: {
-    padding: 8,
-  },
-  backButton: {
-    padding: 15,
-    marginRight: 12,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 12,
-    color: "#fff",
-    textShadowColor: "rgba(0, 0, 0, 0.2)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
   gradient: {
-    padding: 4,
     borderRadius: 100,
   },
   header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 40,
-    paddingBottom: 20,
+    backgroundColor: "#003566",
+    // backgroundColor: "#26589c",
+    paddingTop: 60,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     shadowColor: "#000",
@@ -111,7 +90,6 @@ const styles = StyleSheet.create({
     elevation: 8,
     paddingHorizontal: 20,
   },
-
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
@@ -124,12 +102,27 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    alignContent: "center",
-    paddingTop: 20,
   },
-
-  civilId: {
+  titleMiddle: {
+    alignContent: "center",
+    textAlign: "center",
+    alignSelf: "center",
+  },
+  description: {
     fontSize: 14,
     color: "rgba(255, 255, 255, 0.8)",
+    alignContent: "center",
+    textAlign: "center",
+    alignSelf: "center",
+    padding: 3,
+  },
+  side: {
+    width: 60,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: "center",
   },
 });

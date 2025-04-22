@@ -172,9 +172,14 @@ const PaymentMethods = () => {
     //   start={{ x: 0, y: 0 }}
     //   end={{ x: 1, y: 0 }}
     // >
-      <View   style={styles.container}>      <StatusBar barStyle="light-content" translucent={true} />
-      <SafeAreaView style={styles.innerContainer}>
-        <View style={styles.header}>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" translucent={true} />
+      <Header
+        title="Add payment method"
+        backButtonAction={() => navigation.goBack()}
+      />
+      <View style={styles.innerContainer}>
+        {/* <View style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -185,7 +190,7 @@ const PaymentMethods = () => {
             <Text style={styles.headerTitle}>Add Payment Method</Text>
             <View style={{ width: 40 }} />
           </View>
-        </View>
+        </View> */}
 
         <ScrollView
           style={styles.content}
@@ -444,9 +449,9 @@ const PaymentMethods = () => {
             </View>
           </BlurView>
         </Modal>
-      </SafeAreaView>
       </View>
-    //  </LinearGradient> 
+    </View>
+    //  </LinearGradient>
   );
 };
 

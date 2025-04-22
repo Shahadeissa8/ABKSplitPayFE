@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { createAddress } from "../../api/profile";
+import { Header } from "../../components/Header";
 
 const { width, height } = Dimensions.get("window");
 
@@ -142,26 +143,31 @@ const AddLocation = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <LinearGradient
+        {/* <LinearGradient
           colors={["#26589c", "#9cb2d8"]}
           style={styles.header}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-        >
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="chevron-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Location</Text>
-          <View style={styles.placeholder} />
-        </LinearGradient>
+        > */}
+          <Header   title="Add location"
+        backButtonAction={() => navigation.goBack()}
+      />
+          {/* <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="chevron-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Add Location</Text>
+            <View style={styles.placeholder} />
+          </View> */}
+        {/* </LinearGradient> */}
 
         <ScrollView
           style={styles.scrollView}
@@ -269,7 +275,7 @@ const AddLocation = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -319,7 +325,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignItems: "center",
-    marginVertical: 20,
+    // marginVertical: 20,
   },
   gradientOverlay: {
     width: width * 0.3,

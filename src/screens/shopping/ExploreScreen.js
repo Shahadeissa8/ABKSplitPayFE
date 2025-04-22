@@ -51,7 +51,7 @@ const ExploreScreen = () => {
   const handleProductPress = (product) => {
     console.log("Pressed product:", product.name);
     setSelectedProduct(product);
-    setModalVisible(true);
+    setModalVisible(true); 
   };
 
   return (

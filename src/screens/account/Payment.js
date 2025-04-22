@@ -74,10 +74,10 @@ const Payment = ({ navigation, route }) => {
     ]);
   };
 
-  const handleAddPaymentMethod = () => {
-    console.log("Navigating to PaymentMethods");
-    navigation.navigate("Payment");
-  };
+  // const handleAddPaymentMethod = () => {
+  //   console.log("Navigating to PaymentMethods");
+  //   navigation.navigate("Payment");
+  // };
 
   const renderCard = (card) => {
     const colors = cardTypeColors[card.cardType] || {
@@ -148,16 +148,16 @@ const Payment = ({ navigation, route }) => {
     //   start={{ x: 0, y: 0 }}
     //   end={{ x: 1, y: 0 }}
     // >
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" translucent={true} />
-        {/* <SafeAreaView style={styles.innerContainer}> */}
-        <Header
-        title="Payment cards"
-        action={() => navigation.navigate("")}
-        actionIconName={actionIcons.addCard
-        }
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" translucent={true} />
+      {/* <SafeAreaView style={styles.innerContainer}> */}
+      <Header
+        title="Payment methods"
+        backButtonAction={() => navigation.goBack()}
+        action={() => navigation.navigate("Payment")}
+        actionIconName={actionIcons.addButton}
       />
-        <View style={styles.header}>
+      {/* <View style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -173,28 +173,27 @@ const Payment = ({ navigation, route }) => {
               <Ionicons name="add-circle-outline" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.content}>
-          {cards.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Ionicons name="card-outline" size={64} color="#26589c" />
-              <Text style={styles.emptyText}>No Saved Cards</Text>
-              <Text style={styles.emptySubtext}>
-                Press + to add a new payment method
-              </Text>
-            </View>
-          ) : (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.cardsContainer}
-            >
-              {cards.map(renderCard)}
-            </ScrollView>
-          )}
-        </View>
-        {/* </SafeAreaView> */}
+        </View> */}
+      <View style={styles.content}>
+        {cards.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Ionicons name="card-outline" size={64} color="#26589c" />
+            <Text style={styles.emptyText}>No Saved Cards</Text>
+            <Text style={styles.emptySubtext}>
+              Press + to add a new payment method
+            </Text>
+          </View>
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.cardsContainer}
+          >
+            {cards.map(renderCard)}
+          </ScrollView>
+        )}
       </View>
+      {/* </SafeAreaView> */}
+    </View>
     //</LinearGradient> */}
   );
 };
@@ -229,14 +228,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#fff",
-  },
-  addCardButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
   },
   content: {
     flex: 1,

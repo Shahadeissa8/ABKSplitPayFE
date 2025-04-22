@@ -14,6 +14,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -111,13 +112,17 @@ const Feedback = () => {
         translucent={true}
         backgroundColor="transparent"
       />
-      <LinearGradient
+      {/* <LinearGradient
         colors={["#26589c", "#26589c"]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-      >
-        <View style={styles.headerContent}>
+      > */}
+        <Header
+        title="Feedback"
+        backButtonAction={() => navigation.goBack()}
+        /> 
+        {/* <View style={styles.headerContent}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
@@ -126,9 +131,9 @@ const Feedback = () => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Feedback</Text>
           <View style={{ width: 40 }} />
-        </View>
-      </LinearGradient>
-      <SafeAreaView style={styles.safeArea}>
+        </View> */}
+      {/* </LinearGradient> */}
+      <View style={styles.safeArea}>
         <ScrollView
           style={styles.content}
           showsVerticalScrollIndicator={false}
@@ -232,7 +237,7 @@ const Feedback = () => {
             </LinearGradient>
           </TouchableOpacity>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </View>
   );
 };

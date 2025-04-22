@@ -12,11 +12,11 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import StoresList from "../../components/StoresComponents/StoresList";
+import { actionIcons, Header } from "../../components/Header";
 import StoreDetailsModal from "../../components/StoresComponents/StoreDetailsModal";
 import { GetStores } from "../../api/StoreAPI";
 
 const { width } = Dimensions.get("window");
-
 const ShopScreen = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +46,10 @@ const ShopScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Shop</Text>
+      <StatusBar barStyle="light-content" backgroundColor="#2E3192" />
+      <Header title="Stores" />
+      <View style={styles.instructionsContainer}>
+        {!loading && <StoresList stores={stores} />}
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.searchContainer}>

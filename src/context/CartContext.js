@@ -13,7 +13,6 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  // Fetch the cart from backend
   const fetchCart = async () => {
     try {
       const items = await getItem();
@@ -22,8 +21,6 @@ export const CartProvider = ({ children }) => {
       console.error("Failed to fetch cart:", err);
     }
   };
-
-  // Add or update item in cart via backend
   const addToCart = async (productId, quantity = 1) => {
     try {
       await apiAddToCart(productId, quantity);
@@ -32,11 +29,11 @@ export const CartProvider = ({ children }) => {
       console.error("Error adding to cart:", err);
     }
   };
-
-  // Remove item from cart via backend
   const removeFromCart = async (productId) => {
     try {
-      const itemToDelete = cartItems.find((item) => item.productId === productId);
+      const itemToDelete = cartItems.find(
+        (item) => item.productId === productId
+      );
       if (itemToDelete) {
         await deleteItem(itemToDelete.cartItemId);
         await fetchCart();
@@ -45,8 +42,6 @@ export const CartProvider = ({ children }) => {
       console.error("Error removing from cart:", err);
     }
   };
-
-  // Update quantity via backend
   const updateQuantity = async (productId, change) => {
     try {
       const item = cartItems.find((item) => item.productId === productId);

@@ -6,13 +6,9 @@ const StoresList = ({ stores = [], onStorePress, searchQuery = "" }) => {
   const filteredStores = stores.filter((store) =>
     store.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  // Store animation values in a ref to persist across renders
   const animations = useRef(
     filteredStores.map(() => new Animated.Value(0))
   ).current;
-
-  // Run animations only once when the component mounts
   useEffect(() => {
     const animationTimings = filteredStores.map((_, index) =>
       Animated.timing(animations[index], {
@@ -24,8 +20,7 @@ const StoresList = ({ stores = [], onStorePress, searchQuery = "" }) => {
     );
 
     Animated.parallel(animationTimings).start();
-  }, []); // Empty dependency array ensures it runs only once on mount
-
+  }, []); 
   const renderItem = ({ item, index }) => (
     <Animated.View
       style={{

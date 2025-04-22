@@ -21,6 +21,7 @@ import { getUserProfile } from "../../api/profile";
 import { getToken } from "../../api/storage";
 import { useIsFocused } from "@react-navigation/native";
 import { getUserId } from "../../api/storage";
+import { actionIcons, Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -192,27 +193,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
     </TouchableOpacity>
   );
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.headerContent}>
-        <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity style={styles.notificationButton}>
-          <LinearGradient
-            colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.notificationGradient}
-          >
-            <Ionicons name="notifications-outline" size={24} color="#fff" />
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.civilId}>
-        Phone: {userProfile?.phoneNumber || "N/A"}
-      </Text>
-    </View>
-  );
-
   const renderProfileSection = () => (
     <View style={styles.profileSection}>
       <View style={styles.profileImageContainer}>
@@ -260,98 +240,65 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   );
 
   return (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
+    <View
+      // colors={["#26589c", "#9cb2d8"]}
+      // start={{ x: 0, y: 0 }}
+      // end={{ x: 1, y: 0 }}
       style={styles.container}
     >
       <StatusBar barStyle="light-content" translucent={true} />
-      <SafeAreaView style={styles.innerContainer}>
-        {renderHeader()}
 
-        <Animated.ScrollView
-          ref={scrollViewRef}
-          style={styles.content}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              tintColor="#26589c"
-              colors={["#26589c", "#9cb2d8"]}
-              progressBackgroundColor="#fff"
-            />
-          }
-        >
-          {renderProfileSection()}
+      <Header
+        title="Profile"
+        action={() => navigation.navigate("NotificationScreen")}
+        description={`Phone: ${userProfile?.phoneNumber || "N/A"}`}
+        actionIconName={actionIcons.notification}
+      />
+      <Animated.ScrollView
+        ref={scrollViewRef}
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor="#26589c"
+            colors={["#26589c", "#9cb2d8"]}
+            progressBackgroundColor="#fff"
+          />
+        }
+      >
+        {renderProfileSection()}
 
-          <View style={styles.menuContainer}>
-            {menuItems.map(renderMenuItem)}
-          </View>
+        <View style={styles.menuContainer}>
+          {menuItems.map(renderMenuItem)}
+        </View>
 
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <LinearGradient
-              colors={["#26589c", "#9cb2d8"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.logoutGradient}
-            >
-              <Ionicons name="log-out-outline" size={24} color="#fff" />
-              <Text style={styles.logoutText}>Logout</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </Animated.ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <LinearGradient
+            colors={["#26589c", "#9cb2d8"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.logoutGradient}
+          >
+            <Ionicons name="log-out-outline" size={24} color="#fff" />
+            <Text style={styles.logoutText}>Logout</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </Animated.ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header1: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    paddingBottom: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
-    flexDirection: "row",
-  },
   container: {
     flex: 1,
   },
   innerContainer: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    borderBottomLeftRadius: 30, // Keep the oval shape
-    borderBottomRightRadius: 30, // Keep the oval shape
-    shadowColor: "#26589c",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  headerContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#fff",
   },
   notificationButton: {
     overflow: "hidden",

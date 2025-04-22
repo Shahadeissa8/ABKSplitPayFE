@@ -12,6 +12,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
+// import { Header } from "@react-navigation/elements";
+import { actionIcons , Header} from "../../components/Header";
 
 const colors = {
   primary: "#2E3192",
@@ -51,7 +53,6 @@ const MyCartScreen = () => {
       .toFixed(2);
   };
 
-
   const handleCheckout = () => {
     const total = calculateTotal();
     console.log("Total calculated in MyCartScreen:", total, "KD"); // Debug log
@@ -66,8 +67,12 @@ const MyCartScreen = () => {
         resizeMode="cover"
       />
       <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.product?.name || "Unknown Product"}</Text>
-        <Text style={styles.productPrice}>{item.product?.price || "0.00"} KD</Text>
+        <Text style={styles.productName}>
+          {item.product?.name || "Unknown Product"}
+        </Text>
+        <Text style={styles.productPrice}>
+          {item.product?.price || "0.00"} KD
+        </Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             style={styles.quantityButton}
@@ -94,8 +99,8 @@ const MyCartScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <View style={styles.container}>
+      {/* <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -103,7 +108,11 @@ const MyCartScreen = () => {
           <Ionicons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Shopping Cart</Text>
-      </View>
+      </View> */}
+      <Header
+        title="Shopping cart"
+        backButtonAction={() => navigation.goBack()}
+      />
       {cartItems.length > 0 ? (
         <>
           <FlatList
@@ -118,7 +127,10 @@ const MyCartScreen = () => {
               <Text style={styles.totalPrice}>{calculateTotal()} KD</Text>
             </View>
             <TouchableOpacity
-              style={[styles.checkoutButton, { backgroundColor: colors.primary }]}
+              style={[
+                styles.checkoutButton,
+                { backgroundColor: colors.primary },
+              ]}
               onPress={handleCheckout}
             >
               <Text style={styles.checkoutButtonText}>Checkout</Text>
@@ -137,14 +149,14 @@ const MyCartScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.backgroundLight,
   },
   header: {
     flexDirection: "row",
@@ -269,8 +281,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-
 export default MyCartScreen;
-

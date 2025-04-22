@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { getPaymentMethods, deletePaymentMethod } from "../../api/profile";
+import { actionIcons, Header } from "../../components/Header";
 
 // Card type color mappings
 const cardTypeColors = {
@@ -33,9 +34,11 @@ const Payment = ({ navigation, route }) => {
       const paymentMethods = await getPaymentMethods();
       setCards(paymentMethods);
     } catch (error) {
-      Alert.alert("Error", "Failed to load payment methods. Please try again.", [
-        { text: "OK" },
-      ]);
+      Alert.alert(
+        "Error",
+        "Failed to load payment methods. Please try again.",
+        [{ text: "OK" }]
+      );
     }
   };
 
@@ -51,7 +54,9 @@ const Payment = ({ navigation, route }) => {
         onPress: async () => {
           try {
             await deletePaymentMethod(cardId);
-            const updatedCards = cards.filter((card) => card.paymentMethodId !== cardId);
+            const updatedCards = cards.filter(
+              (card) => card.paymentMethodId !== cardId
+            );
             setCards(updatedCards);
             if (selectedCard?.paymentMethodId === cardId) {
               setSelectedCard(null);
@@ -69,10 +74,10 @@ const Payment = ({ navigation, route }) => {
     ]);
   };
 
-  const handleAddPaymentMethod = () => {
-    console.log("Navigating to PaymentMethods"); // Debug log
-    navigation.navigate("Payment"); // Replace with the correct screen name
-  };
+  // const handleAddPaymentMethod = () => {
+  //   console.log("Navigating to PaymentMethods");
+  //   navigation.navigate("Payment");
+  // };
 
   const renderCard = (card) => {
     const colors = cardTypeColors[card.cardType] || {
@@ -83,9 +88,7 @@ const Payment = ({ navigation, route }) => {
     return (
       <TouchableOpacity
         key={card.paymentMethodId}
-        style={[
-          styles.cardContainer,
-        ]}
+        style={[styles.cardContainer]}
       >
         <LinearGradient
           colors={[colors.color, colors.secondaryColor]}
@@ -139,15 +142,22 @@ const Payment = ({ navigation, route }) => {
   };
 
   return (
-    <LinearGradient
-      colors={["#26589c", "#26589c"]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-    >
+    // <LinearGradient
+    //   colors={["#26589c", "#26589c"]}
+    //   style={styles.container}
+    //   start={{ x: 0, y: 0 }}
+    //   end={{ x: 1, y: 0 }}
+    // >
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
-      <SafeAreaView style={styles.innerContainer}>
-        <View style={styles.header}>
+      {/* <SafeAreaView style={styles.innerContainer}> */}
+      <Header
+        title="Payment methods"
+        backButtonAction={() => navigation.goBack()}
+        action={() => navigation.navigate("Payment")}
+        actionIconName={actionIcons.addButton}
+      />
+      {/* <View style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -163,28 +173,28 @@ const Payment = ({ navigation, route }) => {
               <Ionicons name="add-circle-outline" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.content}>
-          {cards.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Ionicons name="card-outline" size={64} color="#26589c" />
-              <Text style={styles.emptyText}>No Saved Cards</Text>
-              <Text style={styles.emptySubtext}>
-                Press + to add a new payment method
-              </Text>
-            </View>
-          ) : (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.cardsContainer}
-            >
-              {cards.map(renderCard)}
-            </ScrollView>
-          )}
-        </View>
-      </SafeAreaView>
-    </LinearGradient>
+        </View> */}
+      <View style={styles.content}>
+        {cards.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Ionicons name="card-outline" size={64} color="#26589c" />
+            <Text style={styles.emptyText}>No Saved Cards</Text>
+            <Text style={styles.emptySubtext}>
+              Press + to add a new payment method
+            </Text>
+          </View>
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.cardsContainer}
+          >
+            {cards.map(renderCard)}
+          </ScrollView>
+        )}
+      </View>
+      {/* </SafeAreaView> */}
+    </View>
+    //</LinearGradient> */}
   );
 };
 
@@ -218,14 +228,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#fff",
-  },
-  addCardButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
   },
   content: {
     flex: 1,

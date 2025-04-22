@@ -13,6 +13,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -74,18 +75,22 @@ const HelpCenter = () => {
       : faqItems.filter((item) => item.category === activeCategory);
 
   const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.headerContent}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Help Center</Text>
-        <View style={{ width: 40 }} />
-      </View>
-    </View>
+    // <View style={styles.header}>
+    //   <View style={styles.headerContent}>
+    //     <TouchableOpacity
+    //       onPress={() => navigation.goBack()}
+    //       style={styles.backButton}
+    //     >
+    //       <Ionicons name="arrow-back" size={24} color="#fff" />
+    //     </TouchableOpacity>
+    //     <Text style={styles.headerTitle}>Help Center</Text>
+    //     <View style={{ width: 40 }} />
+    //   </View>
+    // </View>
+    <Header
+      title="Help center"
+      backButtonAction={() => navigation.goBack()}
+    />
   );
 
   const renderSearchBar = () => (
@@ -178,14 +183,16 @@ const HelpCenter = () => {
   );
 
   return (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-    >
+    // <LinearGradient
+    //   colors={["#26589c", "#9cb2d8"]}
+    //   style={styles.container}
+    //   start={{ x: 0, y: 0 }}
+    //   end={{ x: 1, y: 0 }}
+    // >
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
-      <SafeAreaView style={styles.innerContainer}>
+      <View style={styles.innerContainer}>
+        {/* <SafeAreaView style={styles.innerContainer}> */}
         {renderHeader()}
         <ScrollView
           style={styles.content}
@@ -197,8 +204,10 @@ const HelpCenter = () => {
           {renderFaqItems()}
           {renderContactSupport()}
         </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
+        {/* </SafeAreaView> */}
+      </View>
+    </View>
+    //  </LinearGradient>
   );
 };
 

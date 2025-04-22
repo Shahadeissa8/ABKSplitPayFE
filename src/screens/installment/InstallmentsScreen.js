@@ -10,24 +10,22 @@ import {
   Alert,
 } from "react-native";
 import { useCallback } from "react";
-
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getOrders } from "../../api/installment";
+import { Header } from "../../components/Header";
 
 const InstallmentsScreen = () => {
   const navigation = useNavigation();
-  const [orders, setOrders] = useState([]); // Initialize as an empty array
-  const [isLoading, setIsLoading] = useState(false); // Show loading indicator only during fetch
-
-  // Function to fetch orders
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
       const fetchedOrders = await getOrders();
       const sortedOrders = Array.isArray(fetchedOrders)
-        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1)) // Sort Pending first
+        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1)) 
         : [];
       setOrders(sortedOrders);
     } catch (error) {
@@ -37,15 +35,11 @@ const InstallmentsScreen = () => {
       setIsLoading(false);
     }
   };
-
-  // Fetch orders when the screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      fetchOrders(); // Fetch data when the screen gains focus
+      fetchOrders(); 
     }, [])
   );
-
-  // Get product names from orderItems
   const getProductNames = (orderItems) => {
     if (!orderItems || orderItems.length === 0) return "No Products";
     return orderItems.map((item) => item.product.name).join(", ");
@@ -53,12 +47,12 @@ const InstallmentsScreen = () => {
 
   const renderOrderCard = (item) => (
     <TouchableOpacity
-      key={item.orderId}
+      key={item.orderId} 
       style={styles.card}
       onPress={() =>
         navigation.navigate("SingleInstallmentScreen", {
           item,
-          onInstallmentUpdate: fetchOrders, // Pass fetchOrders to refresh data after updates
+          onInstallmentUpdate: fetchOrders,
         })
       }
     >
@@ -90,14 +84,11 @@ const InstallmentsScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>My Installments</Text>
-        </View>
-      </LinearGradient>
-
+     <Header
+        title="My installments"
+      />
       <ScrollView style={styles.content}>
-        {isLoading && orders.length === 0 ? ( // Show loading only if no data exists
+        {isLoading && orders.length === 0 ? ( 
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
           </View>
@@ -152,10 +143,6 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-  },
-  content: {
-    flex: 1,
-    padding: 15,
   },
   loadingContainer: {
     flex: 1,

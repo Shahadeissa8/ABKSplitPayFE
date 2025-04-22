@@ -32,39 +32,39 @@ const ExploreNavigation = () => {
         component={ExploreScreen}
         options={{
           header: () => {
-            return (
-              <LinearGradient
-                colors={["#26589c", "#26589c"]}
-                style={styles.header}
-              >
-                /
-              </LinearGradient>
-            );
+            // return (
+            //   <LinearGradient
+            //     colors={["#26589c", "#26589c"]}
+            //     style={styles.header}
+            //   >
+            //     /
+            //   </LinearGradient>
+            // );
           },
         }}
       />
       <Stack.Screen name="MyCartScreen" component={MyCartScreen}     options={{
           header: () => {
-            return (
-              <LinearGradient
-                colors={["#26589c", "#26589c"]}
-                style={styles.header}
-              >
-                /
-              </LinearGradient>
-            );
+            // return (
+            //   <LinearGradient
+            //     colors={["#26589c", "#26589c"]}
+            //     style={styles.header}
+            //   >
+            //     /
+            //   </LinearGradient>
+            // );
           },
         }}/>
       <Stack.Screen name="CheckoutScreen" component={CheckoutScreen}    options={{
           header: () => {
-            return (
-              <LinearGradient
-                colors={["#26589c", "#26589c"]}
-                style={styles.header}
-              >
-                /
-              </LinearGradient>
-            );
+            // return (
+            //   <LinearGradient
+            //     colors={["#26589c", "#26589c"]}
+            //     style={styles.header}
+            //   >
+            //     /
+            //   </LinearGradient>
+            // );
           },
         }} />
     </Stack.Navigator>

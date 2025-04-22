@@ -22,10 +22,10 @@ import ProductList from "../../components/ExploreComponents/ProductList";
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import { useCart } from "../../context/CartContext";
+import { Header, actionIcons } from "../../components/Header";
 import { addToWishList } from "../../api/CartAPI";
 
 const { width, height } = Dimensions.get("window");
-
 const ExploreScreen = () => {
   const navigation = useNavigation();
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -90,26 +90,16 @@ const ExploreScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Explore</Text>
-        <View style={styles.headerRight}>
-          <TouchableOpacity
-            style={styles.cartButton}
-            onPress={() => navigation.navigate("MyCartScreen")}
-          >
-            <View style={styles.cartGradient}>
-              <Ionicons name="cart-outline" size={28} color="#fff" />
-              {cartItems?.length > 0 && (
-                <View style={styles.cartBadge}>
-                  <Text style={styles.cartBadgeText}>{cartItems.length}</Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <Header
+        title="Explore"
+        action={() => navigation.navigate("MyCartScreen")}
+        actionIconName={actionIcons.cart}
+      />
+      
+
+    
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -131,6 +121,7 @@ const ExploreScreen = () => {
                 style={modalStyles.image}
                 resizeMode="cover"
               />
+
               <View style={modalStyles.contentContainer}>
                 <Text style={modalStyles.title}>{selectedProduct.name}</Text>
                 <Text style={modalStyles.description}>
@@ -305,6 +296,7 @@ const modalStyles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
+
     justifyContent: "flex-end",
   },
   content: {
@@ -326,6 +318,7 @@ const modalStyles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
+
     backgroundColor: "#fff",
   },
   title: {

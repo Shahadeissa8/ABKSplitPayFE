@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, View, FlatList, Text, Animated, Platform } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, View, FlatList, Text, Animated } from "react-native";
 import StoresCard from "./StoresCard";
 
 const StoresList = ({ stores = [], onStorePress, searchQuery = "" }) => {
@@ -7,32 +7,48 @@ const StoresList = ({ stores = [], onStorePress, searchQuery = "" }) => {
     store.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderItem = ({ item, index }) => {
-    const animation = new Animated.Value(0);
-    Animated.timing(animation, {
-      toValue: 1,
-      duration: 300,
-      delay: index * 100,
-      useNativeDriver: true,
-    }).start();
+  // Store animation values in a ref to persist across renders
+  const animations = useRef(
+    filteredStores.map(() => new Animated.Value(0))
+  ).current;
 
-    return (
-      <Animated.View
-        style={{
-          opacity: animation,
-          transform: [{ translateY: animation.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }],
-        }}
-      >
-        <StoresCard
-          storeId={item.storeId}
-          name={item.name}
-          logo={item.logoUrl}
-          id={item.storeId}
-          onPress={() => onStorePress(item)}
-        />
-      </Animated.View>
+  // Run animations only once when the component mounts
+  useEffect(() => {
+    const animationTimings = filteredStores.map((_, index) =>
+      Animated.timing(animations[index], {
+        toValue: 1,
+        duration: 300,
+        delay: index * 100,
+        useNativeDriver: true,
+      })
     );
-  };
+
+    Animated.parallel(animationTimings).start();
+  }, []); // Empty dependency array ensures it runs only once on mount
+
+  const renderItem = ({ item, index }) => (
+    <Animated.View
+      style={{
+        opacity: animations[index],
+        transform: [
+          {
+            translateY: animations[index].interpolate({
+              inputRange: [0, 1],
+              outputRange: [20, 0],
+            }),
+          },
+        ],
+      }}
+    >
+      <StoresCard
+        storeId={item.storeId}
+        name={item.name}
+        logo={item.logoUrl}
+        id={item.storeId}
+        onPress={() => onStorePress(item)}
+      />
+    </Animated.View>
+  );
 
   return (
     <View style={styles.container}>
@@ -56,10 +72,11 @@ export default StoresList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff", 
+    backgroundColor: "#fff",
   },
   listContainer: {
-    paddingBottom: 100, 
+    paddingBottom: 100,
+    paddingHorizontal: 10,
   },
   noResults: {
     fontSize: 16,

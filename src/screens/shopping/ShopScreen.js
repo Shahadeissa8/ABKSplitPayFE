@@ -70,6 +70,7 @@ const ShopScreen = () => {
         ) : (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#26589c" />
+            <Text style={{ marginTop: 10, fontSize: 16 }}>Loading stores...</Text>
           </View>
         )}
       </View>

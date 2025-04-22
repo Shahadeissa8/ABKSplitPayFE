@@ -8,7 +8,6 @@ const ProductCard = ({ product }) => {
       await addToCart(product.productId, 1); // You can change the quantity if needed
       alert("Added to cart!");
     } catch (err) {
-      console.error("Failed to add to cart:", err);
       alert("Something went wrong.");
     }
   };

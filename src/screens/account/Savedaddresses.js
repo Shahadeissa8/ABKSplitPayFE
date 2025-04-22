@@ -78,7 +78,6 @@ const Savedaddresses = () => {
 
   const handleDeleteAddress = (address) => {
     if (!address || !address.addressId) {
-      console.error("Invalid address object:", address); // Log if address or addressId is missing
       Alert.alert("Error", "Invalid address. Please try again.");
       return;
     }
@@ -96,7 +95,6 @@ const Savedaddresses = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              console.log("Deleting address with ID:", address.addressId); // Log the addressId
               await deleteAddress(address.addressId); // Call the deleteAddress API with addressId
 
               // Remove the address from the local state
@@ -109,7 +107,6 @@ const Savedaddresses = () => {
                 { text: "OK" },
               ]);
             } catch (error) {
-              console.error("Error deleting address:", error.message);
               Alert.alert(
                 "Error",
                 error.message || "Failed to delete address. Please try again.",
@@ -191,6 +188,7 @@ const Savedaddresses = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   innerContainer: {
     flex: 1,
@@ -230,7 +228,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f8f9fa", // Keep the grayish background
+    backgroundColor: "#fff",
   },
   emptyContainer: {
     flex: 1,

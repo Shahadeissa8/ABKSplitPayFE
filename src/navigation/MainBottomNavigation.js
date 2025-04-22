@@ -19,19 +19,18 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
         tabBarInactiveTintColor: "#B0BEC5", // Light Gray Inactive Icon Color
         tabBarShowLabel: true,
         tabBarStyle: {
-
           elevation: 8, // Increased shadow for Android
-         
+
           borderRadius: 30, // Keep rounded corners
           marginHorizontal: 10, // Add horizontal margin
           marginBottom: 15, // Add bottom margin
           paddingVertical: 20, // Add vertical padding to make it taller
-          position: 'absolute', // Position absolutely to float above content
+          position: "absolute", // Position absolutely to float above content
           bottom: 0, // Stick to the bottom
           left: 0,
           right: 0,
-          alignContent:"center",
-          justifyContent:"center",
+          alignContent: "center",
+          justifyContent: "center",
           paddingTop: 15,
           ...styles.shadow, // Apply shadow styles for iOS
         },
@@ -67,8 +66,9 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
       />
       <Tab.Screen
         name="Account"
-
-        children={() => <AccountNavigation setIsAuthenticated={setIsAuthenticated} />}
+        children={() => (
+          <AccountNavigation setIsAuthenticated={setIsAuthenticated} />
+        )}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
@@ -82,20 +82,16 @@ const MainBottomNavigation = ({ setIsAuthenticated }) => {
     </Tab.Navigator>
   );
 };
-
-// Styles for the shadow effect (especially for iOS)
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: '#000', // Darker shadow color
+    shadowColor: "#26589c", 
     shadowOffset: {
       width: 0,
-      height: 5, // Adjusted shadow offset
+      height: 5,
     },
-
-    shadowOpacity: 0.15, // Reduced shadow opacity
-    shadowRadius: 6.84, // Adjusted shadow radius
-  }
-
+    shadowOpacity: 1, 
+    shadowRadius: 6.84, 
+  },
 });
 
 export default MainBottomNavigation;

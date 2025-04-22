@@ -18,7 +18,6 @@ export const CartProvider = ({ children }) => {
       const items = await getItem();
       setCartItems(items);
     } catch (err) {
-      console.error("Failed to fetch cart:", err);
     }
   };
   const addToCart = async (productId, quantity = 1) => {
@@ -26,7 +25,6 @@ export const CartProvider = ({ children }) => {
       await apiAddToCart(productId, quantity);
       await fetchCart();
     } catch (err) {
-      console.error("Error adding to cart:", err);
     }
   };
   const removeFromCart = async (productId) => {
@@ -39,7 +37,6 @@ export const CartProvider = ({ children }) => {
         await fetchCart();
       }
     } catch (err) {
-      console.error("Error removing from cart:", err);
     }
   };
   const updateQuantity = async (productId, change) => {
@@ -54,7 +51,6 @@ export const CartProvider = ({ children }) => {
         await fetchCart();
       }
     } catch (err) {
-      console.error("Error updating quantity:", err);
     }
   };
 

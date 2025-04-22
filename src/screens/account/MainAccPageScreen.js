@@ -45,7 +45,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       const profileData = await getUserProfile();
       setUserProfile(profileData);
     } catch (error) {
-      console.error("Failed to fetch profile:", error);
       Alert.alert("Error", "Unable to load profile data");
     } finally {
       setRefreshing(false);
@@ -57,7 +56,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       id: 2,
       title: "Tiers & Rewards",
       icon: "star-outline",
-      color: "#9cb2d8",
+      color: "#26589c",
       screen: "TierScreen",
     },
     {
@@ -71,7 +70,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       id: 4,
       title: "Payment Methods",
       icon: "card-outline",
-      color: "#9cb2d8",
+      color: "#26589c",
       screen: "PaymentMethods",
     },
     {
@@ -85,7 +84,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       id: 6,
       title: "Help Center",
       icon: "help-circle-outline",
-      color: "#9cb2d8",
+      color: "#26589c",
       screen: "HelpCenter",
     },
     {
@@ -161,7 +160,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
               });
             } catch (error) {
               Alert.alert("Error", "Failed to log out. Please try again.");
-              console.error("Logout Error:", error);
             }
           },
         },
@@ -178,7 +176,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
     >
       <View style={styles.menuItemLeft}>
         <LinearGradient
-          colors={[color, color === "#26589c" ? "#9cb2d8" : "#26589c"]}
+          colors={[color, color === "#26589c" ? "#26589c" : "#26589c"]}
           style={styles.iconContainer}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -197,7 +195,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
     <View style={styles.profileSection}>
       <View style={styles.profileImageContainer}>
         <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
+          colors={["#26589c", "#26589c"]}
           style={styles.profileImageBorder}
         >
           <View style={styles.profileImageInner}>
@@ -218,7 +216,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           onPress={() => handleMenuPress("EditProfileScreen")}
         >
           <LinearGradient
-            colors={["#26589c", "#9cb2d8"]}
+            colors={["#26589c", "#26589c"]}
             style={styles.editButtonGradient}
           >
             <Ionicons name="pencil" size={18} color="#fff" />
@@ -227,8 +225,10 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       </View>
       <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>
       <Text style={styles.emailText}>{userProfile?.email || "N/A"}</Text>
+      <Text style={styles.emailText}>{"Mobile: :"+userProfile?.phoneNumber || "N/A"}</Text>
+
       <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
+        colors={["#26589c", "#26589c"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.membershipBadge}
@@ -241,9 +241,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
   return (
     <View
-      // colors={["#26589c", "#9cb2d8"]}
-      // start={{ x: 0, y: 0 }}
-      // end={{ x: 1, y: 0 }}
+ 
       style={styles.container}
     >
       <StatusBar barStyle="light-content" translucent={true} />
@@ -251,7 +249,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       <Header
         title="Profile"
         action={() => navigation.navigate("NotificationScreen")}
-        description={`Phone: ${userProfile?.phoneNumber || "N/A"}`}
         actionIconName={actionIcons.notification}
       />
       <Animated.ScrollView
@@ -266,7 +263,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
             refreshing={refreshing}
             onRefresh={handleRefresh}
             tintColor="#26589c"
-            colors={["#26589c", "#9cb2d8"]}
+            colors={["#26589c", "#26589c"]}
             progressBackgroundColor="#fff"
           />
         }
@@ -279,7 +276,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <LinearGradient
-            colors={["#26589c", "#9cb2d8"]}
+            colors={["#26589c", "#26589c"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.logoutGradient}
@@ -296,6 +293,8 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom : 70
+
   },
   innerContainer: {
     flex: 1,
@@ -315,7 +314,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#f5f5f5", // Keep the grayish background
+    backgroundColor: "#fff", // Keep the grayish background
   },
   scrollContent: {
     paddingBottom: 20,
@@ -374,7 +373,8 @@ const styles = StyleSheet.create({
   emailText: {
     fontSize: 15,
     color: "#666",
-    marginBottom: 8,
+    marginBottom: 2,
+    
   },
   membershipBadge: {
     flexDirection: "row",

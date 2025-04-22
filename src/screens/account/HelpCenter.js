@@ -87,10 +87,7 @@ const HelpCenter = () => {
     //     <View style={{ width: 40 }} />
     //   </View>
     // </View>
-    <Header
-      title="Help center"
-      backButtonAction={() => navigation.goBack()}
-    />
+    <Header title="Help center" backButtonAction={() => navigation.goBack()} />
   );
 
   const renderSearchBar = () => (
@@ -171,7 +168,7 @@ const HelpCenter = () => {
   const renderContactSupport = () => (
     <TouchableOpacity style={styles.contactButton}>
       <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
+        colors={["#26589c", "#26589c"]}
         style={styles.contactGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -183,12 +180,6 @@ const HelpCenter = () => {
   );
 
   return (
-    // <LinearGradient
-    //   colors={["#26589c", "#9cb2d8"]}
-    //   style={styles.container}
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 0 }}
-    // >
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
       <View style={styles.innerContainer}>
@@ -216,6 +207,8 @@ export default HelpCenter;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 75,
+    backgroundColor: "#fff",
   },
   innerContainer: {
     flex: 1,
@@ -244,7 +237,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#f8f9fa", // Preserve the grayish background
+    backgroundColor: "#ffff", // Preserve the grayish background
   },
   scrollContent: {
     paddingBottom: 32,

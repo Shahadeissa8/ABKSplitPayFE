@@ -7,7 +7,6 @@ const setToken = async (token) => {
     }
     await setItemAsync("token", token);
   } catch (error) {
-    console.error("Error saving token:", error.message);
     throw error;
   }
 };
@@ -17,7 +16,6 @@ const getToken = async () => {
     const token = await getItemAsync("token");
     return token;
   } catch (error) {
-    console.error("Error retrieving token:", error.message);
     return null;
   }
 };
@@ -26,7 +24,6 @@ const deleteToken = async () => {
   try {
     await deleteItemAsync("token");
   } catch (error) {
-    console.error("Error deleting token:", error.message);
     throw error;
   }
 };

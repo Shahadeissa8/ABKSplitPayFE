@@ -73,18 +73,11 @@ const Payment = ({ navigation, route }) => {
       },
     ]);
   };
-
-  // const handleAddPaymentMethod = () => {
-  //   console.log("Navigating to PaymentMethods");
-  //   navigation.navigate("Payment");
-  // };
-
   const renderCard = (card) => {
     const colors = cardTypeColors[card.cardType] || {
       color: "#26589c",
       secondaryColor: "#9cb2d8",
     };
-
     return (
       <TouchableOpacity
         key={card.paymentMethodId}
@@ -232,7 +225,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f8f9fa", // Preserve the grayish background
+    backgroundColor: "#fff",
   },
   emptyContainer: {
     flex: 1,

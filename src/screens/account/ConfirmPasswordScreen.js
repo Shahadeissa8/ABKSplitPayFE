@@ -1,4 +1,3 @@
-
 import {
   StyleSheet,
   Text,
@@ -17,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { changePassword } from "../../api/profile"; // Import the changePassword API function
+import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -27,12 +27,12 @@ const ConfirmPasswordScreen = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] =
+    useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
-
-  // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
@@ -89,7 +89,6 @@ const ConfirmPasswordScreen = () => {
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to change password.");
     }
-
   };
 
   const shakeAnimation = () => {
@@ -146,7 +145,7 @@ const ConfirmPasswordScreen = () => {
       >
         <View style={styles.inputLeft}>
           <LinearGradient
-            colors={["#26589c", "#9cb2d8"]}
+            colors={["#26589c", "#26589c"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.iconContainer}
@@ -161,9 +160,7 @@ const ConfirmPasswordScreen = () => {
             value={value}
             onChangeText={setValue}
             secureTextEntry={!isVisible}
-
             placeholder={placeholder}
-
             placeholderTextColor="#999"
           />
           <TouchableOpacity
@@ -182,10 +179,13 @@ const ConfirmPasswordScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
+    <View style={styles.container}>
+      <Header
+        title="Change password"
+        backButtonAction={() => navigation.goBack()}
+      />
+      {/* <LinearGradient
+        colors={["#26589c", "#26589c"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.headerGradient}
@@ -197,7 +197,7 @@ const ConfirmPasswordScreen = () => {
           <Text style={styles.headerTitle}>Change Password</Text>
           <View style={{ width: 40 }} />
         </View>
-      </LinearGradient>
+      </LinearGradient> */}
 
       <View style={styles.content}>
         <View style={styles.formContainer}>
@@ -254,7 +254,7 @@ const ConfirmPasswordScreen = () => {
           >
             <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
               <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
+                colors={["#26589c", "#26589c"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.saveGradient}
@@ -265,13 +265,14 @@ const ConfirmPasswordScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 70,
   },
   headerGradient: {
     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
@@ -310,6 +311,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 30,
     justifyContent: "space-between",
+    backgroundColor: "#fff",
   },
   formContainer: {
     paddingHorizontal: 16,
@@ -382,7 +384,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === "ios" ? 40 : 20,
     paddingTop: 20,
-  
+
     width: "100%",
   },
   saveButton: {

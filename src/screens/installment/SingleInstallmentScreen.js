@@ -243,7 +243,7 @@ const SingleInstallmentScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,

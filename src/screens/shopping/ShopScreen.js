@@ -30,7 +30,6 @@ const ShopScreen = () => {
         const data = await GetStores();
         setStores(data);
       } catch (error) {
-        console.error("Error fetching stores:", error);
       } finally {
         setLoading(false);
       }

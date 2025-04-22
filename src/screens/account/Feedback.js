@@ -221,7 +221,7 @@ const Feedback = () => {
               colors={
                 !selectedCategory || rating === 0
                   ? ["#ccc", "#999"]
-                  : ["#26589c", "#9cb2d8"]
+                  : ["#26589c", "#26589c"]
               }
               style={styles.submitGradient}
               start={{ x: 0, y: 0 }}
@@ -247,11 +247,12 @@ export default Feedback;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#fff",
+    marginBottom:60
   },
   safeArea: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#fff",
   },
   header: {
     paddingBottom: 16,

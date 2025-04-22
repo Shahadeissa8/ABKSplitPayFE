@@ -79,7 +79,6 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
       const { token } = response;
       if (token) {
         await setToken(token); // Store the token after successful login
-        console.log("Stored Token:", token);
         Alert.alert("Registration Successful");
 
         // Update authentication state

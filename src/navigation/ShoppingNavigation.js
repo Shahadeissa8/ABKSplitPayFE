@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 //import ProductsScreen from "../screens/shopping/ProductsScreen";
-import ProductDetailsScreen from "../screens/shopping/ProductDetailsScreen";
 import ShopScreen from "../screens/shopping/ShopScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ShopLinkScreen from "../screens/shopping/ShopLinkScreen";

@@ -157,12 +157,7 @@ const EditProfileScreen = ({ route, navigation }) => {
   };
 
   const renderHeader = () => (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.header}
-    >
+    <View style={styles.header}>
       <View style={styles.headerContent}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Ionicons name="chevron-back" size={28} color="#fff" />
@@ -170,7 +165,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         <Text style={styles.headerTitle}>Edit Profile</Text>
         <View style={{ width: 40 }} />
       </View>
-    </LinearGradient>
+    </View>
   );
 
   // Add the missing renderProfilePicture function
@@ -199,15 +194,10 @@ const EditProfileScreen = ({ route, navigation }) => {
         style={styles.editPictureButton}
         onPress={handleEditPicture}
       >
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.editPictureGradient}
-        >
+        <View style={styles.editPictureGradient}>
           <Ionicons name="camera" size={18} color="#fff" />
           <Text style={styles.editPictureText}>Edit avatar</Text>
-        </LinearGradient>
+        </View>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -232,12 +222,11 @@ const EditProfileScreen = ({ route, navigation }) => {
         disabled={!onPress}
         activeOpacity={0.8}
       >
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
+        <View
           style={styles.inputIconContainer}
         >
           <Ionicons name={icon} size={20} color="#fff" />
-        </LinearGradient>
+        </View>
         <View style={styles.inputWrapper}>
           <Text style={styles.inputLabel}>{label}</Text>
           <TextInput
@@ -332,14 +321,9 @@ const EditProfileScreen = ({ route, navigation }) => {
             activeOpacity={0.9}
           >
             <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
-              <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.saveGradient}
-              >
+              <View style={styles.saveGradient}>
                 <Text style={styles.saveButtonText}>Save Changes</Text>
-              </LinearGradient>
+              </View>
             </Animated.View>
           </TouchableOpacity>
         </View>
@@ -455,6 +439,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 25,
+    backgroundColor: "#26589c",
   },
   editPictureText: {
     color: "#fff",
@@ -496,6 +481,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#26589c",
   },
   inputWrapper: {
     flex: 1,
@@ -527,13 +513,15 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === "ios" ? 40 : 20,
     paddingTop: 20,
     width: "100%",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(38, 88, 156, 0.05)",
+    // borderTopWidth: 1,
+    // borderTopColor: "#26589c",
   },
   saveButton: {
     borderRadius: 16,
     overflow: "hidden",
     width: "100%",
+    marginTop: 20,
+    marginBottom: 30,
     ...Platform.select({
       ios: {
         shadowColor: "#26589c",
@@ -551,6 +539,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    backgroundColor: "#26589c",
   },
   saveButtonText: {
     color: "#fff",

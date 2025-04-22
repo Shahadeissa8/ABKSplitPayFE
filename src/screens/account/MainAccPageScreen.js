@@ -176,14 +176,9 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       onPress={() => handleMenuPress(screen)}
     >
       <View style={styles.menuItemLeft}>
-        <LinearGradient
-          colors={[color, color === "#26589c" ? "#9cb2d8" : "#26589c"]}
-          style={styles.iconContainer}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
+        <View style={styles.iconContainer}>
           <Ionicons name={icon} size={24} color="#fff" />
-        </LinearGradient>
+        </View>
         <Text style={styles.menuItemText}>{title}</Text>
       </View>
       <View style={styles.arrowContainer}>
@@ -197,14 +192,9 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       <View style={styles.headerContent}>
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity style={styles.notificationButton}>
-          <LinearGradient
-            colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.notificationGradient}
-          >
+          <View>
             <Ionicons name="notifications-outline" size={24} color="#fff" />
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
       </View>
       <Text style={styles.civilId}>
@@ -247,25 +237,15 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       </View>
       <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>
       <Text style={styles.emailText}>{userProfile?.email || "N/A"}</Text>
-      <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.membershipBadge}
-      >
+      <View colors={["#26589c"]} style={styles.membershipBadge}>
         <Ionicons name="star" size={18} color="#fff" />
-        <Text style={styles.membershipText}>Premium Member</Text>
-      </LinearGradient>
+        <Text style={styles.membershipText}>Bronze Member</Text>
+      </View>
     </View>
   );
 
   return (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.container}
-    >
+    <View colors={["#26589c", "#9cb2d8"]} style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
       <SafeAreaView style={styles.innerContainer}>
         {renderHeader()}
@@ -294,19 +274,14 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           </View>
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <LinearGradient
-              colors={["#26589c", "#9cb2d8"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.logoutGradient}
-            >
+            <View style={styles.logoutGradient}>
               <Ionicons name="log-out-outline" size={24} color="#fff" />
               <Text style={styles.logoutText}>Logout</Text>
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
         </Animated.ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -337,10 +312,11 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     borderBottomLeftRadius: 30, // Keep the oval shape
     borderBottomRightRadius: 30, // Keep the oval shape
-    shadowColor: "#26589c",
+    // shadowColor: "#26589c",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
+    backgroundColor: "#26589c",
   },
   headerContent: {
     flexDirection: "row",
@@ -356,6 +332,7 @@ const styles = StyleSheet.create({
   notificationButton: {
     overflow: "hidden",
     borderRadius: 20,
+    backgroundColor: "#808080",
   },
   notificationGradient: {
     padding: 8,
@@ -436,6 +413,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 18,
     marginTop: 4,
+    backgroundColor: "#26589c",
   },
   membershipText: {
     marginLeft: 8,
@@ -475,6 +453,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 14,
+    backgroundColor: "#26589c",
   },
   menuItemText: {
     fontSize: 16,
@@ -492,12 +471,14 @@ const styles = StyleSheet.create({
   logoutButton: {
     margin: 15,
     marginTop: 20,
+    marginBottom: 50,
     borderRadius: 16,
     overflow: "hidden",
     shadowColor: "#26589c",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+    backgroundColor: "#26589c",
   },
   logoutGradient: {
     flexDirection: "row",

@@ -1,4 +1,3 @@
-
 import {
   StyleSheet,
   Text,
@@ -27,10 +26,11 @@ const ConfirmPasswordScreen = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] =
+    useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -89,7 +89,6 @@ const ConfirmPasswordScreen = () => {
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to change password.");
     }
-
   };
 
   const shakeAnimation = () => {
@@ -145,14 +144,9 @@ const ConfirmPasswordScreen = () => {
         style={[styles.inputContainer, !isFirst && styles.inputContainerSecond]}
       >
         <View style={styles.inputLeft}>
-          <LinearGradient
-            colors={["#26589c", "#9cb2d8"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.iconContainer}
-          >
+          <View style={styles.iconContainer}>
             <Ionicons name="lock-closed" size={20} color="#fff" />
-          </LinearGradient>
+          </View>
           <Text style={styles.inputLabel}>{label}</Text>
         </View>
         <View style={styles.inputWrapper}>
@@ -161,9 +155,7 @@ const ConfirmPasswordScreen = () => {
             value={value}
             onChangeText={setValue}
             secureTextEntry={!isVisible}
-
             placeholder={placeholder}
-
             placeholderTextColor="#999"
           />
           <TouchableOpacity
@@ -183,13 +175,7 @@ const ConfirmPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-
-      <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
+      <View style={styles.headerGradient}>
         <View style={styles.headerContent}>
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
             <Ionicons name="chevron-back" size={28} color="#fff" />
@@ -197,7 +183,7 @@ const ConfirmPasswordScreen = () => {
           <Text style={styles.headerTitle}>Change Password</Text>
           <View style={{ width: 40 }} />
         </View>
-      </LinearGradient>
+      </View>
 
       <View style={styles.content}>
         <View style={styles.formContainer}>
@@ -253,14 +239,9 @@ const ConfirmPasswordScreen = () => {
             activeOpacity={0.9}
           >
             <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
-              <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.saveGradient}
-              >
+              <View style={styles.saveGradient}>
                 <Text style={styles.saveButtonText}>Save Password</Text>
-              </LinearGradient>
+              </View>
             </Animated.View>
           </TouchableOpacity>
         </View>
@@ -348,6 +329,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#26589c",
   },
   inputLabel: {
     fontSize: 14,
@@ -382,13 +364,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === "ios" ? 40 : 20,
     paddingTop: 20,
-  
+
     width: "100%",
   },
   saveButton: {
     borderRadius: 15,
     overflow: "hidden",
     width: "100%",
+    marginBottom: 30,
+    backgroundColor: "#26589c",
     ...Platform.select({
       ios: {
         shadowColor: "#26589c",

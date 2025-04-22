@@ -165,15 +165,14 @@ const HelpCenter = () => {
 
   const renderContactSupport = () => (
     <TouchableOpacity style={styles.contactButton}>
-      <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
+      <View
+
         style={styles.contactGradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+      
       >
         <Ionicons name="headset-outline" size={24} color="#fff" />
         <Text style={styles.contactText}>Contact Support Team</Text>
-      </LinearGradient>
+      </View>
     </TouchableOpacity>
   );
 
@@ -181,8 +180,7 @@ const HelpCenter = () => {
     <LinearGradient
       colors={["#26589c", "#9cb2d8"]}
       style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
+    
     >
       <StatusBar barStyle="light-content" translucent={true} />
       <SafeAreaView style={styles.innerContainer}>
@@ -207,18 +205,25 @@ export default HelpCenter;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
   },
   innerContainer: {
     flex: 1,
+   
   },
   header: {
     paddingBottom: 16,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    backgroundColor: "   #26589c",
+    
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    
   },
   backButton: {
     width: 40,
@@ -354,6 +359,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+    backgroundColor: "#26589c",
+    marginBottom: 40,
+    borderRadius: 16,
   },
   contactGradient: {
     flexDirection: "row",

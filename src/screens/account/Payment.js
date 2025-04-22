@@ -90,8 +90,7 @@ const Payment = ({ navigation, route }) => {
         <LinearGradient
           colors={[colors.color, colors.secondaryColor]}
           style={styles.cardGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+        
         >
           <View style={styles.cardActions}>
             <TouchableOpacity
@@ -142,8 +141,7 @@ const Payment = ({ navigation, route }) => {
     <LinearGradient
       colors={["#26589c", "#26589c"]}
       style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
+     
     >
       <StatusBar barStyle="light-content" translucent={true} />
       <SafeAreaView style={styles.innerContainer}>

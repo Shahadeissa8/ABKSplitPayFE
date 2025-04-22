@@ -111,12 +111,7 @@ const Feedback = () => {
         translucent={true}
         backgroundColor="transparent"
       />
-      <LinearGradient
-        colors={["#26589c", "#26589c"]}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
+      <LinearGradient colors={["#26589c", "#26589c"]} style={styles.header}>
         <View style={styles.headerContent}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -143,7 +138,9 @@ const Feedback = () => {
           </View>
 
           <View style={styles.categoriesContainer}>
-            <Text style={styles.sectionTitle}>What would you like to rate?</Text>
+            <Text style={styles.sectionTitle}>
+              What would you like to rate?
+            </Text>
             <View style={styles.categories}>
               {categories.map((category) => (
                 <TouchableOpacity
@@ -167,7 +164,9 @@ const Feedback = () => {
                       name={category.icon}
                       size={32}
                       color={
-                        selectedCategory?.id === category.id ? "#fff" : "#26589c"
+                        selectedCategory?.id === category.id
+                          ? "#fff"
+                          : "#26589c"
                       }
                     />
                     <Text
@@ -208,7 +207,8 @@ const Feedback = () => {
           <TouchableOpacity
             style={[
               styles.submitButton,
-              (!selectedCategory || rating === 0) && styles.submitButtonDisabled,
+              (!selectedCategory || rating === 0) &&
+                styles.submitButtonDisabled,
             ]}
             onPress={handleSubmit}
           >
@@ -216,11 +216,9 @@ const Feedback = () => {
               colors={
                 !selectedCategory || rating === 0
                   ? ["#ccc", "#999"]
-                  : ["#26589c", "#9cb2d8"]
+                  : ["#26589c", "#26589c"]
               }
               style={styles.submitGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
             >
               <Text style={styles.submitText}>Submit Feedback</Text>
               <Ionicons
@@ -407,6 +405,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+    backgroundColor: "#26589c",
   },
   submitButtonDisabled: {
     opacity: 0.7,

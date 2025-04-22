@@ -147,12 +147,7 @@ const AddLocation = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
-          style={styles.header}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        >
+        <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
@@ -161,7 +156,7 @@ const AddLocation = () => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Add Location</Text>
           <View style={styles.placeholder} />
-        </LinearGradient>
+        </View>
 
         <ScrollView
           style={styles.scrollView}
@@ -249,11 +244,11 @@ const AddLocation = () => {
               disabled={isSaving}
               activeOpacity={0.8}
             >
-              <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
+              <View
+                // colors={["#26589c", "#9cb2d8"]}
                 style={styles.gradientButton}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                // start={{ x: 0, y: 0 }}
+                // end={{ x: 1, y: 0 }}
               >
                 <Ionicons
                   name={isSaving ? "sync" : "save-outline"}
@@ -264,7 +259,7 @@ const AddLocation = () => {
                 <Text style={styles.submitButtonText}>
                   {isSaving ? "Saving..." : "Save Address"}
                 </Text>
-              </LinearGradient>
+              </View>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -285,10 +280,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 20,
+    backgroundColor: "#26589c",
     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    shadowColor: "#26589c",
+    // shadowColor: "#26589c",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -445,9 +441,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 16,
+    backgroundColor: "#26589c",
+    marginBottom: 70,
+    marginTop: 1,
+    borderRadius: 16,
   },
   buttonIcon: {
     marginRight: 8,
+    backgroundColor: "#26589c",
   },
   submitButtonText: {
     fontSize: 18,

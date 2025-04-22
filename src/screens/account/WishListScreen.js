@@ -71,11 +71,10 @@ const WishListScreen = () => {
   };
 
   const renderHeader = () => (
-    <LinearGradient
+    <View
       colors={["#26589c", "#9cb2d8"]}
       style={styles.header}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
+    
     >
       <View style={styles.headerContent}>
         <TouchableOpacity
@@ -87,7 +86,7 @@ const WishListScreen = () => {
         <Text style={styles.headerTitle}>Wishlist</Text>
         <View style={{ width: 40 }} />
       </View>
-    </LinearGradient>
+    </View>
   );
 
   const renderEmptyState = () => (
@@ -95,8 +94,7 @@ const WishListScreen = () => {
       <LinearGradient
         colors={["#26589c", "#9cb2d8"]}
         style={styles.emptyStateIconContainer}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+       
       >
         <Ionicons name="heart-outline" size={48} color="#fff" />
       </LinearGradient>
@@ -171,6 +169,9 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     paddingBottom: 16,
+    backgroundColor: "#26589c",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerContent: {
     flexDirection: "row",

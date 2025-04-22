@@ -122,12 +122,7 @@ const Savedaddresses = () => {
   };
 
   return (
-    <LinearGradient
-      colors={["#26589c", "#9cb2d8"]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-    >
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
       <SafeAreaView style={styles.innerContainer}>
         <View style={styles.header}>
@@ -187,7 +182,6 @@ const Savedaddresses = () => {
                       onPress={() => handleDeleteAddress(address)}
                       style={[styles.actionButton, styles.deleteButton]}
                     >
-
                       <Ionicons
                         name="trash-outline"
                         size={20}
@@ -195,21 +189,20 @@ const Savedaddresses = () => {
                       />
                     </TouchableOpacity>
                   </View>
-
                 </View>
                 <Text style={[styles.addressDetails, { textAlign: "left" }]}>
                   {`${address.addressLine1}${
                     address.addressLine2 ? `, ${address.addressLine2}` : ""
-                  }, ${address.city}, ${address.state}, ${address.postalCode}, ${
-                    address.country
-                  }`}
+                  }, ${address.city}, ${address.state}, ${
+                    address.postalCode
+                  }, ${address.country}`}
                 </Text>
               </View>
             ))
           )}
         </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -228,17 +221,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    shadowColor: "#26589c",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    backgroundColor: "#26589c",
+    // shadowColor: "#26589c",
+
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+
+    // },
     shadowOpacity: 0.2,
     shadowRadius: 8,
   },
   backButton: {
     padding: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "#26589c",
     borderRadius: 12,
   },
   headerTitle: {

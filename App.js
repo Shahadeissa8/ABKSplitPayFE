@@ -21,7 +21,6 @@ export default function App() {
         const token = await getToken();
         setIsAuthenticated(!!token);
       } catch (error) {
-        console.error("Error checking authentication:", error);
         setIsAuthenticated(false);
       } finally {
         setLoading(false);

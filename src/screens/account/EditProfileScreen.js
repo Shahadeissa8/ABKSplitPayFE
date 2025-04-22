@@ -115,11 +115,12 @@ const EditProfileScreen = ({ route, navigation }) => {
 
   const handleSave = async () => {
     try {
-      console.log("Updating profile with:", {
-        fullName: userData.fullName,
-        phoneNumber: userData.phoneNumber,
-        profilePictureUrl: userData.profilePicture,
-      });
+      // console.log("Updating profile with:", {
+      //   fullName: userData.fullName,
+      //   phoneNumber: userData.phoneNumber,
+      //   profilePictureUrl: userData.profilePicture,
+      // }
+    // );
 
       await updateUserProfile(
         userData.fullName,
@@ -133,7 +134,6 @@ const EditProfileScreen = ({ route, navigation }) => {
       }
       handleBack();
     } catch (error) {
-      console.error("Failed to update profile:", error.message);
       Alert.alert("Error", error.message || "Failed to update profile.");
     }
   };
@@ -159,7 +159,7 @@ const EditProfileScreen = ({ route, navigation }) => {
 
   const renderHeader = () => (
     // <LinearGradient
-    //   colors={["#26589c", "#9cb2d8"]}
+    //   colors={["#26589c", "#26589c"]}
     //   start={{ x: 0, y: 0 }}
     //   end={{ x: 1, y: 0 }}
     //   style={styles.header}
@@ -174,7 +174,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     // </LinearGradient>
     <View>
       <Header
-        title="Installment details"
+        title="Edit Profile"
         backButtonAction={() => navigation.goBack()}
       />
     </View>
@@ -192,7 +192,7 @@ const EditProfileScreen = ({ route, navigation }) => {
       ]}
     >
       <LinearGradient
-        colors={["#26589c", "#9cb2d8"]}
+        colors={["#26589c", "#26589c"]}
         style={styles.profilePictureBorder}
       >
         <View style={styles.profilePictureInner}>
@@ -207,7 +207,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         onPress={handleEditPicture}
       >
         <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
+          colors={["#26589c", "#26589c"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.editPictureGradient}
@@ -240,7 +240,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         activeOpacity={0.8}
       >
         <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
+          colors={["#26589c", "#26589c"]}
           style={styles.inputIconContainer}
         >
           <Ionicons name={icon} size={20} color="#fff" />
@@ -340,7 +340,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           >
             <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
               <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
+                colors={["#26589c", "#26589c"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.saveGradient}
@@ -362,6 +362,9 @@ export default EditProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 70,
+    backgroundColor: "#fff"
+
   },
   header: {
     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,

@@ -97,9 +97,6 @@ const ExploreScreen = () => {
         action={() => navigation.navigate("MyCartScreen")}
         actionIconName={actionIcons.cart}
       />
-      
-
-    
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -161,7 +158,7 @@ const ExploreScreen = () => {
           </View>
         </Modal>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -184,6 +181,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    marginBottom : 15,
+    backgroundColor: "#fff"
+
   },
   scrollContainer: {
     flexDirection: "row",

@@ -41,7 +41,6 @@ const WishListScreen = () => {
         }));
         setWishlistItems(formattedItems);
       } catch (error) {
-        console.error("Error fetching wishlist:", error.message);
       } finally {
         setLoading(false);
       }
@@ -55,7 +54,6 @@ const WishListScreen = () => {
       await deleteWishListItem(itemId); // Call the delete endpoint
       setWishlistItems(wishlistItems.filter((item) => item.id !== itemId)); // Update local state
     } catch (error) {
-      console.error("Error removing item from wishlist:", error.message);
       Alert.alert("Error", "Failed to remove item from wishlist.");
     }
   };
@@ -66,7 +64,6 @@ const WishListScreen = () => {
       await removeFromWishlist(item.id); // Remove the item from the wishlist
       Alert.alert("Success", "Item moved to cart.");
     } catch (error) {
-      console.error("Error moving item to cart:", error.message);
       Alert.alert("Error", "Failed to move item to cart.");
     }
   };
@@ -147,7 +144,7 @@ const WishListScreen = () => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
       <Header
-        title="Installment details"
+        title="Wishlist"
         backButtonAction={() => navigation.goBack()}/>
       {/* {renderHeader()} */}
       {loading ? (
@@ -170,7 +167,7 @@ const WishListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#fff",
   },
   header: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,

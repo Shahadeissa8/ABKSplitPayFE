@@ -36,7 +36,7 @@ const color = {
   gradientColors: ["#fffff", "#ffff"],
 };
 const colors = {
-  primary: "#2E3192",
+  primary: "#26589c",
   secondary: "#26589c",
   background: "#FFFFFF",
   backgroundLight: "#F5F5F5",
@@ -44,7 +44,7 @@ const colors = {
   textSecondary: "#666666",
   border: "#EEEEEE",
   white: "#FFFFFF",
-  gradientColors: ["#26589c", "#9cb2d8"],
+  gradientColors: ["#26589c", "#26589c"],
 };
 
 const CheckoutScreen = () => {
@@ -100,8 +100,6 @@ const CheckoutScreen = () => {
         setAllPaymentMethods(paymentMethods);
         const defaultPaymentMethod = await getDefaultPaymentMethod();
         setSelectedPaymentMethod(defaultPaymentMethod);
-
-        console.log("Total amount in CheckoutScreen:", displayTotal, "KD");
       } catch (error) {
         Alert.alert("Error", error.message || "Failed to load checkout data.");
       } finally {
@@ -329,25 +327,24 @@ const CheckoutScreen = () => {
               <Text style={styles.totalText}>Total</Text>
               <Text style={styles.totalValue}>{displayTotal} KD</Text>
             </View>
+            <View style={styles.footer}>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={handleConfirmOrder}
+              >
+                <LinearGradient
+                  colors={colors.gradientColors}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.confirmGradient}
+                >
+                  <Text style={styles.confirmButtonText}>Confirm Order</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.confirmButton}
-          onPress={handleConfirmOrder}
-        >
-          <LinearGradient
-            colors={colors.gradientColors}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.confirmGradient}
-          >
-            <Text style={styles.confirmButtonText}>Confirm Order</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
 
       {/* Address Selection Modal */}
       <Modal
@@ -475,61 +472,12 @@ const CheckoutScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.backgroundLight,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: Platform.OS === "ios" ? 50 : 20,
-    paddingHorizontal: 20,
-    paddingBottom: 25,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-    backgroundColor: colors.backgroundLight,
-    marginTop: -50,
-  },
-  backButton: {
-    // padding: 10,
-    marginRight: 12,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 12,
-    color: "#fff",
-    textShadowColor: "rgba(0, 0, 0, 0.2)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    // marginTop:35
-  },
-  // headerTitle: {
-  //   fontSize: 24,
-  //   fontWeight: "700",
-  //   color: colors.white,
-  //   letterSpacing: 0.5,
-  // },
-
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#fff",
-    textShadowColor: "rgba(0, 0, 0, 0.2)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-    marginBottom: -30,
-    marginLeft: 5,
+    backgroundColor: "#fff",
+    marginBottom:10,
   },
   content: {
     flex: 1,
-    marginBottom: 80,
+    backgroundColor: "#fff",
   },
   scrollContent: {
     padding: 20,
@@ -554,13 +502,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 18,
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
     elevation: 5,
   },
   cardText: {
@@ -655,13 +596,6 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === "ios" ? 30 : 20,
     borderTopWidth: 1,
     borderTopColor: "rgba(0,0,0,0.06)",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -3,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
     elevation: 10,
     zIndex: 999,
   },
@@ -669,14 +603,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 15,
     overflow: "hidden",
-    // marginBottom: 65,
-    shadowColor: colors.primary,
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
     elevation: 5,
   },
   confirmGradient: {
@@ -690,6 +616,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.5,
+    marginBottom: 5,
   },
   modalOverlay: {
     flex: 1,
@@ -739,7 +666,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  loadingContainer: {
+  loadinshadgContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

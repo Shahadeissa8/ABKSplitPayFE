@@ -25,11 +25,10 @@ const InstallmentsScreen = () => {
       setIsLoading(true);
       const fetchedOrders = await getOrders();
       const sortedOrders = Array.isArray(fetchedOrders)
-        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1)) 
+        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1))
         : [];
       setOrders(sortedOrders);
     } catch (error) {
-      console.error("Error fetching orders:", error);
       Alert.alert("Error", error.message || "Failed to load orders.");
     } finally {
       setIsLoading(false);
@@ -37,7 +36,7 @@ const InstallmentsScreen = () => {
   };
   useFocusEffect(
     React.useCallback(() => {
-      fetchOrders(); 
+      fetchOrders();
     }, [])
   );
   const getProductNames = (orderItems) => {
@@ -47,7 +46,7 @@ const InstallmentsScreen = () => {
 
   const renderOrderCard = (item) => (
     <TouchableOpacity
-      key={item.orderId} 
+      key={item.orderId}
       style={styles.card}
       onPress={() =>
         navigation.navigate("SingleInstallmentScreen", {
@@ -84,11 +83,9 @@ const InstallmentsScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-     <Header
-        title="My installments"
-      />
+      <Header title="My installments" />
       <ScrollView style={styles.content}>
-        {isLoading && orders.length === 0 ? ( 
+        {isLoading && orders.length === 0 ? (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
           </View>
@@ -113,36 +110,8 @@ export default InstallmentsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  header: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    paddingBottom: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
-  },
-  headerContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    paddingTop: 65,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#fff",
-    textShadowColor: "rgba(0, 0, 0, 0.2)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    backgroundColor: "#fff",
+    marginBottom: 100,
   },
   loadingContainer: {
     flex: 1,

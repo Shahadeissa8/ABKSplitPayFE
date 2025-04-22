@@ -77,7 +77,7 @@ const OnBoardingScreen = () => {
                 shouldPlay
                 isLooping
                 isMuted
-                onError={(error) => console.log("Video Error:", error)}
+                // onError={(error) => console.log("Video Error:", error)}
               />
             </View>
           </LinearGradient>

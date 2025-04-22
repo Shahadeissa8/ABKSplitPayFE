@@ -25,14 +25,14 @@ const cardTypes = [
   {
     id: "1",
     name: "Visa",
-    color: "#1A1F71",
-    secondaryColor: "#F7B500",
+    color: "#26589c",
+    secondaryColor: "#26589c",
   },
   {
     id: "2",
     name: "Mastercard",
-    color: "#CC0000",
-    secondaryColor: "#FF9900",
+    color: "#26589c",
+    secondaryColor: "#26589c",
   },
 ];
 
@@ -166,12 +166,6 @@ const PaymentMethods = () => {
   );
 
   return (
-    // <LinearGradient
-    //   colors={["#26589c", "#26589c"]}
-    //   style={styles.container}
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 0 }}
-    // >
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
       <Header
@@ -179,19 +173,6 @@ const PaymentMethods = () => {
         backButtonAction={() => navigation.goBack()}
       />
       <View style={styles.innerContainer}>
-        {/* <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Add Payment Method</Text>
-            <View style={{ width: 40 }} />
-          </View>
-        </View> */}
-
         <ScrollView
           style={styles.content}
           showsVerticalScrollIndicator={false}
@@ -242,7 +223,6 @@ const PaymentMethods = () => {
                 </View>
               </TouchableOpacity>
             </View>
-
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>CARD DETAILS</Text>
               <View style={styles.cardForm}>
@@ -409,7 +389,7 @@ const PaymentMethods = () => {
             <LinearGradient
               colors={[
                 selectedCardType?.color || "#26589c",
-                (selectedCardType?.color || "#26589c") + "CC",
+                selectedCardType?.color || "#26589c",
               ]}
               style={styles.saveButtonGradient}
               start={{ x: 0, y: 0 }}
@@ -460,9 +440,11 @@ export default PaymentMethods;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   innerContainer: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   header: {
     paddingBottom: 16,
@@ -488,7 +470,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#f8f9fa", // Preserve the grayish background
+    backgroundColor: "#fff",
   },
   scrollContent: {
     padding: 16,
@@ -531,7 +513,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedCardTypeLogo: {
-    width: 36,
+    width: 100,
     height: 36,
     borderRadius: 18,
     justifyContent: "center",
@@ -599,7 +581,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0,0,0,0.1)",
   },
   cardTypeLogo: {
-    width: 44,
+    width: 90,
     height: 44,
     borderRadius: 22,
     justifyContent: "center",
@@ -688,7 +670,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#26589c",
+    shadowColor: "#ffff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,

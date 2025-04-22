@@ -57,13 +57,13 @@ const Header = ({
           {actionIconName != null && (
             <TouchableOpacity onPress={action}>
               <View>
-                <Ionicons name={actionIconName} size={30} color="white" />
+                <Ionicons name={actionIconName} size={25} color="white" />
               </View>
             </TouchableOpacity>
           )}
         </View>
       </View>
-      if (description) {<Text style={styles.description}>{description}</Text>}
+      {/* if (description) {<Text style={styles.description}>{description}</Text>} */}
     </View>
   );
 };
@@ -75,8 +75,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   header: {
-    backgroundColor: "#003566",
-    // backgroundColor: "#26589c",
+    backgroundColor: "#26589c",
     paddingTop: 60,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0,
     shadowRadius: 4.65,
     elevation: 8,
     paddingHorizontal: 20,
@@ -94,9 +93,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#fff",
     textShadowColor: "rgba(0, 0, 0, 0.2)",

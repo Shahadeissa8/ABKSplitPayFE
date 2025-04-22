@@ -149,7 +149,7 @@ const AddLocation = () => {
         style={styles.container}
       >
         {/* <LinearGradient
-          colors={["#26589c", "#9cb2d8"]}
+          colors={["#26589c", "#26589c"]}
           style={styles.header}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -256,7 +256,7 @@ const AddLocation = () => {
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={["#26589c", "#9cb2d8"]}
+                colors={["#26589c", "#26589c"]}
                 style={styles.gradientButton}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -284,6 +284,8 @@ export default AddLocation;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 55,
+    backgroundColor: "#fff"
   },
   header: {
     flexDirection: "row",
@@ -291,7 +293,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     shadowColor: "#26589c",
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginBottom: 16,
+    marginBottom: 1
   },
   checkboxIcon: {
     marginRight: 8,

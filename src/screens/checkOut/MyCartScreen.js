@@ -12,11 +12,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
-// import { Header } from "@react-navigation/elements";
-import { actionIcons , Header} from "../../components/Header";
+import { actionIcons, Header } from "../../components/Header";
 
 const colors = {
-  primary: "#2E3192",
+  primary: "#26589c",
   secondary: "#26589c",
   background: "#FFFFFF",
   backgroundLight: "#F5F5F5",
@@ -55,7 +54,6 @@ const MyCartScreen = () => {
 
   const handleCheckout = () => {
     const total = calculateTotal();
-    console.log("Total calculated in MyCartScreen:", total, "KD"); // Debug log
     navigation.navigate("CheckoutScreen", { total }); // Pass the total to CheckoutScreen
   };
 
@@ -100,15 +98,6 @@ const MyCartScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Shopping Cart</Text>
-      </View> */}
       <Header
         title="Shopping cart"
         backButtonAction={() => navigation.goBack()}
@@ -139,7 +128,7 @@ const MyCartScreen = () => {
         </>
       ) : (
         <View style={styles.emptyCartContainer}>
-          <Ionicons name="cart-outline" size={80} color="#2E3192" />
+          <Ionicons name="cart-outline" size={80} color="#26589c" />
           <Text style={styles.emptyText}>Your Cart is Empty</Text>
           <TouchableOpacity
             style={styles.continueButton}
@@ -157,6 +146,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundLight,
+    marginBottom: 40,
+    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",

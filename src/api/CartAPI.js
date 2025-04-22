@@ -63,7 +63,6 @@ const addToWishList = async (data) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error in addToWishList:", error.response?.data || error.message);
     throw error;
   }
 };

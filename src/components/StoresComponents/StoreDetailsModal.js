@@ -30,7 +30,6 @@ const StoreDetailsModal = ({ isVisible, storeDetails, onClose }) => {
         Alert.alert("Error", "Cannot open this website URL");
       }
     } catch (error) {
-      console.error("Error opening URL:", error);
       Alert.alert("Error", "Failed to open website");
     }
   };

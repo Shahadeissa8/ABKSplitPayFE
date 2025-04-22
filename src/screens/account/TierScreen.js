@@ -1,7 +1,17 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, Image, Text, Dimensions, TouchableOpacity, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { Header } from "../../components/Header";
+import { useNavigation } from "@react-navigation/native";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const tiers = [
   {
@@ -35,8 +45,9 @@ const tiers = [
 ];
 
 const TierScreen = () => {
-  const [currentTierIndex, setCurrentTierIndex] = useState(0); // Track current tier
-  const [isExpanded, setIsExpanded] = useState(false); // State for expandable section
+  const navigation = useNavigation();
+  const [currentTierIndex, setCurrentTierIndex] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
   const flatListRef = useRef(null); // Reference to FlatList for scrolling
   const [currentPoints, setCurrentPoints] = useState(0); // Track points for the current tier
 
@@ -51,7 +62,9 @@ const TierScreen = () => {
   }).current;
 
   const renderTierItem = ({ item }) => {
-    const progress = item.pointsToNextTier ? (currentPoints / item.pointsToNextTier) * 100 : 100; // Elite has no next tier
+    const progress = item.pointsToNextTier
+      ? (currentPoints / item.pointsToNextTier) * 100
+      : 100; // Elite has no next tier
     return (
       <View style={styles.tierItem}>
         {/* Tier Information */}
@@ -67,17 +80,18 @@ const TierScreen = () => {
         </View>
 
         {/* Image representing the tier */}
-        <Image
-          source={item.image}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={item.image} style={styles.image} resizeMode="contain" />
 
         {/* Progress Bar (hidden for Elite) */}
         {item.pointsToNextTier && (
           <>
             <View style={styles.progressBarContainer}>
-              <View style={[styles.progressBarFill, { width: `${Math.min(progress, 100)}%` }]} />
+              <View
+                style={[
+                  styles.progressBarFill,
+                  { width: `${Math.min(progress, 100)}%` },
+                ]}
+              />
             </View>
             <Text style={styles.progressText}>
               {currentPoints} / {item.pointsToNextTier} points to next tier
@@ -90,38 +104,43 @@ const TierScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        {/* Swipeable Tier Section */}
-        <FlatList
-          ref={flatListRef}
-          data={tiers}
-          renderItem={renderTierItem}
-          keyExtractor={(item) => item.name}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={{
-            itemVisiblePercentThreshold: 50,
-          }}
-          initialScrollIndex={0}
-        />
+      <Header title="Tiers" backButtonAction={() => navigation.goBack()} />
+      <View>
+        <View style={styles.content}>
+          {/* Swipeable Tier Section */}
+          <FlatList
+            ref={flatListRef}
+            data={tiers}
+            renderItem={renderTierItem}
+            keyExtractor={(item) => item.name}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 50,
+            }}
+            initialScrollIndex={0}
+          />
 
-        {/* Expandable How it works? Section */}
-        <TouchableOpacity
-          style={styles.expandableHeader}
-          onPress={() => setIsExpanded(!isExpanded)}
-        >
-          <Text style={styles.expandableTitle}>How it works?</Text>
-          <Text style={styles.expandableIcon}>{isExpanded ? "−" : "+"}</Text>
-        </TouchableOpacity>
-        {isExpanded && (
-          <View style={styles.expandableContent}>
-            <Text style={styles.expandableText}>
-              Earn more points by purchasing additional products and services to progress through tiers and unlock exclusive installment benefits and deals.
-            </Text>
-          </View>
-        )}
+          {/* Expandable How it works? Section */}
+          <TouchableOpacity
+            style={styles.expandableHeader}
+            onPress={() => setIsExpanded(!isExpanded)}
+          >
+            <Text style={styles.expandableTitle}>How it works?</Text>
+            <Text style={styles.expandableIcon}>{isExpanded ? "−" : "+"}</Text>
+          </TouchableOpacity>
+          {isExpanded && (
+            <View style={styles.expandableContent}>
+              <Text style={styles.expandableText}>
+                Earn more points by purchasing additional products and services
+                to progress through tiers and unlock exclusive installment
+                benefits and deals.
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -132,12 +151,10 @@ export default TierScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f8f9fa", // Light grey background
+    backgroundColor: "#fff", //
   },
   content: {
+    marginTop: 40,
     width: width * 0.9,
     alignItems: "center",
     backgroundColor: "#fff", // White background for the content card
@@ -148,6 +165,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 8,
+    // justifyContent: "center",
+    alignSelf: "center",
+    // alignContent:"center"
+    // alignItems:"center"
   },
   tierItem: {
     width: width * 0.9 - 40, // Adjust for padding
@@ -160,7 +181,7 @@ const styles = StyleSheet.create({
   tierName: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#333", // Darker text color for better contrast
+    color: "#26589c", // Darker text color for better contrast
     marginBottom: 5,
   },
   points: {
@@ -208,16 +229,16 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 10,
     borderTopWidth: 1,
-    borderTopColor: "#ddd",
+    borderTopColor: "#26589c",
   },
   expandableTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333",
+    color: "#26589c",
   },
   expandableIcon: {
     fontSize: 24,
-    color: "#333",
+    color: "#26589c",
   },
   expandableContent: {
     width: "100%",

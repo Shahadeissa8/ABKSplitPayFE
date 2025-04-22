@@ -67,7 +67,7 @@ const DealsCard = () => {
           name={deal.name}
           price={deal.price}
           image={deal.image}
-          onPress={() => console.log("Deal pressed:", deal.name)}
+          // onPress={() => console.log("Deal pressed:", deal.name)}
         />
       ))}
     </ScrollView>

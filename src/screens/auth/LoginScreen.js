@@ -68,15 +68,10 @@ const LoginScreen = ({ setIsAuthenticated }) => {
       const { token } = response;
   
       if (token) {
-        await setToken(token); // Store the token after successful login
-        console.log("Stored Token:", token);
+        await setToken(token);
         Alert.alert("Login Successful");
-  
-        // Update authentication state
-        setIsAuthenticated(true);
-  
-        // Reset the navigation stack and navigate to MainBottomNavigation
-        navigation.reset({
+     setIsAuthenticated(true);
+     navigation.reset({
           index: 0,
           routes: [{ name: "MainBottomNavigation" }],
         });

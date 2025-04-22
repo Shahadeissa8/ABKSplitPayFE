@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 const CategoryCard = ({ name, selected, onPress }) => {
-  const backgroundColor = selected ? "#d3d3d3" : "#26589c";
-  const textColor = selected ? "#333" : "#fff";
+  const backgroundColor = selected ? "#26589c": "#f5f5f5" ;
+  const textColor = selected ? "#fff" : "#333";
 
   return (
     <TouchableOpacity

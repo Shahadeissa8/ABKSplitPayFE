@@ -1,10 +1,10 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext } from "react";
 import {
   getItem,
   deleteItem,
   updateItem,
   addToCart as apiAddToCart,
-} from "../api/CartAPI"; // adjust this path if needed
+} from "../api/CartAPI";
 
 const CartContext = createContext();
 
@@ -13,7 +13,6 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  // Fetch the cart from backend
   const fetchCart = async () => {
     try {
       const items = await getItem();
@@ -22,23 +21,14 @@ export const CartProvider = ({ children }) => {
       console.error("Failed to fetch cart:", err);
     }
   };
-
-  // Load cart on app start
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
-  // Add or update item in cart via backend
   const addToCart = async (productId, quantity = 1) => {
     try {
-      await apiAddToCart(productId, quantity); // uses your smart logic (create or update)
-      await fetchCart(); // update local state
+      await apiAddToCart(productId, quantity);
+      await fetchCart();
     } catch (err) {
       console.error("Error adding to cart:", err);
     }
   };
-
-  // Remove item from cart via backend
   const removeFromCart = async (productId) => {
     try {
       const itemToDelete = cartItems.find(
@@ -52,8 +42,6 @@ export const CartProvider = ({ children }) => {
       console.error("Error removing from cart:", err);
     }
   };
-
-  // Update quantity via backend
   const updateQuantity = async (productId, change) => {
     try {
       const item = cartItems.find((item) => item.productId === productId);
@@ -71,7 +59,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = () => {
-    // Optional: delete all items from backend too if needed
     setCartItems([]);
   };
 
@@ -79,6 +66,7 @@ export const CartProvider = ({ children }) => {
     <CartContext.Provider
       value={{
         cartItems,
+        fetchCart,
         addToCart,
         removeFromCart,
         clearCart,

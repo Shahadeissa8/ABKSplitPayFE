@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 40,
+    paddingBottom: 50,
   },
   image: {
     width: 370,

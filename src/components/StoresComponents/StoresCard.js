@@ -1,17 +1,14 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { LinearGradient } from "expo-linear-gradient"; 
-import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from "react-native";
 
-const StoresCard = ({ name, gradient, logo, id }) => {
-  const navigation = useNavigation();
+const StoresCard = ({ name, logo, id, onPress }) => {
   return (
     <TouchableOpacity
       style={styles.cardContainer}
-      activeOpacity={0.8}
-      onPress={() => navigation.navigate("StoreDetailsScreen", { StoreId: id })}
+      activeOpacity={0.7}
+      onPress={onPress}
     >
-      <LinearGradient colors={gradient} style={styles.gradientBackground}>
+      <View style={styles.content}>
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: logo }}
@@ -22,7 +19,7 @@ const StoresCard = ({ name, gradient, logo, id }) => {
         <View style={styles.infoContainer}>
           <Text style={styles.text}>{name}</Text>
         </View>
-      </LinearGradient>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -31,44 +28,40 @@ export default StoresCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    marginBottom: 15,
-    flex: 1,
-    margin: 8,
-    maxWidth: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    marginVertical: 8,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 6,
   },
-  gradientBackground: {
-    flex: 1,
-    borderRadius: 18,
-    overflow: "hidden",
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
   },
   imageContainer: {
-    height: 150,
-    width: "100%",
-    backgroundColor: "#ffff",
+    width: 80,
+    height: 80,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
+    marginRight: 15,
   },
   logo: {
-    width: "80%",
-    height: "80%",
+    width: "90%",
+    height: "90%",
   },
   infoContainer: {
-    padding: 12,
+    flex: 1,
+    justifyContent: "center",
   },
   text: {
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "600",
     color: "#333",
   },
 });

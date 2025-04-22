@@ -1,4 +1,5 @@
 import React from "react";
+import { useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,7 +10,7 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
 // import { Header } from "@react-navigation/elements";
 import { actionIcons , Header} from "../../components/Header";
@@ -29,7 +30,14 @@ const colors = {
 
 const MyCartScreen = () => {
   const navigation = useNavigation();
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, fetchCart, removeFromCart, updateQuantity } = useCart();
+
+  // Use useFocusEffect to refetch cart data when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchCart(); // Fetch cart data
+    }, [fetchCart])
+  );
 
   const calculateTotal = () => {
     // Ensure cartItems is an array and each item has the correct structure

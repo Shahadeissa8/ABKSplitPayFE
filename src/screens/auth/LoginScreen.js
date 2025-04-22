@@ -12,6 +12,7 @@ import {
   Animated,
   Dimensions,
   Alert,
+  Image
 } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -20,8 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { login } from "../../api/auth";
 //import { getToken } from "../../api/storage";
 import { setToken } from "../../api/storage";
-//import { handleBiometricLogin } from "../auth/auth-utils/handleBiometricLogin";
-//import { IconButton } from "react-native-paper";
+
 
 const { width } = Dimensions.get("window");
 
@@ -88,46 +88,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
     }
   }, [userName, password, navigation, setIsAuthenticated]);
 
-  // biometric login
-  // const authenticate = async () => {
-  //   // call function to check authentication
-  //   setLogin("Logging in");
-
-  //   const refreshToken = await getToken("refresh");
-
-  //   try {
-  //     if (refreshToken) {
-  //       const status = await handleBiometricLogin();
-
-  //       if (status) {
-  //         // over here is where the refresh token will be used to obtain a new access token to login with
-  //         // For now, "setAuthenticated" is turned true to hide "AuthNaviagtor" component without actually
-  //         // retrieving any actual user information from backend
-
-  //         const response = await refreshTokenAPI(refreshToken);
-
-  //         await setToken(response.accessToken, "access");
-  //         await setToken(response.refreshToken, "refresh");
-
-  //         checkToken();
-  //       }
-  //     } else {
-  //       setNotificationMessage("Biometric data not found");
-  //       setNotificationVisible(true);
-  //       setTimeout(() => {
-  //         setNotificationVisible(false);
-  //       }, 3000); // Hide the banner after 3 seconds
-  //     }
-  //   } catch (error) {
-  //     setNotificationMessage(error.message || "An error occurred during biometric authentication.");
-  //     setNotificationVisible(true);
-  //     setTimeout(() => {
-  //       setNotificationVisible(false);
-  //     }, 3000); // Hide the banner after 3 seconds
-  //   }
-  //   setLogin("Login");
-  // };
-
+  
   return (
     <LinearGradient
       colors={["#26589c", "#9cb2d8"]}
@@ -136,14 +97,14 @@ const LoginScreen = ({ setIsAuthenticated }) => {
       end={{ x: 1, y: 1 }}
     >
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 0 : StatusBar.currentHeight
-        }
-      >
-        <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.container}
+          keyboardVerticalOffset={
+            Platform.OS === "ios" ? 0 : StatusBar.currentHeight
+          }
+        >
           <ScrollView showsVerticalScrollIndicator={false}>
             <Animated.View
               style={[
@@ -166,7 +127,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
                 Sign in to continue your shopping experience
               </Text>
             </Animated.View>
-
+  
             <Animated.View
               style={[
                 styles.formContainer,
@@ -191,7 +152,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
                   placeholderTextColor="#666"
                 />
               </View>
-
+  
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#9cb2d8"]}
@@ -220,14 +181,14 @@ const LoginScreen = ({ setIsAuthenticated }) => {
                   />
                 </TouchableOpacity>
               </View>
-
+  
               <TouchableOpacity
                 style={styles.forgotPassword}
                 onPress={() => navigation.navigate("ForgotPassword")}
               >
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
-
+  
               <TouchableOpacity
                 style={styles.loginButton}
                 onPress={handleLogin}
@@ -249,7 +210,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
                 </LinearGradient>
               </TouchableOpacity>
             </Animated.View>
-
+  
             <Animated.View
               style={[
                 styles.footerContainer,
@@ -265,17 +226,19 @@ const LoginScreen = ({ setIsAuthenticated }) => {
               </TouchableOpacity>
             </Animated.View>
           </ScrollView>
-          {/* Biometric Login Button */}
-          {/* <IconButton
-            icon="fingerprint"
-            size={70}
-            style={styles.biometric}
-            onPress={authenticate}
-            iconColor="rgba(255, 255, 255, 0.2)" // Set the icon color to white
+        </KeyboardAvoidingView>
+  
+        {/* Fixed Face ID Button */}
+        <TouchableOpacity
+          style={styles.faceIdButton}
+          onPress={() => Alert.alert("Face ID", "Face ID authentication triggered!")}
+        >
+          <Image
+            source={require("../../../assets/Face Id.png")}
+            style={styles.faceIdIcon}
           />
-          <Text style={styles.biometricText}>Login with Fingerprint</Text> */}
-        </SafeAreaView>
-      </KeyboardAvoidingView>
+        </TouchableOpacity>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
@@ -418,14 +381,14 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     marginLeft: 4,
   },
-  // biometric: {
-  //   alignSelf: "center",
-  //   marginTop: 40,
-  // },
-  // biometricText: {
-  //   fontSize: 14,
-  //   textAlign: "center",
-  //   marginTop: 8,
-  //   color: "rgba(255, 255, 255, 0.22)",
-  // },
+  faceIdButton: {
+  position: "absolute",
+  bottom: 100,
+  alignSelf: "center",
+},
+  faceIdIcon: {
+    width: 100,
+    height: 100,
+  },
+  
 });

@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { deleteToken } from "../../api/storage";
 import { getUserProfile } from "../../api/profile";
 import { getToken } from "../../api/storage";
@@ -58,7 +58,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       title: "Tiers & Rewards",
       icon: "star-outline",
       color: "#9cb2d8",
-      screen: "Rewards",
+      screen: "TierScreen",
     },
     {
       id: 3,

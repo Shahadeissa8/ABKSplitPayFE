@@ -1,41 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Platform,
   StatusBar,
+  Alert,
 } from "react-native";
+import { useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getOrders } from "../../api/installment";
 import { Header } from "../../components/Header";
 
 const InstallmentsScreen = () => {
   const navigation = useNavigation();
   const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
       const fetchedOrders = await getOrders();
-      setOrders(fetchedOrders);
+      const sortedOrders = Array.isArray(fetchedOrders)
+        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1)) 
+        : [];
+      setOrders(sortedOrders);
     } catch (error) {
+      console.error("Error fetching orders:", error);
       Alert.alert("Error", error.message || "Failed to load orders.");
     } finally {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-  const onInstallmentUpdate = async () => {
-    await fetchOrders();
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchOrders(); 
+    }, [])
+  );
   const getProductNames = (orderItems) => {
     if (!orderItems || orderItems.length === 0) return "No Products";
     return orderItems.map((item) => item.product.name).join(", ");
@@ -48,7 +52,7 @@ const InstallmentsScreen = () => {
       onPress={() =>
         navigation.navigate("SingleInstallmentScreen", {
           item,
-          onInstallmentUpdate,
+          onInstallmentUpdate: fetchOrders,
         })
       }
     >
@@ -80,16 +84,11 @@ const InstallmentsScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      {/* <LinearGradient colors={["#26589c", "#9cb2d8"]} style={styles.header}> */}
-        {/* <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>My Installments</Text>
-        </View> */}
-      {/* </LinearGradient> */}
      <Header
         title="My installments"
       />
-      <ScrollView>
-        {isLoading ? (
+      <ScrollView style={styles.content}>
+        {isLoading && orders.length === 0 ? ( 
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
           </View>
@@ -144,12 +143,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    marginRight:180
   },
-  // content: {
-  //   flex: 1,
-  //   padding: 15,
-  // },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",

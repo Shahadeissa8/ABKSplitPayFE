@@ -14,24 +14,19 @@ import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import {
-  getOrderDetails,
-  updateInstallmentStatus,
-  updateOrderStatus,
-} from "../../api/installment";
 import { Header } from "../../components/Header";
+import { getOrderDetails, updateInstallmentStatus } from "../../api/installment";
 
 const SingleInstallmentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { item, onInstallmentUpdate } = route.params; // Contains orderId, orderNumber, and onInstallmentUpdate callback
+  const { item, onInstallmentUpdate } = route.params;
   const [orderDetails, setOrderDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
-  // Fetch order details on mount
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
@@ -47,32 +42,17 @@ const SingleInstallmentScreen = () => {
     fetchOrderDetails();
   }, [item.orderId]);
 
-  // Handle updating installment status to "Paid"
   const handleUpdateStatus = async (installmentId) => {
     try {
       setIsUpdating((prev) => ({ ...prev, [installmentId]: true }));
       await updateInstallmentStatus(installmentId);
-
-      // Fetch updated order details
       const updatedDetails = await getOrderDetails(item.orderId);
       setOrderDetails(updatedDetails);
-
-      // Check if all installments are paid
       const allPaid = updatedDetails.installments.every(
         (installment) => installment.paymentStatus === "Paid"
       );
-      if (allPaid) {
-        await updateOrderStatus(item.orderId);
-        updatedDetails.order.status = "Paid";
-      }
-
-      // Update parent screen (InstallmentsScreen) and trigger refetch
+   
       onInstallmentUpdate();
-
-      // Show confirmation modal
-      setModalMessage(
-        "Payment successful! Installment status updated to Paid."
-      );
       setModalVisible(true);
     } catch (error) {
       Alert.alert(
@@ -138,8 +118,6 @@ const SingleInstallmentScreen = () => {
   }
 
   const { order, installments } = orderDetails;
-
-  // Get product names from orderItems (passed from InstallmentsScreen)
   const getProductNames = (orderItems) => {
     if (!orderItems || orderItems.length === 0) return "No Products";
     return orderItems.map((item) => item.product.name).join(", ");

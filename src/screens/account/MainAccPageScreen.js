@@ -8,35 +8,34 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
-  Animated,
   Dimensions,
+  ScrollView,
   RefreshControl,
   Alert,
   Modal,
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { deleteToken } from "../../api/storage";
 import { getUserProfile, getPoints } from "../../api/profile";
 import { getToken } from "../../api/storage";
-import { useIsFocused } from "@react-navigation/native";
 import { getUserId } from "../../api/storage";
 import { actionIcons, Header } from "../../components/Header";
+import Svg, { Circle } from "react-native-svg";
 
 const { width } = Dimensions.get("window");
 
 const tiers = [
-  { name: "Bronze", image: require("../../../assets/Bronze.png"), pointsToNextTier: 1200 },
-  { name: "Silver", image: require("../../../assets/Silver.png"), pointsToNextTier: 3600 },
-  { name: "Gold", image: require("../../../assets/Gold.png"), pointsToNextTier: 8000 },
-  { name: "Elite", image: require("../../../assets/Elite.png"), pointsToNextTier: null },
+  { name: "Bronze", image: require("../../../assets/Bronze.png"), minPoints: 0, pointsToNextTier: 1200 },
+  { name: "Silver", image: require("../../../assets/Silver.png"), minPoints: 1200, pointsToNextTier: 3600 },
+  { name: "Gold", image: require("../../../assets/Gold.png"), minPoints: 3600, pointsToNextTier: 8000 },
+  { name: "Elite", image: require("../../../assets/Elite.png"), minPoints: 8000, pointsToNextTier: null },
 ];
 
 const MainAccPageScreen = ({ setIsAuthenticated }) => {
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
-  const scrollY = useRef(new Animated.Value(0)).current;
   const [refreshing, setRefreshing] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [points, setPoints] = useState(0);
@@ -56,8 +55,8 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         getUserProfile(),
         getPoints(),
       ]);
-      setUserProfile(profileData);
-      setPoints(pointsData);
+      setUserProfile(profileData || {});
+      setPoints(pointsData || 0);
     } catch (error) {
       Alert.alert("Error", "Unable to load profile data or points");
     } finally {
@@ -111,60 +110,40 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   ];
 
   const determineTier = () => {
-    let currentTier = tiers[0]; // Default to Bronze
+    let currentTier = tiers[0];
     let tierIndex = 0;
-    let pointsForCurrentTier = 0;
 
-    for (let i = 0; i < tiers.length - 1; i++) {
-      if (points < tiers[i].pointsToNextTier) {
+    for (let i = 0; i < tiers.length; i++) {
+      if (points >= tiers[i].minPoints && (i === tiers.length - 1 || points < tiers[i + 1].minPoints)) {
         currentTier = tiers[i];
         tierIndex = i;
-        pointsForCurrentTier = i === 0 ? 0 : tiers[i - 1].pointsToNextTier;
         break;
-      } else if (i < tiers.length - 2 && points >= tiers[i].pointsToNextTier) {
-        // Move to the next tier if points exceed current tier but not yet at Elite
-        currentTier = tiers[i + 1];
-        tierIndex = i + 1;
-        pointsForCurrentTier = tiers[i].pointsToNextTier;
       }
     }
 
-    // Handle Elite tier (points >= 8000)
-    if (points >= tiers[tiers.length - 2].pointsToNextTier) {
-      currentTier = tiers[tiers.length - 1]; // Elite
-      tierIndex = tiers.length - 1;
-      pointsForCurrentTier = tiers[tiers.length - 2].pointsToNextTier;
-    }
+    const nextTier = tiers[tierIndex + 1] || null;
+    const pointsForCurrentTier = currentTier.minPoints;
+    const pointsToNextTier = nextTier ? nextTier.minPoints : null;
 
-    return { currentTier, tierIndex, pointsForCurrentTier };
+    const progress = pointsToNextTier
+      ? Math.min(
+          ((points - pointsForCurrentTier) / (pointsToNextTier - pointsForCurrentTier)) * 100,
+          100
+        )
+      : 100;
+    const pointsNeeded = pointsToNextTier ? pointsToNextTier - points : 0;
+
+    return { currentTier, tierIndex, pointsForCurrentTier, nextTier, pointsToNextTier, progress, pointsNeeded };
   };
 
-  const { currentTier, tierIndex, pointsForCurrentTier } = determineTier();
-  const nextTier = tiers[tierIndex + 1] || null;
-  const pointsToNextTier = nextTier ? nextTier.pointsToNextTier : null;
-  const progress = pointsToNextTier
-    ? Math.min(
-        ((points - pointsForCurrentTier) / (pointsToNextTier - pointsForCurrentTier)) * 100,
-        100
-      )
-    : 100;
-
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [50, 35],
-    extrapolate: "clamp",
-  });
-
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: false }
-  );
+  const { currentTier, pointsForCurrentTier, nextTier, pointsToNextTier, progress, pointsNeeded } = determineTier();
 
   const handleRefresh = async () => {
     await fetchUserData();
   };
 
   const handleMenuPress = (screen) => {
+    if (!navigation) return;
     if (screen === "EditProfileScreen") {
       navigation.navigate("EditProfileScreen", {
         userData: {
@@ -206,11 +185,15 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           onPress: async () => {
             try {
               await deleteToken();
-              setIsAuthenticated(false);
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "AuthNavigation" }],
-              });
+              if (setIsAuthenticated) {
+                setIsAuthenticated(false);
+              }
+              if (navigation) {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "AuthNavigation" }],
+                });
+              }
             } catch (error) {
               Alert.alert("Error", "Failed to log out. Please try again.");
             }
@@ -243,6 +226,21 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       </View>
     </TouchableOpacity>
   );
+
+  const getProgressColors = () => {
+    switch (currentTier.name) {
+      case "Bronze":
+        return ["#CD7F32", "#C0C0C0"]; // Bronze to Silver
+      case "Silver":
+        return ["#C0C0C0", "#FFD700"]; // Silver to Gold
+      case "Gold":
+        return ["#FFD700", "#000000"]; // Gold to Black (Elite)
+      case "Elite":
+        return ["#000000", "#000000"]; // Black
+      default:
+        return ["#26589c", "#26589c"];
+    }
+  };
 
   const renderProfileSection = () => (
     <View style={styles.profileSection}>
@@ -278,8 +276,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
       </View>
       <Text style={styles.nameText}>{userProfile?.fullName || "N/A"}</Text>
       <Text style={styles.emailText}>{userProfile?.email || "N/A"}</Text>
-      <Text style={styles.emailText}>{"Mobile: " + userProfile?.phoneNumber || "N/A"}</Text>
-
+      <Text style={styles.emailText}>{"Mobile: " + (userProfile?.phoneNumber || "N/A")}</Text>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <LinearGradient
           colors={["#26589c", "#26589c"]}
@@ -298,51 +295,106 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
     </View>
   );
 
+  const renderModalContent = () => {
+    const isElite = currentTier.name === "Elite";
+    const size = 200; // Size of the SVG ring to encircle the 180x180 badge
+    const strokeWidth = 10;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const progressStroke = (progress / 100) * circumference;
+
+    return (
+      <View style={styles.modalContent}>
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>{currentTier.name} Tier</Text>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+            <Ionicons name="close" size={24} color="#26589c" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.modalBadgeContainer}>
+          <Svg height={size} width={size} style={styles.circularProgress}>
+            <Circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke="#ddd"
+              strokeWidth={strokeWidth}
+              fill="none"
+            />
+            <Circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke={isElite ? "#000000" : getProgressColors()[0]}
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeDasharray={circumference}
+              strokeDashoffset={circumference - progressStroke}
+            />
+          </Svg>
+          <Image source={currentTier.image} style={styles.modalTierImage} resizeMode="contain" />
+        </View>
+        {currentTier.name === "Elite" ? (
+          <Text style={styles.progressText}>You’ve reached the highest tier!</Text>
+        ) : (
+          <Text style={styles.progressText}>
+            Points to {nextTier ? nextTier.name : "Elite"} Tier: {pointsNeeded}
+          </Text>
+        )}
+        <Text style={styles.pointsText}>My points: {points}</Text>
+        <TouchableOpacity
+          style={styles.detailsButton}
+          onPress={() => {
+            setModalVisible(false);
+            navigation?.navigate("Account", { screen: "TierScreen" });
+          }}
+        >
+          <Text style={styles.detailsButtonText}>View Tier Details</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
-
       <Header
         title="Profile"
-        action={() => navigation.navigate("NotificationScreen")}
+        action={() => navigation?.navigate("NotificationScreen")}
         actionIconName={actionIcons.notification}
       />
-      <Animated.ScrollView
-        ref={scrollViewRef}
-        style={styles.content}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor="#26589c"
-            colors={["#26589c", "#26589c"]}
-            progressBackgroundColor="#fff"
-          />
-        }
-      >
-        {renderProfileSection()}
-
-        <View style={styles.menuContainer}>
-          {menuItems.map(renderMenuItem)}
-        </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <LinearGradient
-            colors={["#26589c", "#26589c"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.logoutGradient}
-          >
-            <Ionicons name="log-out-outline" size={24} color="#fff" />
-            <Text style={styles.logoutText}>Logout</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </Animated.ScrollView>
-
+      <SafeAreaView style={styles.content}>
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor="#26589c"
+              colors={["#26589c", "#26589c"]}
+              progressBackgroundColor="#fff"
+            />
+          }
+        >
+          {renderProfileSection()}
+          <View style={styles.menuContainer}>
+            {menuItems.map(renderMenuItem)}
+          </View>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <LinearGradient
+              colors={["#26589c", "#26589c"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.logoutGradient}
+            >
+              <Ionicons name="log-out-outline" size={24} color="#fff" />
+              <Text style={styles.logoutText}>Logout</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
       <Modal
         visible={modalVisible}
         transparent={true}
@@ -354,46 +406,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           activeOpacity={1}
           onPress={() => setModalVisible(false)}
         >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>   {currentTier.name} Tier</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#26589c" />
-              </TouchableOpacity>
-            </View>
-            <Image
-              source={currentTier.image}
-              style={styles.tierImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.pointsText}>{points} Points</Text>
-            {currentTier.name === "Elite" ? (
-              <Text style={styles.progressText}>You’ve reached the highest tier!</Text>
-            ) : (
-              <>
-                <View style={styles.progressBarContainer}>
-                  <View
-                    style={[
-                      styles.progressBarFill,
-                      { width: `${progress}%` },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.progressText}>
-                  {points - pointsForCurrentTier} / {pointsToNextTier - pointsForCurrentTier} points to {nextTier.name} Tier
-                </Text>
-              </>
-            )}
-            <TouchableOpacity
-              style={styles.detailsButton}
-              onPress={() => {
-                setModalVisible(false);
-                navigation.navigate("Account", { screen: "TierScreen" });
-              }}
-            >
-              <Text style={styles.detailsButtonText}>View Tier Details</Text>
-            </TouchableOpacity>
-          </View>
+          {renderModalContent()}
         </TouchableOpacity>
       </Modal>
     </View>
@@ -404,22 +417,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 70,
-  },
-  innerContainer: {
-    flex: 1,
-  },
-  notificationButton: {
-    overflow: "hidden",
-    borderRadius: 20,
-  },
-  notificationGradient: {
-    padding: 8,
-    borderRadius: 20,
-  },
-  civilId: {
-    fontSize: 14,
-    color: "rgba(255, 255, 255, 0.8)",
-    marginTop: 4,
   },
   content: {
     flex: 1,
@@ -572,15 +569,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  versionContainer: {
-    alignItems: "center",
-    padding: 16,
-    paddingBottom: 24,
-  },
-  versionText: {
-    fontSize: 12,
-    color: "#999",
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -597,49 +585,58 @@ const styles = StyleSheet.create({
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between", // Align items to the edges
+    justifyContent: "flex-end",
     width: "100%",
     marginBottom: 15,
+    position: "relative",
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#26589c",
+    position: "absolute",
+    left: 0,
+    right: 0,
+    textAlign: "center",
   },
-  tierImage: {
-    width: width * 0.6,
-    height: 150,
-    marginBottom: 15,
+  closeButton: {
+    padding: 5,
+  },
+  modalBadgeContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    position: "relative",
+    height: 200, // Adjusted to accommodate SVG size
+  },
+  modalTierImage: {
+    width: 180,
+    height: 180,
+    position: "absolute",
+    zIndex: 1,
+  },
+  circularProgress: {
+    position: "absolute",
+    zIndex: 0,
+    bottom: 15,
+  },
+  progressText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#26589c",
+    marginTop: 10,
   },
   pointsText: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#666",
-    marginBottom: 15,
-  },
-  progressBarContainer: {
-    width: "80%",
-    height: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 5,
-    overflow: "hidden",
-    marginBottom: 10,
-  },
-  progressBarFill: {
-    height: "100%",
-    backgroundColor: "#FFC300",
-    borderRadius: 5,
-  },
-  progressText: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 20,
+    color: "#26589c",
+    marginTop: 10,
   },
   detailsButton: {
     backgroundColor: "#26589c",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 15,
+    marginTop: 20,
   },
   detailsButtonText: {
     color: "#fff",

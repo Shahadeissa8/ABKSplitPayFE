@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  
 } from "react-native";
 import { Header } from "../../components/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -17,28 +18,28 @@ const tiers = [
   {
     name: "Bronze",
     image: require("../../../assets/Bronze.png"),
-    installmentLimit: "750KD",
+    //installmentLimit: "750KD",
     earnedPoint: 1,
     pointsToNextTier: 5000,
   },
   {
     name: "Silver",
     image: require("../../../assets/Silver.png"),
-    installmentLimit: "1000KD",
+    //installmentLimit: "1000KD",
     earnedPoint: 1.5,
     pointsToNextTier: 6000,
   },
   {
     name: "Gold",
     image: require("../../../assets/Gold.png"),
-    installmentLimit: "1250KD",
+    //installmentLimit: "1250KD",
     earnedPoint: 2,
     pointsToNextTier: 7000,
   },
   {
     name: "Elite",
     image: require("../../../assets/Elite.png"),
-    installmentLimit: "1500KD",
+    //installmentLimit: "1500KD",
     earnedPoint: 3,
     pointsToNextTier: null,
   },
@@ -60,26 +61,42 @@ const TierScreen = () => {
     }
   }).current;
 
-  const renderTierItem = ({ item }) => {
+  const renderTierItem = ({ item, index }) => {
     const progress = item.pointsToNextTier
       ? (currentPoints / item.pointsToNextTier) * 100
       : 100;
     return (
       <View style={styles.tierItem}>
+
+         {/* Left Arrow Indicator */}
+         {index > 0 && (
+          <Text style={styles.leftArrow}>&lt;</Text>
+        )}
+
+        {/* Tier Information */}
+
         <View style={styles.tierInfo}>
           <Text style={styles.tierName}>{item.name} Tier</Text>
-          <Text style={styles.points}>{currentPoints} Points</Text>
-          <Text style={styles.installmentLimit}>
+          {/* <Text style={styles.points}>{currentPoints} Points</Text> */}
+          {/* <Text style={styles.installmentLimit}>
             Installment Limit: {item.installmentLimit}
-          </Text>
-          <Text style={styles.earnedPoint}>
+          </Text> */}
+          {/* <Text style={styles.earnedPoint}>
             Earned Point Multiplier: {item.earnedPoint}x
-          </Text>
+          </Text> */}
         </View>
 
         <Image source={item.image} style={styles.image} resizeMode="contain" />
+        
+        {/* Right Arrow Indicator */}
+        {index < tiers.length - 1 && (
+          <Text style={styles.rightArrow}>&gt;</Text>
+        )}
 
-        {item.pointsToNextTier && (
+
+        {/* Progress Bar (hidden for Elite) */}
+        {/* {item.pointsToNextTier && (
+
           <>
             <View style={styles.progressBarContainer}>
               <View
@@ -93,14 +110,17 @@ const TierScreen = () => {
               {currentPoints} / {item.pointsToNextTier} points to next tier
             </Text>
           </>
-        )}
+        )} */}
+        <Text style={styles.progressText}>
+              {item.pointsToNextTier} points to next tier
+            </Text>
       </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      <Header title="Tiers" backButtonAction={() => navigation.goBack()} />
+      <Header title="Tiers & Rewards" backButtonAction={() => navigation.goBack()} />
       <View>
         <View style={styles.content}>
           <FlatList
@@ -143,12 +163,29 @@ const TierScreen = () => {
 export default TierScreen;
 
 const styles = StyleSheet.create({
+  leftArrow: {
+    position: "absolute",
+    left: -20,
+    top: "50%",
+    fontSize: 24,
+    color: "#26589c",
+    fontWeight: "bold",
+  },
+  rightArrow: {
+    position: "absolute",
+    right: -20,
+    top: "50%",
+    fontSize: 24,
+    color: "#26589c",
+    fontWeight: "bold",
+  },
+  
   container: {
     flex: 1,
     backgroundColor: "#fff",
   },
   content: {
-    marginTop: 20,
+    marginTop: 90,
     width: width * 0.9,
     alignItems: "center",
     backgroundColor: "#fff",
@@ -180,11 +217,11 @@ const styles = StyleSheet.create({
     color: "#666",
     marginBottom: 5,
   },
-  installmentLimit: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 5,
-  },
+  // installmentLimit: {
+  //   fontSize: 16,
+  //   color: "#666",
+  //   marginBottom: 5,
+  // },
   earnedPoint: {
     fontSize: 16,
     color: "#666",

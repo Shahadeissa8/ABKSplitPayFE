@@ -27,9 +27,9 @@ import { actionIcons, Header } from "../../components/Header";
 const { width } = Dimensions.get("window");
 
 const tiers = [
-  { name: "Bronze", image: require("../../../assets/Bronze.png"), pointsToNextTier: 5000 },
-  { name: "Silver", image: require("../../../assets/Silver.png"), pointsToNextTier: 6000 },
-  { name: "Gold", image: require("../../../assets/Gold.png"), pointsToNextTier: 7000 },
+  { name: "Bronze", image: require("../../../assets/Bronze.png"), pointsToNextTier: 1200 },
+  { name: "Silver", image: require("../../../assets/Silver.png"), pointsToNextTier: 3600 },
+  { name: "Gold", image: require("../../../assets/Gold.png"), pointsToNextTier: 8000 },
   { name: "Elite", image: require("../../../assets/Elite.png"), pointsToNextTier: null },
 ];
 
@@ -113,38 +113,45 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
   const determineTier = () => {
     let currentTier = tiers[0]; // Default to Bronze
     let tierIndex = 0;
+    let pointsForCurrentTier = 0;
 
-    for (let i = 0; i < tiers.length; i++) {
-      if (tiers[i].pointsToNextTier === null) {
-        // Elite tier (last tier)
-        currentTier = tiers[i];
-        tierIndex = i;
-        break;
-      }
+    for (let i = 0; i < tiers.length - 1; i++) {
       if (points < tiers[i].pointsToNextTier) {
         currentTier = tiers[i];
         tierIndex = i;
+        pointsForCurrentTier = i === 0 ? 0 : tiers[i - 1].pointsToNextTier;
         break;
-      }
-      if (i < tiers.length - 1 && points >= tiers[i].pointsToNextTier) {
-        continue;
+      } else if (i < tiers.length - 2 && points >= tiers[i].pointsToNextTier) {
+        // Move to the next tier if points exceed current tier but not yet at Elite
+        currentTier = tiers[i + 1];
+        tierIndex = i + 1;
+        pointsForCurrentTier = tiers[i].pointsToNextTier;
       }
     }
 
-    return { currentTier, tierIndex };
+    // Handle Elite tier (points >= 8000)
+    if (points >= tiers[tiers.length - 2].pointsToNextTier) {
+      currentTier = tiers[tiers.length - 1]; // Elite
+      tierIndex = tiers.length - 1;
+      pointsForCurrentTier = tiers[tiers.length - 2].pointsToNextTier;
+    }
+
+    return { currentTier, tierIndex, pointsForCurrentTier };
   };
 
-  const { currentTier, tierIndex } = determineTier();
+  const { currentTier, tierIndex, pointsForCurrentTier } = determineTier();
   const nextTier = tiers[tierIndex + 1] || null;
   const pointsToNextTier = nextTier ? nextTier.pointsToNextTier : null;
-  const pointsForCurrentTier = tiers[tierIndex - 1]?.pointsToNextTier || 0;
   const progress = pointsToNextTier
-    ? ((points - pointsForCurrentTier) / (pointsToNextTier - pointsForCurrentTier)) * 100
+    ? Math.min(
+        ((points - pointsForCurrentTier) / (pointsToNextTier - pointsForCurrentTier)) * 100,
+        100
+      )
     : 100;
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 100],
-    outputRange: [50, 35], // iPhone-specific values
+    outputRange: [50, 35],
     extrapolate: "clamp",
   });
 
@@ -167,7 +174,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
             userProfile?.profilePictureUrl || defaultProfilePicture,
         },
         onSuccess: () => {
-          fetchUserData(); // Fetch updated user profile after editing
+          fetchUserData();
         },
       });
     } else if (screen === "ChangePasswordScreen") {
@@ -280,7 +287,11 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
           end={{ x: 1, y: 0 }}
           style={styles.membershipBadge}
         >
-          <Ionicons name="star" size={18} color="#fff" />
+          <Image
+            source={currentTier.image}
+            style={styles.tierBadgeImage}
+            resizeMode="contain"
+          />
           <Text style={styles.membershipText}>{currentTier.name} Member</Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -332,7 +343,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         </TouchableOpacity>
       </Animated.ScrollView>
 
-      {/* Tier Modal */}
       <Modal
         visible={modalVisible}
         transparent={true}
@@ -346,7 +356,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         >
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{currentTier.name} Tier</Text>
+              <Text style={styles.modalTitle}>   {currentTier.name} Tier</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={24} color="#26589c" />
               </TouchableOpacity>
@@ -357,13 +367,15 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
               resizeMode="contain"
             />
             <Text style={styles.pointsText}>{points} Points</Text>
-            {pointsToNextTier ? (
+            {currentTier.name === "Elite" ? (
+              <Text style={styles.progressText}>You’ve reached the highest tier!</Text>
+            ) : (
               <>
                 <View style={styles.progressBarContainer}>
                   <View
                     style={[
                       styles.progressBarFill,
-                      { width: `${Math.min(progress, 100)}%` },
+                      { width: `${progress}%` },
                     ]}
                   />
                 </View>
@@ -371,8 +383,6 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
                   {points - pointsForCurrentTier} / {pointsToNextTier - pointsForCurrentTier} points to {nextTier.name} Tier
                 </Text>
               </>
-            ) : (
-              <Text style={styles.progressText}>You’ve reached the highest tier!</Text>
             )}
             <TouchableOpacity
               style={styles.detailsButton}
@@ -413,7 +423,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#fff", 
+
+    backgroundColor: "#fff",
+
   },
   scrollContent: {
     paddingBottom: 20,
@@ -487,6 +499,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 14,
+  },
+  tierBadgeImage: {
+    width: 24,
+    height: 24,
   },
   menuContainer: {
     backgroundColor: "#fff",
@@ -580,8 +596,8 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between", // Align items to the edges
     width: "100%",
     marginBottom: 15,
   },

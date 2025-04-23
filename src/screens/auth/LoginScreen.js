@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { login } from "../../api/auth";
-//import { getToken } from "../../api/storage";
+
 import { setToken } from "../../api/storage";
 
 
@@ -223,7 +223,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
           </ScrollView>
         </KeyboardAvoidingView>
   
-        {/* Fixed Face ID Button */}
+  
         <TouchableOpacity
           style={styles.faceIdButton}
           onPress={() => Alert.alert("Face ID", "Face ID authentication triggered!")}

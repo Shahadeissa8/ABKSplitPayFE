@@ -16,7 +16,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { getWishList, addToCart, deleteWishListItem } from "../../api/CartAPI"; // Import required functions
+import { getWishList, addToCart, deleteWishListItem } from "../../api/CartAPI";
 import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
@@ -26,11 +26,10 @@ const WishListScreen = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch wishlist items from the backend
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const data = await getWishList(); // Fetch wishlist from the API
+        const data = await getWishList();
         const formattedItems = data.map((item) => ({
           id: item.wishListId,
           productId: item.product.productId,
@@ -51,8 +50,8 @@ const WishListScreen = () => {
 
   const removeFromWishlist = async (itemId) => {
     try {
-      await deleteWishListItem(itemId); // Call the delete endpoint
-      setWishlistItems(wishlistItems.filter((item) => item.id !== itemId)); // Update local state
+      await deleteWishListItem(itemId);
+      setWishlistItems(wishlistItems.filter((item) => item.id !== itemId));
     } catch (error) {
       Alert.alert("Error", "Failed to remove item from wishlist.");
     }
@@ -60,8 +59,8 @@ const WishListScreen = () => {
 
   const moveToCart = async (item) => {
     try {
-      await addToCart(item.productId, 1); // Add the item to the cart
-      await removeFromWishlist(item.id); // Remove the item from the wishlist
+      await addToCart(item.productId, 1);
+      await removeFromWishlist(item.id);
       Alert.alert("Success", "Item moved to cart.");
     } catch (error) {
       Alert.alert("Error", "Failed to move item to cart.");
@@ -143,12 +142,14 @@ const WishListScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
-      <Header
-        title="Wishlist"
-        backButtonAction={() => navigation.goBack()}/>
-      {/* {renderHeader()} */}
+      <Header title="Wishlist" backButtonAction={() => navigation.goBack()} />
+
       {loading ? (
-        <ActivityIndicator size="large" color="#26589c" style={{ marginTop: 20 }} />
+        <ActivityIndicator
+          size="large"
+          color="#26589c"
+          style={{ marginTop: 20 }}
+        />
       ) : wishlistItems.length === 0 ? (
         renderEmptyState()
       ) : (

@@ -51,7 +51,7 @@ const CheckoutScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { cartItems, clearCart } = useCart();
-  const { total: passedTotal } = route.params || {}; // Get the total passed from MyCartScreen
+  const { total: passedTotal } = route.params || {};
   const [paymentPlans, setPaymentPlans] = useState([]);
   const [selectedPaymentPlan, setSelectedPaymentPlan] = useState(null);
   const [allAddresses, setAllAddresses] = useState([]);
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginBottom:10,
+    marginBottom: 10,
   },
   content: {
     flex: 1,

@@ -100,7 +100,7 @@ const PaymentMethods = () => {
     const expiryYear = parseInt(`20${year}`, 10);
 
     const paymentMethodData = {
-      token: cardHolder, // Cardholder name
+      token: cardHolder, 
       lastFourDigits: lastFourDigits,
       cardType: selectedCardType.name,
       expiryMonth: expiryMonth,
@@ -360,7 +360,7 @@ const PaymentMethods = () => {
                   </View>
                 </View>
 
-                {/* Checkbox for isDefault */}
+         
                 <TouchableOpacity
                   style={styles.checkboxContainer}
                   onPress={() => setIsDefault(!isDefault)}
@@ -431,7 +431,7 @@ const PaymentMethods = () => {
         </Modal>
       </View>
     </View>
-    //  </LinearGradient>
+ 
   );
 };
 

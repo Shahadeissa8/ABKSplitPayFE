@@ -31,22 +31,22 @@ const MyCartScreen = () => {
   const navigation = useNavigation();
   const { cartItems, fetchCart, removeFromCart, updateQuantity } = useCart();
 
-  // Use useFocusEffect to refetch cart data when the screen comes into focus
+
   useFocusEffect(
     useCallback(() => {
-      fetchCart(); // Fetch cart data
+      fetchCart(); 
     }, [fetchCart])
   );
 
   const calculateTotal = () => {
-    // Ensure cartItems is an array and each item has the correct structure
+    
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return "0.00";
     }
     return cartItems
       .reduce((total, item) => {
-        const price = parseFloat(item.product?.price) || 0; // Ensure price is a number
-        const quantity = item.quantity || 0; // Ensure quantity is a number
+        const price = parseFloat(item.product?.price) || 0; 
+        const quantity = item.quantity || 0; 
         return total + price * quantity;
       }, 0)
       .toFixed(2);
@@ -54,7 +54,7 @@ const MyCartScreen = () => {
 
   const handleCheckout = () => {
     const total = calculateTotal();
-    navigation.navigate("CheckoutScreen", { total }); // Pass the total to CheckoutScreen
+    navigation.navigate("CheckoutScreen", { total }); 
   };
 
   const renderProductItem = ({ item }) => (

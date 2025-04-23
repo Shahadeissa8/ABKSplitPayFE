@@ -17,7 +17,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { updateUserProfile } from "../../api/profile"; // Import the API function
+import { updateUserProfile } from "../../api/profile"; 
 import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
@@ -115,12 +115,7 @@ const EditProfileScreen = ({ route, navigation }) => {
 
   const handleSave = async () => {
     try {
-      // console.log("Updating profile with:", {
-      //   fullName: userData.fullName,
-      //   phoneNumber: userData.phoneNumber,
-      //   profilePictureUrl: userData.profilePicture,
-      // }
-    // );
+   
 
       await updateUserProfile(
         userData.fullName,
@@ -130,7 +125,7 @@ const EditProfileScreen = ({ route, navigation }) => {
 
       Alert.alert("Success", "Profile updated successfully!");
       if (onSuccess) {
-        onSuccess(); // Trigger refresh on MainAccPageScreen
+        onSuccess(); 
       }
       handleBack();
     } catch (error) {
@@ -146,32 +141,19 @@ const EditProfileScreen = ({ route, navigation }) => {
   };
 
   const handleEditPicture = () => {
-    setIsModalVisible(true); // Show the modal when the user wants to edit the picture
+    setIsModalVisible(true); 
   };
 
   const handleSelectPicture = (url) => {
     setUserData((prev) => ({
       ...prev,
-      profilePicture: url, // Update the profile picture with the selected image URL
+      profilePicture: url, 
     }));
-    setIsModalVisible(false); // Close the modal after selection
+    setIsModalVisible(false); 
   };
 
   const renderHeader = () => (
-    // <LinearGradient
-    //   colors={["#26589c", "#26589c"]}
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 0 }}
-    //   style={styles.header}
-    // >
-    //   <View style={styles.headerContent}>
-    //     <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-    //       <Ionicons name="chevron-back" size={28} color="#fff" />
-    //     </TouchableOpacity>
-    //     <Text style={styles.headerTitle}>Edit Profile</Text>
-    //     <View style={{ width: 40 }} />
-    //   </View>
-    // </LinearGradient>
+ 
     <View>
       <Header
         title="Edit Profile"
@@ -180,7 +162,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     </View>
   );
 
-  // Add the missing renderProfilePicture function
+
   const renderProfilePicture = () => (
     <Animated.View
       style={[
@@ -270,7 +252,7 @@ const EditProfileScreen = ({ route, navigation }) => {
       animationType="fade"
       transparent={true}
       visible={isModalVisible}
-      onRequestClose={() => setIsModalVisible(false)} // Close the modal when requested
+      onRequestClose={() => setIsModalVisible(false)} 
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -279,14 +261,14 @@ const EditProfileScreen = ({ route, navigation }) => {
             {profilePictureOptions.map((url, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => handleSelectPicture(url)} // Handle image selection
+                onPress={() => handleSelectPicture(url)} 
               >
                 <Image source={{ uri: url }} style={styles.modalImage} />
               </TouchableOpacity>
             ))}
           </View>
           <TouchableOpacity
-            onPress={() => setIsModalVisible(false)} // Close the modal
+            onPress={() => setIsModalVisible(false)} 
             style={styles.closeButton}
           >
             <Text style={styles.closeButtonText}>Close</Text>
@@ -367,7 +349,7 @@ const styles = StyleSheet.create({
 
   },
   header: {
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
+ 
     paddingHorizontal: 20,
     paddingBottom: 35,
     borderBottomLeftRadius: 30,

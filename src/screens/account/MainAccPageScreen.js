@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#fff", // Keep the grayish background
+    backgroundColor: "#fff", 
   },
   scrollContent: {
     paddingBottom: 20,

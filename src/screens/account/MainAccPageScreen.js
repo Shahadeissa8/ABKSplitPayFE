@@ -356,7 +356,7 @@ const MainAccPageScreen = ({ setIsAuthenticated }) => {
         >
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{currentTier.name} Tier</Text>
+              <Text style={styles.modalTitle}>   {currentTier.name} Tier</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={24} color="#26589c" />
               </TouchableOpacity>
@@ -594,8 +594,8 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between", // Align items to the edges
     width: "100%",
     marginBottom: 15,
   },
@@ -603,8 +603,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#26589c",
-    flex: 1,
-    textAlign: "center",
   },
   tierImage: {
     width: width * 0.6,

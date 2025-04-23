@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Video } from 'expo-av';
@@ -9,7 +8,7 @@ const SplashScreen2 = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('OnBoardingScreen'); /
+      navigation.replace('OnBoardingScreen');
     }, 3000); 
 
     return () => clearTimeout(timer);

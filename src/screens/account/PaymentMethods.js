@@ -12,9 +12,9 @@ import {
   Modal,
   Animated,
   Alert,
+  Image, // Added Image import
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { createPaymentMethod } from "../../api/profile";
@@ -25,14 +25,12 @@ const cardTypes = [
   {
     id: "1",
     name: "Visa",
-    color: "#26589c",
-    secondaryColor: "#26589c",
+    image: require("../../../assets/Visa.png"), // Added image path
   },
   {
     id: "2",
     name: "Mastercard",
-    color: "#26589c",
-    secondaryColor: "#26589c",
+    image: require("../../../assets/Mastercard-logo.png"), // Added image path
   },
 ];
 
@@ -100,7 +98,9 @@ const PaymentMethods = () => {
     const expiryYear = parseInt(`20${year}`, 10);
 
     const paymentMethodData = {
-      token: cardHolder, // Cardholder name
+
+      token: cardHolder,
+
       lastFourDigits: lastFourDigits,
       cardType: selectedCardType.name,
       expiryMonth: expiryMonth,
@@ -130,8 +130,8 @@ const PaymentMethods = () => {
       style={[
         styles.cardTypeOption,
         selectedCardType?.id === cardType.id && {
-          borderColor: cardType.color,
-          backgroundColor: cardType.color + "08",
+          borderColor: "#26589c",
+          backgroundColor: "#26589c08",
         },
       ]}
       onPress={() => {
@@ -139,16 +139,11 @@ const PaymentMethods = () => {
         setShowCardTypeModal(false);
       }}
     >
-      <LinearGradient
-        colors={[cardType.color, cardType.secondaryColor]}
+      <Image
+        source={cardType.image}
         style={styles.cardTypeLogo}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <Text style={[styles.cardTypeShortName, { color: "#fff" }]}>
-          {cardType.name}
-        </Text>
-      </LinearGradient>
+        resizeMode="contain"
+      />
       <View style={styles.cardTypeInfo}>
         <Text style={styles.cardTypeOptionName}>{cardType.name}</Text>
       </View>
@@ -156,7 +151,7 @@ const PaymentMethods = () => {
         <View
           style={[
             styles.checkmarkContainer,
-            { backgroundColor: cardType.color },
+            { backgroundColor: "#26589c" },
           ]}
         >
           <Ionicons name="checkmark" size={16} color="#fff" />
@@ -184,28 +179,18 @@ const PaymentMethods = () => {
               <TouchableOpacity
                 style={[
                   styles.cardTypeSelector,
-                  selectedCardType && { borderColor: selectedCardType.color },
+                  selectedCardType && { borderColor: "#26589c" },
                 ]}
                 onPress={() => setShowCardTypeModal(true)}
               >
                 <View style={styles.cardTypeSelectorContent}>
                   {selectedCardType ? (
                     <View style={styles.selectedCardTypeInfo}>
-                      <LinearGradient
-                        colors={[
-                          selectedCardType.color,
-                          selectedCardType.secondaryColor,
-                        ]}
-                        style={styles.selectedCardTypeLogo}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                      >
-                        <Text
-                          style={[styles.cardTypeShortName, { color: "#fff" }]}
-                        >
-                          {selectedCardType.name}
-                        </Text>
-                      </LinearGradient>
+                      <Image
+                        source={selectedCardType.image}
+                        style={styles.cardTypeLogo}
+                        resizeMode="contain"
+                      />
                       <Text style={styles.selectedCardTypeName}>
                         {selectedCardType.name}
                       </Text>
@@ -218,7 +203,7 @@ const PaymentMethods = () => {
                   <Ionicons
                     name="chevron-down"
                     size={24}
-                    color={selectedCardType?.color || "#26589c"}
+                    color={selectedCardType ? "#26589c" : "#26589c"}
                   />
                 </View>
               </TouchableOpacity>
@@ -235,7 +220,7 @@ const PaymentMethods = () => {
                         styles.inputContainerFocused,
                       focusedInput === "cardNumber" &&
                         selectedCardType && {
-                          borderColor: selectedCardType.color,
+                          borderColor: "#26589c",
                         },
                     ]}
                   >
@@ -269,7 +254,7 @@ const PaymentMethods = () => {
                         styles.inputContainerFocused,
                       focusedInput === "cardHolder" &&
                         selectedCardType && {
-                          borderColor: selectedCardType.color,
+                          borderColor: "#26589c",
                         },
                     ]}
                   >
@@ -303,7 +288,7 @@ const PaymentMethods = () => {
                           styles.inputContainerFocused,
                         focusedInput === "expiryDate" &&
                           selectedCardType && {
-                            borderColor: selectedCardType.color,
+                            borderColor: "#26589c",
                           },
                       ]}
                     >
@@ -335,7 +320,7 @@ const PaymentMethods = () => {
                         focusedInput === "cvv" && styles.inputContainerFocused,
                         focusedInput === "cvv" &&
                           selectedCardType && {
-                            borderColor: selectedCardType.color,
+                            borderColor: "#26589c",
                           },
                       ]}
                     >
@@ -360,7 +345,8 @@ const PaymentMethods = () => {
                   </View>
                 </View>
 
-                {/* Checkbox for isDefault */}
+
+
                 <TouchableOpacity
                   style={styles.checkboxContainer}
                   onPress={() => setIsDefault(!isDefault)}
@@ -382,24 +368,18 @@ const PaymentMethods = () => {
           <TouchableOpacity
             style={[
               styles.saveButton,
-              { backgroundColor: selectedCardType?.color || "#26589c" },
+              { backgroundColor: "#26589c" },
             ]}
             onPress={handleSave}
           >
-            <LinearGradient
-              colors={[
-                selectedCardType?.color || "#26589c",
-                selectedCardType?.color || "#26589c",
-              ]}
+            <View
               style={styles.saveButtonGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
             >
               <Text style={styles.saveButtonText}>Save Card</Text>
               <View style={styles.saveButtonIcon}>
                 <Ionicons name="arrow-forward" size={20} color="#fff" />
               </View>
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
         </ScrollView>
 
@@ -431,7 +411,6 @@ const PaymentMethods = () => {
         </Modal>
       </View>
     </View>
-    //  </LinearGradient>
   );
 };
 
@@ -512,17 +491,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  selectedCardTypeLogo: {
-    width: 100,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
+  cardTypeLogo: {
+    width: 40, // Adjusted size for the logo
+    height: 40,
     marginRight: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   selectedCardTypeName: {
     fontSize: 16,
@@ -580,25 +552,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.1)",
   },
-  cardTypeLogo: {
-    width: 90,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
   cardTypeInfo: {
     flex: 1,
-  },
-  cardTypeShortName: {
-    fontSize: 14,
-    fontWeight: "700",
-    textAlign: "center",
   },
   cardTypeOptionName: {
     fontSize: 16,
@@ -681,6 +636,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
+    backgroundColor: "#26589c",
   },
   saveButtonText: {
     fontSize: 18,

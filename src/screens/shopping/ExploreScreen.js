@@ -36,7 +36,6 @@ const ExploreScreen = () => {
   const [quantity, setQuantity] = useState(1);
   const { addToCart, cartItems } = useCart();
 
-  // Calculate the total number of items in the cart
   const getCartItemCount = () => {
     return cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
   };
@@ -81,7 +80,12 @@ const ExploreScreen = () => {
       key: "search",
       component: (
         <View style={styles.searchContainer}>
-          <Ionicons name="search-outline" size={24} color="#26589c" style={styles.searchIcon} />
+          <Ionicons
+            name="search-outline"
+            size={24}
+            color="#26589c"
+            style={styles.searchIcon}
+          />
           <TextInput
             style={styles.searchInput}
             placeholder="Search products..."
@@ -97,7 +101,10 @@ const ExploreScreen = () => {
         </View>
       ),
     },
-    { key: "categories", component: <CategoryList onSelectCategory={setSelectedCategoryId} /> },
+    {
+      key: "categories",
+      component: <CategoryList onSelectCategory={setSelectedCategoryId} />,
+    },
     {
       key: "products",
       component: (
@@ -121,7 +128,7 @@ const ExploreScreen = () => {
         title="Explore"
         action={() => navigation.navigate("MyCartScreen")}
         actionIconName={actionIcons.cart}
-        cartItemCount={getCartItemCount()} // Added cartItemCount prop
+        cartItemCount={getCartItemCount()}
         renderAction={() => (
           <TouchableOpacity
             onPress={() => navigation.navigate("MyCartScreen")}
@@ -166,7 +173,9 @@ const ExploreScreen = () => {
                 />
               </View>
               <Text style={modalStyles.title}>{selectedProduct.name}</Text>
-              <Text style={modalStyles.description}>{selectedProduct.description}</Text>
+              <Text style={modalStyles.description}>
+                {selectedProduct.description}
+              </Text>
               <Text style={modalStyles.price}>
                 Price: {selectedProduct.price} KD
               </Text>
@@ -192,7 +201,8 @@ const ExploreScreen = () => {
                 >
                   <View style={modalStyles.addToCartButton}>
                     <Text style={modalStyles.addToCartText}>
-                      <Feather name="shopping-cart" size={20} color="#fff" /> Add to cart
+                      <Feather name="shopping-cart" size={20} color="#fff" />{" "}
+                      Add to cart
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -216,7 +226,7 @@ const ExploreScreen = () => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: "#26589c",
-    paddingBottom: 20, // Adjusted padding
+    paddingBottom: 20,
     paddingHorizontal: 15,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,

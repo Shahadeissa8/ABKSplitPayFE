@@ -15,7 +15,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { changePassword } from "../../api/profile"; // Import the changePassword API function
+import { changePassword } from "../../api/profile"; 
 import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
@@ -82,10 +82,10 @@ const ConfirmPasswordScreen = () => {
     setError("");
 
     try {
-      // Call the changePassword API
+  
       await changePassword(currentPassword, newPassword);
       Alert.alert("Success", "Password changed successfully!");
-      navigation.goBack(); // Navigate back after successful password change
+      navigation.goBack(); 
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to change password.");
     }
@@ -184,20 +184,7 @@ const ConfirmPasswordScreen = () => {
         title="Change password"
         backButtonAction={() => navigation.goBack()}
       />
-      {/* <LinearGradient
-        colors={["#26589c", "#26589c"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="chevron-back" size={28} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Change Password</Text>
-          <View style={{ width: 40 }} />
-        </View>
-      </LinearGradient> */}
+
 
       <View style={styles.content}>
         <View style={styles.formContainer}>
@@ -275,7 +262,7 @@ const styles = StyleSheet.create({
     marginBottom: 70,
   },
   headerGradient: {
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 16 : 16,
+   
     paddingHorizontal: 16,
     paddingBottom: 16,
     borderBottomLeftRadius: 30,

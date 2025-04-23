@@ -8,13 +8,13 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { getPaymentMethods, deletePaymentMethod } from "../../api/profile";
 import { actionIcons, Header } from "../../components/Header";
 
-// Card type color mappings
 const cardTypeColors = {
   Visa: { color: "#1A1F71", secondaryColor: "#F7B500" },
   Mastercard: { color: "#CC0000", secondaryColor: "#FF9900" },
@@ -24,11 +24,9 @@ const Payment = ({ navigation, route }) => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
 
-  // Fetch payment methods on mount and when refreshed
   useEffect(() => {
     loadPaymentMethods();
-  }, [route.params?.refresh]); // Use route.params to listen for refresh changes
-
+  }, [route.params?.refresh]);
   const loadPaymentMethods = async () => {
     try {
       const paymentMethods = await getPaymentMethods();
@@ -78,6 +76,13 @@ const Payment = ({ navigation, route }) => {
       color: "#26589c",
       secondaryColor: "#9cb2d8",
     };
+  
+    // Map cardType to its corresponding image
+    const cardTypeImages = {
+      Visa: require("../../../assets/Visa.png"),
+      Mastercard: require("../../../assets/Mastercard-logo.png"),
+    };
+  
     return (
       <TouchableOpacity
         key={card.paymentMethodId}
@@ -100,10 +105,15 @@ const Payment = ({ navigation, route }) => {
               <Ionicons name="trash-outline" size={20} color="#fff" />
             </TouchableOpacity>
           </View>
-
+  
           <View style={styles.cardHeader}>
             <Text style={styles.cardHolder}>{card.token}</Text>
-            <Text style={styles.cardType}>{card.cardType}</Text>
+            {/* Replace cardType name with its image */}
+            <Image
+              source={cardTypeImages[card.cardType]}
+              style={styles.cardTypeImage}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.cardNumber}>
             <Text style={styles.cardNumberText}>
@@ -117,13 +127,13 @@ const Payment = ({ navigation, route }) => {
             </Text>
           </View>
 
-          {/* Show a badge if the card is default */}
+
           {card.isDefault && (
             <View style={styles.defaultBadge}>
               <Text style={styles.defaultBadgeText}>Default</Text>
             </View>
           )}
-
+  
           {selectedCard?.paymentMethodId === card.paymentMethodId && (
             <View style={styles.selectedCheckmark}>
               <Ionicons name="checkmark-circle" size={24} color="#fff" />
@@ -135,38 +145,16 @@ const Payment = ({ navigation, route }) => {
   };
 
   return (
-    // <LinearGradient
-    //   colors={["#26589c", "#26589c"]}
-    //   style={styles.container}
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 0 }}
-    // >
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
-      {/* <SafeAreaView style={styles.innerContainer}> */}
+
       <Header
         title="Payment methods"
         backButtonAction={() => navigation.goBack()}
         action={() => navigation.navigate("Payment")}
         actionIconName={actionIcons.addButton}
       />
-      {/* <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Payment Cards</Text>
-            <TouchableOpacity
-              onPress={handleAddPaymentMethod}
-              style={styles.addCardButton}
-            >
-              <Ionicons name="add-circle-outline" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </View> */}
+
       <View style={styles.content}>
         {cards.length === 0 ? (
           <View style={styles.emptyContainer}>
@@ -185,9 +173,7 @@ const Payment = ({ navigation, route }) => {
           </ScrollView>
         )}
       </View>
-      {/* </SafeAreaView> */}
     </View>
-    //</LinearGradient> */}
   );
 };
 
@@ -334,5 +320,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#fff",
     fontWeight: "600",
+  },
+  cardTypeImage: {
+    width: 50, // Adjust size as needed
+    height: 30,
   },
 });

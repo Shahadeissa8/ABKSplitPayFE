@@ -20,28 +20,28 @@ const tiers = [
     image: require("../../../assets/Bronze.png"),
     //installmentLimit: "750KD",
     earnedPoint: 1,
-    pointsToNextTier: 5000,
+    pointsToNextTier: 1200,
   },
   {
     name: "Silver",
     image: require("../../../assets/Silver.png"),
     //installmentLimit: "1000KD",
     earnedPoint: 1.5,
-    pointsToNextTier: 6000,
+    pointsToNextTier: 3600,
   },
   {
     name: "Gold",
     image: require("../../../assets/Gold.png"),
     //installmentLimit: "1250KD",
     earnedPoint: 2,
-    pointsToNextTier: 7000,
+    pointsToNextTier: 8000,
   },
   {
     name: "Elite",
     image: require("../../../assets/Elite.png"),
     //installmentLimit: "1500KD",
     earnedPoint: 3,
-    pointsToNextTier: null, 
+    pointsToNextTier: null,
   },
 ];
 
@@ -49,15 +49,14 @@ const TierScreen = () => {
   const navigation = useNavigation();
   const [currentTierIndex, setCurrentTierIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
-  const flatListRef = useRef(null); // Reference to FlatList for scrolling
-  const [currentPoints, setCurrentPoints] = useState(0); // Track points for the current tier
+  const flatListRef = useRef(null);
+  const [currentPoints, setCurrentPoints] = useState(0);
 
-  // Handle tier change when swiping
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
       const index = viewableItems[0].index;
       setCurrentTierIndex(index);
-      // Reset points to 0 when switching tiers for simplicity
+
       setCurrentPoints(0);
     }
   }).current;
@@ -65,53 +64,35 @@ const TierScreen = () => {
   const renderTierItem = ({ item, index }) => {
     const progress = item.pointsToNextTier
       ? (currentPoints / item.pointsToNextTier) * 100
-      : 100; // Elite has no next tier
+      : 100;
     return (
       <View style={styles.tierItem}>
-         {/* Left Arrow Indicator */}
-         {index > 0 && (
-          <Text style={styles.leftArrow}>&lt;</Text>
-        )}
+
+        {/* Left Arrow Indicator */}
+        {index > 0 && <Text style={styles.leftArrow}>&gt;</Text>}
+  
 
         {/* Tier Information */}
+
         <View style={styles.tierInfo}>
           <Text style={styles.tierName}>{item.name} Tier</Text>
-          {/* <Text style={styles.points}>{currentPoints} Points</Text> */}
-          {/* <Text style={styles.installmentLimit}>
-            Installment Limit: {item.installmentLimit}
-          </Text> */}
-          {/* <Text style={styles.earnedPoint}>
-            Earned Point Multiplier: {item.earnedPoint}x
-          </Text> */}
         </View>
 
+  
         {/* Image representing the tier */}
+
         <Image source={item.image} style={styles.image} resizeMode="contain" />
-        
+  
         {/* Right Arrow Indicator */}
-        {index < tiers.length - 1 && (
-          <Text style={styles.rightArrow}>&gt;</Text>
+        {index < tiers.length - 1 && <Text style={styles.rightArrow}>&lt;</Text>}
+  
+        {/* Progress Text (hidden for Elite) */}
+        {item.pointsToNextTier && (
+          <Text style={styles.progressText}>
+            {item.pointsToNextTier} points to next tier
+          </Text>
         )}
 
-        {/* Progress Bar (hidden for Elite) */}
-        {/* {item.pointsToNextTier && (
-          <>
-            <View style={styles.progressBarContainer}>
-              <View
-                style={[
-                  styles.progressBarFill,
-                  { width: `${Math.min(progress, 100)}%` },
-                ]}
-              />
-            </View>
-            <Text style={styles.progressText}>
-              {currentPoints} / {item.pointsToNextTier} points to next tier
-            </Text>
-          </>
-        )} */}
-        <Text style={styles.progressText}>
-              {item.pointsToNextTier} points to next tier
-            </Text>
       </View>
     );
   };
@@ -121,7 +102,6 @@ const TierScreen = () => {
       <Header title="Tiers & Rewards" backButtonAction={() => navigation.goBack()} />
       <View>
         <View style={styles.content}>
-          {/* Swipeable Tier Section */}
           <FlatList
             ref={flatListRef}
             data={tiers}
@@ -137,7 +117,6 @@ const TierScreen = () => {
             initialScrollIndex={0}
           />
 
-          {/* Expandable How it works? Section */}
           <TouchableOpacity
             style={styles.expandableHeader}
             onPress={() => setIsExpanded(!isExpanded)}
@@ -182,13 +161,13 @@ const styles = StyleSheet.create({
   
   container: {
     flex: 1,
-    backgroundColor: "#fff", 
+    backgroundColor: "#fff",
   },
   content: {
     marginTop: 90,
     width: width * 0.9,
     alignItems: "center",
-    backgroundColor: "#fff", // White background for the content card
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 15,
     shadowColor: "#000",
@@ -197,10 +176,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 8,
     alignSelf: "center",
-
   },
   tierItem: {
-    width: width * 0.9 - 40, // Adjust for padding
+    width: width * 0.9 - 40,
     alignItems: "center",
   },
   tierInfo: {
@@ -210,12 +188,12 @@ const styles = StyleSheet.create({
   tierName: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#26589c", // Darker text color for better contrast
+    color: "#26589c",
     marginBottom: 5,
   },
   points: {
     fontSize: 20,
-    color: "#666", // Grey text color
+    color: "#666",
     marginBottom: 5,
   },
   // installmentLimit: {
@@ -236,19 +214,19 @@ const styles = StyleSheet.create({
   progressBarContainer: {
     width: "100%",
     height: 10,
-    backgroundColor: "#ddd", // Light grey background for the empty part of the bar
+    backgroundColor: "#ddd",
     borderRadius: 5,
     overflow: "hidden",
     marginBottom: 10,
   },
   progressBarFill: {
     height: "100%",
-    backgroundColor: "#FFC300", // Yellow color for the progress fill
+    backgroundColor: "#FFC300",
     borderRadius: 5,
   },
   progressText: {
     fontSize: 16,
-    color: "#666", // Grey text color
+    color: "#666",
     marginBottom: 20,
   },
   expandableHeader: {

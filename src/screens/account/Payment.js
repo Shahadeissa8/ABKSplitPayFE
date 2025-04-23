@@ -15,7 +15,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { getPaymentMethods, deletePaymentMethod } from "../../api/profile";
 import { actionIcons, Header } from "../../components/Header";
 
-// Card type color mappings
 const cardTypeColors = {
   Visa: { color: "#1A1F71", secondaryColor: "#F7B500" },
   Mastercard: { color: "#CC0000", secondaryColor: "#FF9900" },
@@ -25,11 +24,9 @@ const Payment = ({ navigation, route }) => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
 
-  // Fetch payment methods on mount and when refreshed
   useEffect(() => {
     loadPaymentMethods();
-  }, [route.params?.refresh]); // Use route.params to listen for refresh changes
-
+  }, [route.params?.refresh]);
   const loadPaymentMethods = async () => {
     try {
       const paymentMethods = await getPaymentMethods();
@@ -129,8 +126,8 @@ const Payment = ({ navigation, route }) => {
               {card.expiryMonth}/{card.expiryYear.toString().slice(-2)}
             </Text>
           </View>
-  
-          {/* Show a badge if the card is default */}
+
+
           {card.isDefault && (
             <View style={styles.defaultBadge}>
               <Text style={styles.defaultBadgeText}>Default</Text>
@@ -148,38 +145,16 @@ const Payment = ({ navigation, route }) => {
   };
 
   return (
-    // <LinearGradient
-    //   colors={["#26589c", "#26589c"]}
-    //   style={styles.container}
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 0 }}
-    // >
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
-      {/* <SafeAreaView style={styles.innerContainer}> */}
+
       <Header
         title="Payment methods"
         backButtonAction={() => navigation.goBack()}
         action={() => navigation.navigate("Payment")}
         actionIconName={actionIcons.addButton}
       />
-      {/* <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Payment Cards</Text>
-            <TouchableOpacity
-              onPress={handleAddPaymentMethod}
-              style={styles.addCardButton}
-            >
-              <Ionicons name="add-circle-outline" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </View> */}
+
       <View style={styles.content}>
         {cards.length === 0 ? (
           <View style={styles.emptyContainer}>
@@ -198,9 +173,7 @@ const Payment = ({ navigation, route }) => {
           </ScrollView>
         )}
       </View>
-      {/* </SafeAreaView> */}
     </View>
-    //</LinearGradient> */}
   );
 };
 

@@ -75,18 +75,6 @@ const HelpCenter = () => {
       : faqItems.filter((item) => item.category === activeCategory);
 
   const renderHeader = () => (
-    // <View style={styles.header}>
-    //   <View style={styles.headerContent}>
-    //     <TouchableOpacity
-    //       onPress={() => navigation.goBack()}
-    //       style={styles.backButton}
-    //     >
-    //       <Ionicons name="arrow-back" size={24} color="#fff" />
-    //     </TouchableOpacity>
-    //     <Text style={styles.headerTitle}>Help Center</Text>
-    //     <View style={{ width: 40 }} />
-    //   </View>
-    // </View>
     <Header title="Help center" backButtonAction={() => navigation.goBack()} />
   );
 
@@ -183,7 +171,6 @@ const HelpCenter = () => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent={true} />
       <View style={styles.innerContainer}>
-        {/* <SafeAreaView style={styles.innerContainer}> */}
         {renderHeader()}
         <ScrollView
           style={styles.content}
@@ -195,10 +182,8 @@ const HelpCenter = () => {
           {renderFaqItems()}
           {renderContactSupport()}
         </ScrollView>
-        {/* </SafeAreaView> */}
       </View>
     </View>
-    //  </LinearGradient>
   );
 };
 
@@ -237,7 +222,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#ffff", // Preserve the grayish background
+    backgroundColor: "#ffff",
   },
   scrollContent: {
     paddingBottom: 32,

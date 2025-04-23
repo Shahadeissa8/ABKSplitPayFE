@@ -98,7 +98,9 @@ const PaymentMethods = () => {
     const expiryYear = parseInt(`20${year}`, 10);
 
     const paymentMethodData = {
+
       token: cardHolder,
+
       lastFourDigits: lastFourDigits,
       cardType: selectedCardType.name,
       expiryMonth: expiryMonth,
@@ -342,6 +344,8 @@ const PaymentMethods = () => {
                     </View>
                   </View>
                 </View>
+
+
 
                 <TouchableOpacity
                   style={styles.checkboxContainer}

@@ -9,8 +9,8 @@ const SplashScreen2 = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('OnBoardingScreen'); // Replace 'Home' with your desired screen name
-    }, 3000); // Adjust the duration as needed
+      navigation.replace('OnBoardingScreen'); /
+    }, 3000); 
 
     return () => clearTimeout(timer);
   }, [navigation]);
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: '#000', // Optional: Set a background color
+    
   },
   video: {
     width: '200%',

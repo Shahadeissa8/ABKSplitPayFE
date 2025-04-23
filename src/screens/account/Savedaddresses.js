@@ -30,7 +30,7 @@ const Savedaddresses = () => {
     try {
       const savedAddresses = await getSavedAddresses();
       setAddresses(savedAddresses);
-      // Set default address
+
       const defaultAddress = savedAddresses.find((addr) => addr.isDefault);
       if (defaultAddress) {
         setDefaultAddressId(defaultAddress.id);
@@ -55,8 +55,6 @@ const Savedaddresses = () => {
           text: "Set Default",
           onPress: async () => {
             try {
-              // TODO: Make API call to update the default address
-              // For example: await updateDefaultAddress(address.id);
               const updatedAddresses = addresses.map((addr) => ({
                 ...addr,
                 isDefault: addr.id === address.id,
@@ -95,9 +93,7 @@ const Savedaddresses = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              await deleteAddress(address.addressId); // Call the deleteAddress API with addressId
-
-              // Remove the address from the local state
+              await deleteAddress(address.addressId);
               const updatedAddresses = addresses.filter(
                 (addr) => addr.addressId !== address.addressId
               );

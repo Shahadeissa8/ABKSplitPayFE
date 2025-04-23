@@ -32,7 +32,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
-    profilePictureUrl: " ", // Set default value to a single space
+    profilePictureUrl: " ", 
   });
 
   const validateForm = () => {
@@ -73,18 +73,17 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
         fullName: formData.fullName,
         phoneNumber: formData.phoneNumber,
         password: formData.password,
-        profilePictureUrl: formData.profilePictureUrl, // This will now be " "
+        profilePictureUrl: formData.profilePictureUrl, 
       };
       const response = await register(userInfo);
       const { token } = response;
       if (token) {
-        await setToken(token); // Store the token after successful login
+        await setToken(token); 
         Alert.alert("Registration Successful");
 
-        // Update authentication state
         setIsAuthenticated(true);
 
-        // Reset the navigation stack and navigate to MainBottomNavigation
+   
         navigation.reset({
           index: 0,
           routes: [{ name: "MainBottomNavigation" }],
@@ -92,9 +91,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
       } else {
         Alert.alert("Error", "Failed to retrieve token. Please try again.");
       }
-      // await register(userInfo);
-      // Alert.alert("Success", "Registration successful! Please log in.");
-      // navigation.navigate("LoginScreen");
+  
     } catch (error) {
       Alert.alert(
         "Error",
@@ -128,7 +125,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
             </View>
 
             <View style={styles.formContainer}>
-              {/* Username */}
+ 
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#26589c"]}
@@ -149,7 +146,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
                 />
               </View>
 
-              {/* Email */}
+           
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#26589c"]}
@@ -172,7 +169,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
                 />
               </View>
 
-              {/* Full Name */}
+             
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#26589c"]}
@@ -193,7 +190,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
                 />
               </View>
 
-              {/* Phone Number */}
+             
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#26589c"]}
@@ -215,7 +212,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
                 />
               </View>
 
-              {/* Password */}
+          
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#26589c"]}
@@ -247,7 +244,6 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
                 </TouchableOpacity>
               </View>
 
-              {/* Confirm Password */}
               <View style={styles.inputContainer}>
                 <LinearGradient
                   colors={["#26589c", "#26589c"]}

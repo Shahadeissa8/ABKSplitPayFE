@@ -112,27 +112,12 @@ const Feedback = () => {
         translucent={true}
         backgroundColor="transparent"
       />
-      {/* <LinearGradient
-        colors={["#26589c", "#26589c"]}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      > */}
+    
         <Header
         title="Feedback"
         backButtonAction={() => navigation.goBack()}
         /> 
-        {/* <View style={styles.headerContent}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Feedback</Text>
-          <View style={{ width: 40 }} />
-        </View> */}
-      {/* </LinearGradient> */}
+       
       <View style={styles.safeArea}>
         <ScrollView
           style={styles.content}
@@ -262,7 +247,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: 44, // Adjusted for status bar height on iOS
+    paddingTop: 44, 
   },
   backButton: {
     width: 40,

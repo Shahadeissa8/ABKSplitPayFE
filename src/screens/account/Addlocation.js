@@ -148,26 +148,11 @@ const AddLocation = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        {/* <LinearGradient
-          colors={["#26589c", "#26589c"]}
-          style={styles.header}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        > */}
+   
           <Header   title="Add location"
         backButtonAction={() => navigation.goBack()}
       />
-          {/* <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="chevron-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Add Location</Text>
-            <View style={styles.placeholder} />
-          </View> */}
-        {/* </LinearGradient> */}
+          
 
         <ScrollView
           style={styles.scrollView}

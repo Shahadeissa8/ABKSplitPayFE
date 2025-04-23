@@ -45,12 +45,12 @@ const OnBoardingScreen = () => {
   }, []);
 
   return (
-    <LinearGradient
-      colors={["#9cb2d8", "#26589c"]}
-      style={styles.gradientBackground}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+     <LinearGradient
+          colors={["#26589c", "#9cb2d8"]}
+          style={styles.gradientBackground}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
       <StatusBar barStyle="dark-content" backgroundColor="#9cb2d8" />
       <SafeAreaView style={styles.contentContainer}>
         <Animated.View

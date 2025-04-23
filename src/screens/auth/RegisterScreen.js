@@ -131,7 +131,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               {/* Username */}
               <View style={styles.inputContainer}>
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.iconContainer}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -152,7 +152,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               {/* Email */}
               <View style={styles.inputContainer}>
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.iconContainer}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -175,7 +175,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               {/* Full Name */}
               <View style={styles.inputContainer}>
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.iconContainer}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -196,7 +196,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               {/* Phone Number */}
               <View style={styles.inputContainer}>
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.iconContainer}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -218,7 +218,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               {/* Password */}
               <View style={styles.inputContainer}>
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.iconContainer}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -250,7 +250,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
               {/* Confirm Password */}
               <View style={styles.inputContainer}>
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.iconContainer}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -287,7 +287,7 @@ const RegisterScreen = ({ setIsAuthenticated }) => {
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={["#26589c", "#9cb2d8"]}
+                  colors={["#26589c", "#26589c"]}
                   style={styles.gradientButton}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}

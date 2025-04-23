@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -78,6 +79,13 @@ const Payment = ({ navigation, route }) => {
       color: "#26589c",
       secondaryColor: "#9cb2d8",
     };
+  
+    // Map cardType to its corresponding image
+    const cardTypeImages = {
+      Visa: require("../../../assets/Visa.png"),
+      Mastercard: require("../../../assets/Mastercard-logo.png"),
+    };
+  
     return (
       <TouchableOpacity
         key={card.paymentMethodId}
@@ -100,10 +108,15 @@ const Payment = ({ navigation, route }) => {
               <Ionicons name="trash-outline" size={20} color="#fff" />
             </TouchableOpacity>
           </View>
-
+  
           <View style={styles.cardHeader}>
             <Text style={styles.cardHolder}>{card.token}</Text>
-            <Text style={styles.cardType}>{card.cardType}</Text>
+            {/* Replace cardType name with its image */}
+            <Image
+              source={cardTypeImages[card.cardType]}
+              style={styles.cardTypeImage}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.cardNumber}>
             <Text style={styles.cardNumberText}>
@@ -116,14 +129,14 @@ const Payment = ({ navigation, route }) => {
               {card.expiryMonth}/{card.expiryYear.toString().slice(-2)}
             </Text>
           </View>
-
+  
           {/* Show a badge if the card is default */}
           {card.isDefault && (
             <View style={styles.defaultBadge}>
               <Text style={styles.defaultBadgeText}>Default</Text>
             </View>
           )}
-
+  
           {selectedCard?.paymentMethodId === card.paymentMethodId && (
             <View style={styles.selectedCheckmark}>
               <Ionicons name="checkmark-circle" size={24} color="#fff" />
@@ -334,5 +347,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#fff",
     fontWeight: "600",
+  },
+  cardTypeImage: {
+    width: 50, // Adjust size as needed
+    height: 30,
   },
 });

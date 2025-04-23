@@ -5,7 +5,7 @@ const instance = axios.create({
 
   
 
-  baseURL: "http://192.168.139.74:5137/api", // Updated IP address
+  baseURL: "http://192.168.8.152:5137/api", // Updated IP address
 
 
   timeout: 10000, // 10 seconds timeout

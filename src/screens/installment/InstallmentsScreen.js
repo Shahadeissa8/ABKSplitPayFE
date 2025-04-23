@@ -26,7 +26,13 @@ const InstallmentsScreen = () => {
       setIsLoading(true);
       const fetchedOrders = await getOrders();
       const sortedOrders = Array.isArray(fetchedOrders)
-        ? fetchedOrders.sort((a, b) => (a.status === "Pending" ? -1 : 1))
+        ? fetchedOrders.sort((a, b) => {
+            // First, prioritize "Pending" status
+            if (a.status === "Pending" && b.status !== "Pending") return -1;
+            if (a.status !== "Pending" && b.status === "Pending") return 1;
+            // Within each group (Pending and non-Pending), sort by orderDate in descending order (latest first)
+            return new Date(b.orderDate) - new Date(a.orderDate);
+          })
         : [];
       setOrders(sortedOrders);
     } catch (error) {

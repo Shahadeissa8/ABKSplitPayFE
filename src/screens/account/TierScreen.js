@@ -20,21 +20,21 @@ const tiers = [
     image: require("../../../assets/Bronze.png"),
     //installmentLimit: "750KD",
     earnedPoint: 1,
-    pointsToNextTier: 5000,
+    pointsToNextTier: 1200,
   },
   {
     name: "Silver",
     image: require("../../../assets/Silver.png"),
     //installmentLimit: "1000KD",
     earnedPoint: 1.5,
-    pointsToNextTier: 6000,
+    pointsToNextTier: 3600,
   },
   {
     name: "Gold",
     image: require("../../../assets/Gold.png"),
     //installmentLimit: "1250KD",
     earnedPoint: 2,
-    pointsToNextTier: 7000,
+    pointsToNextTier: 8000,
   },
   {
     name: "Elite",
@@ -68,52 +68,31 @@ const TierScreen = () => {
     return (
       <View style={styles.tierItem}>
 
-         {/* Left Arrow Indicator */}
-         {index > 0 && (
-          <Text style={styles.leftArrow}>&lt;</Text>
-        )}
+        {/* Left Arrow Indicator */}
+        {index > 0 && <Text style={styles.leftArrow}>&gt;</Text>}
+  
 
         {/* Tier Information */}
 
         <View style={styles.tierInfo}>
           <Text style={styles.tierName}>{item.name} Tier</Text>
-          {/* <Text style={styles.points}>{currentPoints} Points</Text> */}
-          {/* <Text style={styles.installmentLimit}>
-            Installment Limit: {item.installmentLimit}
-          </Text> */}
-          {/* <Text style={styles.earnedPoint}>
-            Earned Point Multiplier: {item.earnedPoint}x
-          </Text> */}
         </View>
 
+  
+        {/* Image representing the tier */}
+
         <Image source={item.image} style={styles.image} resizeMode="contain" />
-        
+  
         {/* Right Arrow Indicator */}
-        {index < tiers.length - 1 && (
-          <Text style={styles.rightArrow}>&gt;</Text>
+        {index < tiers.length - 1 && <Text style={styles.rightArrow}>&lt;</Text>}
+  
+        {/* Progress Text (hidden for Elite) */}
+        {item.pointsToNextTier && (
+          <Text style={styles.progressText}>
+            {item.pointsToNextTier} points to next tier
+          </Text>
         )}
 
-
-        {/* Progress Bar (hidden for Elite) */}
-        {/* {item.pointsToNextTier && (
-
-          <>
-            <View style={styles.progressBarContainer}>
-              <View
-                style={[
-                  styles.progressBarFill,
-                  { width: `${Math.min(progress, 100)}%` },
-                ]}
-              />
-            </View>
-            <Text style={styles.progressText}>
-              {currentPoints} / {item.pointsToNextTier} points to next tier
-            </Text>
-          </>
-        )} */}
-        <Text style={styles.progressText}>
-              {item.pointsToNextTier} points to next tier
-            </Text>
       </View>
     );
   };

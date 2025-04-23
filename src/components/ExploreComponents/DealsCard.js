@@ -36,7 +36,7 @@ const DealsCard = () => {
       id: "2",
       name: "iPhone 14",
       price: "520",
-      image: require("../../../assets/deal2fix.jpg"),
+      image: require("../../../assets/deal2.png"),
     },
     {
       id: "3",

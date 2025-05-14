@@ -4,7 +4,7 @@ import { getToken } from "./storage";
 const instance = axios.create({
 
 
-  baseURL: "http://192.168.8.152:5137/api", // Updated IP address
+  baseURL: "http://192.168.33.74:5137/api", // Updated IP address
 
 
 

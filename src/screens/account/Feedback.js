@@ -8,7 +8,7 @@ import {
   StatusBar,
   TextInput,
   ScrollView,
-  Alert,
+  Modal,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,6 +23,14 @@ const Feedback = () => {
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+    buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+  });
 
   const categories = [
     {
@@ -90,20 +98,87 @@ const Feedback = () => {
 
   const handleSubmit = () => {
     if (!selectedCategory) {
-      Alert.alert("Please Select", "Please choose a category to rate");
+      setFeedbackModalContent({
+        title: "Please Select",
+        message: "Please choose a category to rate",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return;
     }
     if (rating === 0) {
-      Alert.alert("Rating Required", "Please rate your experience");
+      setFeedbackModalContent({
+        title: "Rating Required",
+        message: "Please rate your experience",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return;
     }
-    Alert.alert("Thank You!", "We appreciate your valuable feedback.", [
-      {
-        text: "OK",
-        onPress: () => navigation.goBack(),
-      },
-    ]);
+    setFeedbackModalContent({
+      title: "Thank You!",
+      message: "We appreciate your valuable feedback.",
+      icon: "checkmark-circle",
+      iconColor: "#4CAF50",
+      buttons: [
+        {
+          text: "OK",
+          onPress: () => {
+            setFeedbackModalVisible(false);
+            navigation.goBack();
+          },
+        },
+      ],
+    });
+    setFeedbackModalVisible(true);
   };
+
+  const renderFeedbackModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={feedbackModalVisible}
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFeedbackModalVisible(false)}
+            >
+              <Ionicons name="close" size={24} color="#666" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.feedbackContent}>
+            <Ionicons
+              name={feedbackModalContent.icon}
+              size={48}
+              color={feedbackModalContent.iconColor}
+              style={styles.feedbackIcon}
+            />
+            <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+            <View style={styles.feedbackButtons}>
+              {feedbackModalContent.buttons.map((button, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.feedbackButton}
+                  onPress={button.onPress}
+                >
+                  <Text style={styles.feedbackButtonText}>{button.text}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <View style={styles.container}>
@@ -113,10 +188,10 @@ const Feedback = () => {
         backgroundColor="transparent"
       />
     
-        <Header
+      <Header
         title="Feedback"
         backButtonAction={() => navigation.goBack()}
-        /> 
+      /> 
        
       <View style={styles.safeArea}>
         <ScrollView
@@ -223,6 +298,7 @@ const Feedback = () => {
           </TouchableOpacity>
         </ScrollView>
       </View>
+      {renderFeedbackModal()}
     </View>
   );
 };
@@ -233,7 +309,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginBottom:60
+    marginBottom: 60,
   },
   safeArea: {
     flex: 1,
@@ -416,5 +492,71 @@ const styles = StyleSheet.create({
   },
   submitIcon: {
     marginLeft: 8,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    width: Dimensions.get("window").width * 0.9,
+    maxHeight: Dimensions.get("window").height * 0.7,
+    overflow: "hidden",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0,0,0,0.1)",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#26589c",
+    flex: 1,
+    textAlign: "center",
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  feedbackContent: {
+    padding: 20,
+    alignItems: "center",
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  feedbackButtons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+  },
+  feedbackButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#26589c",
+    borderRadius: 10,
+  },
+  feedbackButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

@@ -11,8 +11,7 @@ import {
   TextInput,
   Modal,
   Animated,
-  Alert,
-  Image, // Added Image import
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -25,12 +24,12 @@ const cardTypes = [
   {
     id: "1",
     name: "Visa",
-    image: require("../../../assets/Visa.png"), // Added image path
+    image: require("../../../assets/Visa.png"),
   },
   {
     id: "2",
     name: "Mastercard",
-    image: require("../../../assets/Mastercard-logo.png"), // Added image path
+    image: require("../../../assets/Mastercard-logo.png"),
   },
 ];
 
@@ -44,6 +43,14 @@ const PaymentMethods = () => {
   const [isDefault, setIsDefault] = useState(false);
   const [showCardTypeModal, setShowCardTypeModal] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+    buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+  });
 
   const formatCardNumber = (text) => {
     const cleaned = text.replace(/\s/g, "");
@@ -62,27 +69,59 @@ const PaymentMethods = () => {
   const validateInputs = () => {
     const cleanedCardNumber = cardNumber.replace(/\s/g, "");
     if (cleanedCardNumber.length !== 16) {
-      Alert.alert("Invalid Card Number", "Card number must be 16 digits.");
+      setFeedbackModalContent({
+        title: "Invalid Card Number",
+        message: "Card number must be 16 digits.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return false;
     }
     if (!cardHolder.trim()) {
-      Alert.alert("Missing Information", "Please enter the cardholder name.");
+      setFeedbackModalContent({
+        title: "Missing Information",
+        message: "Please enter the cardholder name.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return false;
     }
     if (!selectedCardType) {
-      Alert.alert("Missing Information", "Please select a card type.");
+      setFeedbackModalContent({
+        title: "Missing Information",
+        message: "Please select a card type.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return false;
     }
     const [month, year] = expiryDate.split("/");
     if (!month || !year || month > 12 || month < 1) {
-      Alert.alert(
-        "Invalid Expiry Date",
-        "Please enter a valid expiry date (MM/YY)."
-      );
+      setFeedbackModalContent({
+        title: "Invalid Expiry Date",
+        message: "Please enter a valid expiry date (MM/YY).",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return false;
     }
     if (cvv.length !== 3) {
-      Alert.alert("Invalid CVV", "CVV must be 3 digits.");
+      setFeedbackModalContent({
+        title: "Invalid CVV",
+        message: "CVV must be 3 digits.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return false;
     }
     return true;
@@ -98,9 +137,7 @@ const PaymentMethods = () => {
     const expiryYear = parseInt(`20${year}`, 10);
 
     const paymentMethodData = {
-
       token: cardHolder,
-
       lastFourDigits: lastFourDigits,
       cardType: selectedCardType.name,
       expiryMonth: expiryMonth,
@@ -110,17 +147,31 @@ const PaymentMethods = () => {
 
     try {
       await createPaymentMethod(paymentMethodData);
-      Alert.alert("Success", "Payment method added successfully", [
-        {
-          text: "OK",
-          onPress: () =>
-            navigation.navigate("PaymentMethods", { refresh: Date.now() }),
-        },
-      ]);
+      setFeedbackModalContent({
+        title: "Success",
+        message: "Payment method added successfully",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+        buttons: [
+          {
+            text: "OK",
+            onPress: () => {
+              setFeedbackModalVisible(false);
+              navigation.navigate("PaymentMethods", { refresh: Date.now() });
+            },
+          },
+        ],
+      });
+      setFeedbackModalVisible(true);
     } catch (error) {
-      Alert.alert("Error", "Failed to add payment method. Please try again.", [
-        { text: "OK" },
-      ]);
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Failed to add payment method. Please try again.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
     }
   };
 
@@ -148,16 +199,54 @@ const PaymentMethods = () => {
         <Text style={styles.cardTypeOptionName}>{cardType.name}</Text>
       </View>
       {selectedCardType?.id === cardType.id && (
-        <View
-          style={[
-            styles.checkmarkContainer,
-            { backgroundColor: "#26589c" },
-          ]}
-        >
+        <View style={[styles.checkmarkContainer, { backgroundColor: "#26589c" }]}>
           <Ionicons name="checkmark" size={16} color="#fff" />
         </View>
       )}
     </TouchableOpacity>
+  );
+
+  const renderFeedbackModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={feedbackModalVisible}
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <BlurView intensity={20} style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFeedbackModalVisible(false)}
+            >
+              <Ionicons name="close" size={24} color="#666" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.feedbackContent}>
+            <Ionicons
+              name={feedbackModalContent.icon}
+              size={48}
+              color={feedbackModalContent.iconColor}
+              style={styles.feedbackIcon}
+            />
+            <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+            <View style={styles.feedbackButtons}>
+              {feedbackModalContent.buttons.map((button, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.feedbackButton}
+                  onPress={button.onPress}
+                >
+                  <Text style={styles.feedbackButtonText}>{button.text}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </BlurView>
+    </Modal>
   );
 
   return (
@@ -345,8 +434,6 @@ const PaymentMethods = () => {
                   </View>
                 </View>
 
-
-
                 <TouchableOpacity
                   style={styles.checkboxContainer}
                   onPress={() => setIsDefault(!isDefault)}
@@ -366,15 +453,10 @@ const PaymentMethods = () => {
           </View>
 
           <TouchableOpacity
-            style={[
-              styles.saveButton,
-              { backgroundColor: "#26589c" },
-            ]}
+            style={[styles.saveButton, { backgroundColor: "#26589c" }]}
             onPress={handleSave}
           >
-            <View
-              style={styles.saveButtonGradient}
-            >
+            <View style={styles.saveButtonGradient}>
               <Text style={styles.saveButtonText}>Save Card</Text>
               <View style={styles.saveButtonIcon}>
                 <Ionicons name="arrow-forward" size={20} color="#fff" />
@@ -409,6 +491,8 @@ const PaymentMethods = () => {
             </View>
           </BlurView>
         </Modal>
+
+        {renderFeedbackModal()}
       </View>
     </View>
   );
@@ -492,7 +576,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cardTypeLogo: {
-    width: 40, // Adjusted size for the logo
+    width: 40,
     height: 40,
     marginRight: 12,
   },
@@ -650,5 +734,41 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  // Updated styles for feedback modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  feedbackContent: {
+    padding: 20,
+    alignItems: "center",
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  feedbackButtons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+  },
+  feedbackButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#26589c",
+    borderRadius: 10,
+  },
+  feedbackButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

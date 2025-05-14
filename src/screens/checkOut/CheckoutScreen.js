@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
-  Alert,
   Modal,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -61,8 +60,15 @@ const CheckoutScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentPlanModalVisible, setPaymentPlanModalVisible] = useState(false);
   const [addressModalVisible, setAddressModalVisible] = useState(false);
-  const [paymentMethodModalVisible, setPaymentMethodModalVisible] =
-    useState(false);
+  const [paymentMethodModalVisible, setPaymentMethodModalVisible] = useState(false);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+    buttons: [],
+  });
 
   const calculateTotal = () => {
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -101,7 +107,14 @@ const CheckoutScreen = () => {
         const defaultPaymentMethod = await getDefaultPaymentMethod();
         setSelectedPaymentMethod(defaultPaymentMethod);
       } catch (error) {
-        Alert.alert("Error", error.message || "Failed to load checkout data.");
+        setFeedbackModalContent({
+          title: "Error",
+          message: error.message || "Failed to load checkout data.",
+          icon: "alert-circle-outline",
+          iconColor: "#FF4444",
+          buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+        });
+        setFeedbackModalVisible(true);
       } finally {
         setIsLoading(false);
       }
@@ -126,10 +139,14 @@ const CheckoutScreen = () => {
       !selectedPaymentMethod ||
       cartItems.length === 0
     ) {
-      Alert.alert(
-        "Error",
-        "Please select a payment plan, shipping address, payment method, and ensure your cart is not empty."
-      );
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Please select a payment plan, shipping address, payment method, and ensure your cart is not empty.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return;
     }
 
@@ -155,18 +172,25 @@ const CheckoutScreen = () => {
 
       clearCart();
 
-      Alert.alert(
-        "Order Accepted! 🎉",
-        "Thank you for your purchase. Your order has been successfully placed.",
-        [
-          {
-            text: "Continue Shopping",
-            onPress: () => navigation.navigate("ExploreScreen"),
-          },
-        ]
-      );
+      setFeedbackModalContent({
+        title: "Order Accepted! 🎉",
+        message: "Thank you for your purchase. Your order has been successfully placed.",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+        buttons: [
+          { text: "    Continue Shopping    ", onPress: () => { setFeedbackModalVisible(false); navigation.navigate("ExploreScreen"); } },
+        ],
+      });
+      setFeedbackModalVisible(true);
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to place order.");
+      setFeedbackModalContent({
+        title: "Error",
+        message: error.message || "Failed to place order.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
     }
   };
 
@@ -319,7 +343,7 @@ const CheckoutScreen = () => {
             </View>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryText}>Shipping</Text>
-              <Text style={[styles.summaryValue, { colors: "#4CAF50" }]}>
+              <Text style={[styles.summaryValue, { color: "#4CAF50" }]}>
                 Free
               </Text>
             </View>
@@ -462,6 +486,40 @@ const CheckoutScreen = () => {
             >
               <Text style={styles.modalCloseButtonText}>Close</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Feedback Modal */}
+      <Modal
+        visible={feedbackModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setFeedbackModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {feedbackModalContent.icon && (
+              <Ionicons
+                name={feedbackModalContent.icon}
+                size={48}
+                color={feedbackModalContent.iconColor}
+                style={styles.feedbackIcon}
+              />
+            )}
+            <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+            <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+            <View style={styles.feedbackButtons}>
+              {feedbackModalContent.buttons.map((button, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.modalCloseButton}
+                  onPress={button.onPress}
+                >
+                  <Text style={styles.modalCloseButtonText}>{button.text}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </View>
       </Modal>
@@ -658,15 +716,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: colors.primary,
     paddingVertical: 10,
-    borderRadius: 15,
+    borderRadius: 10,
     alignItems: "center",
   },
   modalCloseButtonText: {
     color: colors.white,
     fontSize: 16,
     fontWeight: "600",
+    letterSpacing: 0.2,
+
   },
-  loadinshadgContainer: {
+  loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -674,6 +734,23 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 18,
     color: colors.textSecondary,
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  feedbackButtons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+
+    
   },
 });
 

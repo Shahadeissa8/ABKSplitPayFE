@@ -11,7 +11,7 @@ import {
   Dimensions,
   FlatList,
   ActivityIndicator,
-  Alert,
+  Modal,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,6 +25,14 @@ const WishListScreen = () => {
   const navigation = useNavigation();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+    type: "action",
+  });
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -52,19 +60,46 @@ const WishListScreen = () => {
     try {
       await deleteWishListItem(itemId);
       setWishlistItems(wishlistItems.filter((item) => item.id !== itemId));
+      setFeedbackModalContent({
+        title: "Success",
+        message: "Item removed from wishlist.",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+        type: "action",
+      });
     } catch (error) {
-      Alert.alert("Error", "Failed to remove item from wishlist.");
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Failed to remove item from wishlist.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        type: "action",
+      });
     }
+    setFeedbackModalVisible(true);
   };
 
   const moveToCart = async (item) => {
     try {
       await addToCart(item.productId, 1);
       await removeFromWishlist(item.id);
-      Alert.alert("Success", "Item moved to cart.");
+      setFeedbackModalContent({
+        title: "Success",
+        message: "Item moved to cart.",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+        type: "action",
+      });
     } catch (error) {
-      Alert.alert("Error", "Failed to move item to cart.");
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Failed to move item to cart.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        type: "action",
+      });
     }
+    setFeedbackModalVisible(true);
   };
 
   const renderHeader = () => (
@@ -139,6 +174,36 @@ const WishListScreen = () => {
     </View>
   );
 
+  const renderFeedbackModal = () => (
+    <Modal
+      visible={feedbackModalVisible}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <View style={styles.actionModalOverlay}>
+        <View style={styles.actionModalContent}>
+          {feedbackModalContent.icon && (
+            <Ionicons
+              name={feedbackModalContent.icon}
+              size={48}
+              color={feedbackModalContent.iconColor}
+              style={styles.actionModalIcon}
+            />
+          )}
+          <Text style={styles.actionModalTitle}>{feedbackModalContent.title}</Text>
+          <Text style={styles.actionModalMessage}>{feedbackModalContent.message}</Text>
+          <TouchableOpacity
+            style={styles.actionModalButton}
+            onPress={() => setFeedbackModalVisible(false)}
+          >
+            <Text style={styles.actionModalButtonText}>OK</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#26589c" />
@@ -161,6 +226,7 @@ const WishListScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
+      {renderFeedbackModal()}
     </View>
   );
 };
@@ -283,6 +349,46 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   shopNowButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  // Modal styles
+  actionModalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  actionModalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  actionModalIcon: {
+    marginBottom: 15,
+  },
+  actionModalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+  },
+  actionModalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  actionModalButton: {
+    backgroundColor: "#26589c",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 15,
+  },
+  actionModalButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",

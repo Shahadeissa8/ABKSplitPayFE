@@ -11,13 +11,12 @@ import {
   Dimensions,
   Animated,
   Modal,
-  Alert,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { updateUserProfile } from "../../api/profile"; 
+import { updateUserProfile } from "../../api/profile";
 import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
@@ -42,6 +41,13 @@ const EditProfileScreen = ({ route, navigation }) => {
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+  });
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
@@ -115,21 +121,34 @@ const EditProfileScreen = ({ route, navigation }) => {
 
   const handleSave = async () => {
     try {
-   
-
       await updateUserProfile(
         userData.fullName,
         userData.phoneNumber,
         userData.profilePicture
       );
 
-      Alert.alert("Success", "Profile updated successfully!");
+      setFeedbackModalContent({
+        title: "Success",
+        message: "Profile updated successfully!",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+      });
+      setFeedbackModalVisible(true);
+
       if (onSuccess) {
-        onSuccess(); 
+        onSuccess();
       }
-      handleBack();
+      setTimeout(() => {
+        handleBack();
+      }, 1500); // Delay navigation to allow the user to see the success modal
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to update profile.");
+      setFeedbackModalContent({
+        title: "Error",
+        message: error.message || "Failed to update profile.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+      });
+      setFeedbackModalVisible(true);
     }
   };
 
@@ -141,19 +160,18 @@ const EditProfileScreen = ({ route, navigation }) => {
   };
 
   const handleEditPicture = () => {
-    setIsModalVisible(true); 
+    setIsModalVisible(true);
   };
 
   const handleSelectPicture = (url) => {
     setUserData((prev) => ({
       ...prev,
-      profilePicture: url, 
+      profilePicture: url,
     }));
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
   };
 
   const renderHeader = () => (
- 
     <View>
       <Header
         title="Edit Profile"
@@ -161,7 +179,6 @@ const EditProfileScreen = ({ route, navigation }) => {
       />
     </View>
   );
-
 
   const renderProfilePicture = () => (
     <Animated.View
@@ -252,7 +269,7 @@ const EditProfileScreen = ({ route, navigation }) => {
       animationType="fade"
       transparent={true}
       visible={isModalVisible}
-      onRequestClose={() => setIsModalVisible(false)} 
+      onRequestClose={() => setIsModalVisible(false)}
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -261,14 +278,42 @@ const EditProfileScreen = ({ route, navigation }) => {
             {profilePictureOptions.map((url, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => handleSelectPicture(url)} 
+                onPress={() => handleSelectPicture(url)}
               >
                 <Image source={{ uri: url }} style={styles.modalImage} />
               </TouchableOpacity>
             ))}
           </View>
           <TouchableOpacity
-            onPress={() => setIsModalVisible(false)} 
+            onPress={() => setIsModalVisible(false)}
+            style={styles.closeButton}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const renderFeedbackModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={feedbackModalVisible}
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Ionicons
+            name={feedbackModalContent.icon}
+            size={48}
+            color={feedbackModalContent.iconColor}
+            style={styles.feedbackIcon}
+          />
+          <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+          <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+          <TouchableOpacity
+            onPress={() => setFeedbackModalVisible(false)}
             style={styles.closeButton}
           >
             <Text style={styles.closeButtonText}>Close</Text>
@@ -281,7 +326,6 @@ const EditProfileScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       {renderHeader()}
-
       <View style={styles.content}>
         <View>
           {renderProfilePicture()}
@@ -335,6 +379,7 @@ const EditProfileScreen = ({ route, navigation }) => {
       </View>
 
       {renderImagePickerModal()}
+      {renderFeedbackModal()}
     </View>
   );
 };
@@ -345,11 +390,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 70,
-    backgroundColor: "#fff"
-
+    backgroundColor: "#fff",
   },
   header: {
- 
     paddingHorizontal: 20,
     paddingBottom: 35,
     borderBottomLeftRadius: 30,
@@ -393,14 +436,12 @@ const styles = StyleSheet.create({
   },
   profilePictureContainer: {
     alignItems: "center",
-    // marginTop: -30,
     marginTop: 10,
     marginBottom: 10,
   },
   profilePictureBorder: {
     padding: 4,
     borderRadius: 75,
-
     ...Platform.select({
       ios: {
         shadowColor: "#26589c",
@@ -478,7 +519,6 @@ const styles = StyleSheet.create({
       },
     }),
     paddingHorizontal: 16,
-
     borderWidth: 1,
     borderColor: "rgba(38, 88, 156, 0.1)",
   },
@@ -593,5 +633,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

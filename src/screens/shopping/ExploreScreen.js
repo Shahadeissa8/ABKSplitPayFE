@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,10 +9,10 @@ import {
   Modal,
   Image,
   TouchableOpacity,
-  Alert,
   Platform,
   Dimensions,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CategoryList from "../../components/ExploreComponents/CategoryList";
@@ -35,30 +35,87 @@ const ExploreScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [quantity, setQuantity] = useState(1);
   const { addToCart, cartItems } = useCart();
+  const [modalContent, setModalContent] = useState({
+    visible: false,
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+    type: "action", // "action" or "product"
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const getCartItemCount = () => {
+  const getCartItemCount = useCallback(() => {
     return cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
-  };
+  }, [cartItems]);
 
   const handleAddToWishlist = async (productId) => {
+    setIsLoading(true);
     try {
       await addToWishList({ productId });
-      Alert.alert("Success", "Product added to wishlist successfully");
+      setModalContent({
+        visible: true,
+        title: "Success",
+        message: "Product added to wishlist successfully",
+        icon: "heart",
+        iconColor: "#4CAF50",
+        type: "action",
+      });
     } catch (error) {
-      Alert.alert("Error", "Failed to add product to wishlist");
+      console.error("Wishlist error:", error);
+      setModalContent({
+        visible: true,
+        title: "Error",
+        message: "Failed to add product to wishlist",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        type: "action",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleProductPress = (product) => {
     setSelectedProduct(product);
     setQuantity(1);
-    setModalVisible(true);
+    setModalContent({
+      visible: true,
+      title: product.name,
+      message: product.description,
+      icon: null,
+      iconColor: null,
+      type: "product",
+      price: product.price,
+    });
   };
 
   const handleAddToCart = (productId) => {
-    addToCart(productId, quantity);
-    setModalVisible(false);
-    Alert.alert("Success", `Added ${quantity} item(s) to cart successfully`);
+    setIsLoading(true);
+    try {
+      addToCart(productId, quantity);
+      setModalContent({
+        visible: true,
+        title: "Success",
+        message: `Added ${quantity} item(s) to cart successfully`,
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+        type: "action",
+      });
+    } catch (error) {
+      console.error("Cart error:", error);
+      setModalContent({
+        visible: true,
+        title: "Error",
+        message: "Failed to add item to cart",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        type: "action",
+      });
+    } finally {
+      setModalVisible(false); // Ensure the product modal closes
+      setIsLoading(false);
+    }
   };
 
   const increaseQuantity = () => {
@@ -117,9 +174,16 @@ const ExploreScreen = () => {
     },
   ];
 
-  const renderItem = ({ item }) => (
+  const renderItem = useCallback(({ item }) => (
     <View style={styles.section}>{item.component}</View>
-  );
+  ), [selectedCategoryId, searchQuery]); // Dependencies for re-rendering
+
+  const closeModal = () => {
+    setModalContent((prev) => ({ ...prev, visible: false }));
+    if (modalContent.type === "product") {
+      setModalVisible(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -149,35 +213,39 @@ const ExploreScreen = () => {
         keyExtractor={(item) => item.key}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
+        initialNumToRender={2}
+        maxToRenderPerBatch={2}
+        windowSize={5}
       />
-      {selectedProduct && (
-        <Modal
-          visible={modalVisible}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
+      <Modal
+        visible={modalContent.visible}
+        transparent
+        animationType={modalContent.type === "product" ? "slide" : "fade"}
+        onRequestClose={closeModal}
+      >
+        {modalContent.type === "product" ? (
           <View style={modalStyles.overlay}>
             <View style={modalStyles.content}>
               <TouchableOpacity
                 style={modalStyles.closeButton}
-                onPress={() => setModalVisible(false)}
+                onPress={closeModal}
               >
                 <Ionicons name="close" size={24} color="#26589c" />
               </TouchableOpacity>
               <View style={modalStyles.imageContainer}>
                 <Image
-                  source={{ uri: selectedProduct.pictureUrl }}
+                  source={{ uri: selectedProduct?.pictureUrl }}
                   style={modalStyles.image}
                   resizeMode="contain"
+                  onError={(e) => console.log("Image load error:", e)}
                 />
               </View>
-              <Text style={modalStyles.title}>{selectedProduct.name}</Text>
+              <Text style={modalStyles.title}>{selectedProduct?.name}</Text>
               <Text style={modalStyles.description}>
-                {selectedProduct.description}
+                {selectedProduct?.description}
               </Text>
               <Text style={modalStyles.price}>
-                Price: {selectedProduct.price} KD
+                Price: {selectedProduct?.price} KD
               </Text>
               <View style={modalStyles.quantityContainer}>
                 <TouchableOpacity
@@ -198,27 +266,58 @@ const ExploreScreen = () => {
                 <TouchableOpacity
                   onPress={() => handleAddToCart(selectedProduct.productId)}
                   style={modalStyles.addToCartContainer}
+                  disabled={isLoading}
                 >
                   <View style={modalStyles.addToCartButton}>
-                    <Text style={modalStyles.addToCartText}>
-                      <Feather name="shopping-cart" size={20} color="#fff" />{" "}
-                      Add to cart
-                    </Text>
+                    {isLoading ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Text style={modalStyles.addToCartText}>
+                        <Feather name="shopping-cart" size={20} color="#fff" />{" "}
+                        Add to cart
+                      </Text>
+                    )}
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleAddToWishlist(selectedProduct.productId)}
                   style={modalStyles.wishlistContainer}
+                  disabled={isLoading}
                 >
                   <View style={modalStyles.wishlistButton}>
-                    <Feather name="heart" size={24} color="#fff" />
+                    {isLoading ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Feather name="heart" size={24} color="#fff" />
+                    )}
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-        </Modal>
-      )}
+        ) : (
+          <View style={styles.actionModalOverlay}>
+            <View style={styles.actionModalContent}>
+              {modalContent.icon && (
+                <Ionicons
+                  name={modalContent.icon}
+                  size={48}
+                  color={modalContent.iconColor}
+                  style={styles.actionModalIcon}
+                />
+              )}
+              <Text style={styles.actionModalTitle}>{modalContent.title}</Text>
+              <Text style={styles.actionModalMessage}>{modalContent.message}</Text>
+              <TouchableOpacity
+                style={styles.actionModalButton}
+                onPress={closeModal}
+              >
+                <Text style={styles.actionModalButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </Modal>
     </View>
   );
 };
@@ -263,57 +362,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     marginBottom: 15,
-    backgroundColor: "#fff",
-  },
-  scrollContainer: {
-    flexDirection: "row",
-    padding: 10,
-  },
-  headerContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    paddingTop: 15,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 1,
-  },
-  headerRight: {
-    position: "absolute",
-    right: 15,
-  },
-  cartButton: {
-    marginLeft: "auto",
-  },
-  cartGradient: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    padding: 12,
-    borderRadius: 18,
-    position: "relative",
-  },
-  cartBadge: {
-    position: "absolute",
-    right: -6,
-    top: -6,
-    backgroundColor: "#ff4444",
-    borderRadius: 12,
-    minWidth: 24,
-    height: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#fff",
-    zIndex: 1,
-  },
-  cartBadgeText: {
-    color: "#fff",
-    fontSize: 11,
-    fontWeight: "700",
   },
   contentContainer: {
     flexGrow: 1,
@@ -330,8 +378,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 12,
     paddingVertical: 12,
-    paddingBottom: 10,
-    paddingTop: 10,
   },
   searchIcon: {
     marginRight: 12,
@@ -349,28 +395,44 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 15,
   },
-  instructionsSection: {
-    backgroundColor: "rgba(38, 88, 156, 0.05)",
-    marginTop: 10,
-    marginHorizontal: 15,
+  actionModalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  actionModalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  actionModalIcon: {
+    marginBottom: 15,
+  },
+  actionModalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+  },
+  actionModalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  actionModalButton: {
+    backgroundColor: "#26589c",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 15,
   },
-  dealsSection: {
-    borderWidth: 1,
-    borderColor: "rgba(38, 88, 156, 0.1)",
-    marginTop: 55,
-    marginHorizontal: 15,
-    borderRadius: 15,
-  },
-  categoriesSection: {
-    backgroundColor: "transparent",
-    marginBottom: 0,
-    paddingHorizontal: 0,
-    paddingVertical: 5,
-  },
-  productsSection: {
-    paddingHorizontal: 0,
-    paddingVertical: 15,
+  actionModalButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 

@@ -5,9 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
   SafeAreaView,
   StatusBar,
+  Modal,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,6 +21,14 @@ const Savedaddresses = () => {
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
   const [defaultAddressId, setDefaultAddressId] = useState(null);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+    buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+  });
 
   useEffect(() => {
     loadSavedAddresses();
@@ -36,21 +44,25 @@ const Savedaddresses = () => {
         setDefaultAddressId(defaultAddress.id);
       }
     } catch (error) {
-      Alert.alert("Error", "Failed to load addresses. Please try again.", [
-        { text: "OK" },
-      ]);
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Failed to load addresses. Please try again.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
     }
   };
 
   const handleSetDefaultAddress = (address) => {
-    Alert.alert(
-      "Set Default Address",
-      "Do you want to set this as your default address?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
+    setFeedbackModalContent({
+      title: "Set Default Address",
+      message: "Do you want to set this as your default address?",
+      icon: "alert-circle-outline",
+      iconColor: "#26589c",
+      buttons: [
+        { text: "Cancel", onPress: () => setFeedbackModalVisible(false) },
         {
           text: "Set Default",
           onPress: async () => {
@@ -61,33 +73,49 @@ const Savedaddresses = () => {
               }));
               setAddresses(updatedAddresses);
               setDefaultAddressId(address.id);
+              setFeedbackModalContent({
+                title: "Success",
+                message: "Default address updated successfully.",
+                icon: "checkmark-circle",
+                iconColor: "#4CAF50",
+                buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+              });
             } catch (error) {
-              Alert.alert(
-                "Error",
-                "Failed to set default address. Please try again.",
-                [{ text: "OK" }]
-              );
+              setFeedbackModalContent({
+                title: "Error",
+                message: "Failed to set default address. Please try again.",
+                icon: "alert-circle-outline",
+                iconColor: "#FF4444",
+                buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+              });
             }
           },
         },
-      ]
-    );
+      ],
+    });
+    setFeedbackModalVisible(true);
   };
 
   const handleDeleteAddress = (address) => {
     if (!address || !address.addressId) {
-      Alert.alert("Error", "Invalid address. Please try again.");
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Invalid address. Please try again.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+        buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+      });
+      setFeedbackModalVisible(true);
       return;
     }
 
-    Alert.alert(
-      "Delete Address",
-      "Are you sure you want to delete this address?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
+    setFeedbackModalContent({
+      title: "Delete Address",
+      message: "Are you sure you want to delete this address?",
+      icon: "alert-circle-outline",
+      iconColor: "#26589c",
+      buttons: [
+        { text: "Cancel", onPress: () => setFeedbackModalVisible(false) },
         {
           text: "Delete",
           style: "destructive",
@@ -98,22 +126,69 @@ const Savedaddresses = () => {
                 (addr) => addr.addressId !== address.addressId
               );
               setAddresses(updatedAddresses);
-
-              Alert.alert("Success", "Address deleted successfully.", [
-                { text: "OK" },
-              ]);
+              setFeedbackModalContent({
+                title: "Success",
+                message: "Address deleted successfully.",
+                icon: "checkmark-circle",
+                iconColor: "#4CAF50",
+                buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+              });
             } catch (error) {
-              Alert.alert(
-                "Error",
-                error.message || "Failed to delete address. Please try again.",
-                [{ text: "OK" }]
-              );
+              setFeedbackModalContent({
+                title: "Error",
+                message: error.message || "Failed to delete address. Please try again.",
+                icon: "alert-circle-outline",
+                iconColor: "#FF4444",
+                buttons: [{ text: "OK", onPress: () => setFeedbackModalVisible(false) }],
+              });
             }
+            setFeedbackModalVisible(true);
           },
         },
-      ]
-    );
+      ],
+    });
+    setFeedbackModalVisible(true);
   };
+
+  const renderFeedbackModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={feedbackModalVisible}
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Ionicons
+            name={feedbackModalContent.icon}
+            size={48}
+            color={feedbackModalContent.iconColor}
+            style={styles.feedbackIcon}
+          />
+          <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+          <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+          <View style={styles.feedbackButtons}>
+            {feedbackModalContent.buttons.map((button, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.closeButton}
+                onPress={button.onPress}
+              >
+                <Text
+                  style={[
+                    styles.closeButtonText,
+                    button.style === "destructive" && styles.destructiveButtonText,
+                  ]}
+                >
+                  {button.text}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <View style={styles.innerContainer}>
@@ -177,6 +252,8 @@ const Savedaddresses = () => {
           ))
         )}
       </ScrollView>
+
+      {renderFeedbackModal()}
     </View>
   );
 };
@@ -301,7 +378,55 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     lineHeight: 20,
-    textAlign: "right",
+    textAlign: "left",
+  },
+  // New styles for feedback modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+  },
+  feedbackButtons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#26589c",
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  destructiveButtonText: {
+    color: "#ff4444",
   },
 });
 

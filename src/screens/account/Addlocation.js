@@ -9,9 +9,9 @@ import {
   Platform,
   ScrollView,
   Dimensions,
-  Alert,
   Animated,
   KeyboardAvoidingView,
+  Modal,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -35,6 +35,13 @@ const AddLocation = () => {
     isDefault: false, // Added isDefault to state
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+  });
   const fadeAnim = new Animated.Value(0);
   const slideAnim = new Animated.Value(50);
   const scaleAnim = new Animated.Value(0.95);
@@ -80,11 +87,13 @@ const AddLocation = () => {
       !postalCode.trim() ||
       !country.trim()
     ) {
-      Alert.alert(
-        "Missing Information",
-        "Please fill in all required address fields",
-        [{ text: "OK" }]
-      );
+      setFeedbackModalContent({
+        title: "Missing Information",
+        message: "Please fill in all required address fields",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+      });
+      setFeedbackModalVisible(true);
       return;
     }
 
@@ -102,18 +111,25 @@ const AddLocation = () => {
         isDefault,
       });
 
-      Alert.alert("Success", "Address saved successfully", [
-        {
-          text: "OK",
-          onPress: () => {
-            navigation.navigate("Savedaddresses", { refresh: Date.now() }); // Pass refresh parameter
-          },
-        },
-      ]);
+      setFeedbackModalContent({
+        title: "Success",
+        message: "Address saved successfully",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+      });
+      setFeedbackModalVisible(true);
+      setTimeout(() => {
+        navigation.navigate("Savedaddresses", { refresh: Date.now() }); // Pass refresh parameter
+        setFeedbackModalVisible(false);
+      }, 1500); // Delay navigation to allow the user to see the success modal
     } catch (error) {
-      Alert.alert("Error", "Failed to save address. Please try again.", [
-        { text: "OK" },
-      ]);
+      setFeedbackModalContent({
+        title: "Error",
+        message: "Failed to save address. Please try again.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+      });
+      setFeedbackModalVisible(true);
     } finally {
       setIsSaving(false);
     }
@@ -142,17 +158,41 @@ const AddLocation = () => {
     setAddressDetails((prev) => ({ ...prev, isDefault: !prev.isDefault }));
   };
 
+  const renderFeedbackModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={feedbackModalVisible}
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Ionicons
+            name={feedbackModalContent.icon}
+            size={48}
+            color={feedbackModalContent.iconColor}
+            style={styles.feedbackIcon}
+          />
+          <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+          <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+          <TouchableOpacity
+            onPress={() => setFeedbackModalVisible(false)}
+            style={styles.closeButton}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-   
-          <Header   title="Add location"
-        backButtonAction={() => navigation.goBack()}
-      />
-          
+        <Header title="Add location" backButtonAction={() => navigation.goBack()} />
 
         <ScrollView
           style={styles.scrollView}
@@ -203,11 +243,7 @@ const AddLocation = () => {
               )}
               {renderInputField("City", "Enter city", "city")}
               {renderInputField("State", "Enter state", "state")}
-              {renderInputField(
-                "Postal Code",
-                "Enter postal code",
-                "postalCode"
-              )}
+              {renderInputField("Postal Code", "Enter postal code", "postalCode")}
               {renderInputField("Country", "Enter country", "country")}
 
               {/* Checkbox for isDefault */}
@@ -260,6 +296,8 @@ const AddLocation = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {renderFeedbackModal()}
     </View>
   );
 };
@@ -270,7 +308,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 55,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -311,7 +349,6 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignItems: "center",
-    // marginVertical: 20,
   },
   gradientOverlay: {
     width: width * 0.3,
@@ -397,7 +434,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginBottom: 1
+    marginBottom: 1,
   },
   checkboxIcon: {
     marginRight: 8,
@@ -449,5 +486,45 @@ const styles = StyleSheet.create({
   },
   submitButtonDisabled: {
     opacity: 0.7,
+  },
+  // New styles for feedback modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#26589c",
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

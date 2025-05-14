@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffff",
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 24,
   },
   searchContainer: {
     paddingHorizontal: 8,
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
   categoriesScroll: {
     flexDirection: "row",
     paddingHorizontal: 16,
+    paddingBottom: 5,
   },
   categoryButton: {
     flexDirection: "row",
@@ -280,6 +281,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+  
   },
   activeCategoryButton: {
     backgroundColor: "#26589c",

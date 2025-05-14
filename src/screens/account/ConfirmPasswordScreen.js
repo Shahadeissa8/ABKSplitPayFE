@@ -9,13 +9,13 @@ import {
   Animated,
   TextInput,
   Dimensions,
-  Alert,
+  Modal,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { changePassword } from "../../api/profile"; 
+import { changePassword } from "../../api/profile";
 import { Header } from "../../components/Header";
 
 const { width } = Dimensions.get("window");
@@ -27,11 +27,16 @@ const ConfirmPasswordScreen = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] =
-    useState(false);
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
+  const [feedbackModalContent, setFeedbackModalContent] = useState({
+    title: "",
+    message: "",
+    icon: "checkmark-circle",
+    iconColor: "#4CAF50",
+  });
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
@@ -75,19 +80,31 @@ const ConfirmPasswordScreen = () => {
     }
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
-
       shakeAnimation();
       return;
     }
     setError("");
 
     try {
-  
       await changePassword(currentPassword, newPassword);
-      Alert.alert("Success", "Password changed successfully!");
-      navigation.goBack(); 
+      setFeedbackModalContent({
+        title: "Success",
+        message: "Password changed successfully!",
+        icon: "checkmark-circle",
+        iconColor: "#4CAF50",
+      });
+      setFeedbackModalVisible(true);
+      setTimeout(() => {
+        navigation.goBack();
+      }, 1500); // Delay navigation to allow the user to see the success modal
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to change password.");
+      setFeedbackModalContent({
+        title: "Error",
+        message: error.message || "Failed to change password.",
+        icon: "alert-circle-outline",
+        iconColor: "#FF4444",
+      });
+      setFeedbackModalVisible(true);
     }
   };
 
@@ -178,13 +195,40 @@ const ConfirmPasswordScreen = () => {
     </Animated.View>
   );
 
+  const renderFeedbackModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={feedbackModalVisible}
+      onRequestClose={() => setFeedbackModalVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Ionicons
+            name={feedbackModalContent.icon}
+            size={48}
+            color={feedbackModalContent.iconColor}
+            style={styles.feedbackIcon}
+          />
+          <Text style={styles.modalTitle}>{feedbackModalContent.title}</Text>
+          <Text style={styles.modalMessage}>{feedbackModalContent.message}</Text>
+          <TouchableOpacity
+            onPress={() => setFeedbackModalVisible(false)}
+            style={styles.closeButton}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <View style={styles.container}>
       <Header
         title="Change password"
         backButtonAction={() => navigation.goBack()}
       />
-
 
       <View style={styles.content}>
         <View style={styles.formContainer}>
@@ -195,7 +239,6 @@ const ConfirmPasswordScreen = () => {
             isCurrentPasswordVisible,
             setIsCurrentPasswordVisible,
             "Enter current password",
-
             true
           )}
           {renderInputField(
@@ -204,7 +247,6 @@ const ConfirmPasswordScreen = () => {
             setNewPassword,
             isNewPasswordVisible,
             setIsNewPasswordVisible,
-
             "Enter new password",
             false
           )}
@@ -215,7 +257,6 @@ const ConfirmPasswordScreen = () => {
             isConfirmPasswordVisible,
             setIsConfirmPasswordVisible,
             "Confirm new password",
-
             false
           )}
 
@@ -252,6 +293,8 @@ const ConfirmPasswordScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {renderFeedbackModal()}
     </View>
   );
 };
@@ -262,7 +305,6 @@ const styles = StyleSheet.create({
     marginBottom: 70,
   },
   headerGradient: {
-   
     paddingHorizontal: 16,
     paddingBottom: 16,
     borderBottomLeftRadius: 30,
@@ -371,7 +413,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === "ios" ? 40 : 20,
     paddingTop: 20,
-
     width: "100%",
   },
   saveButton: {
@@ -400,6 +441,46 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.5,
+  },
+  // New styles for feedback modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  feedbackIcon: {
+    marginBottom: 15,
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#26589c",
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 

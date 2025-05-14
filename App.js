@@ -7,6 +7,9 @@ import MainBottomNavigation from "./src/navigation/MainBottomNavigation";
 import { getToken } from "./src/api/storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "./src/context/CartContext";
+import { LogBox } from "react-native";
+
+LogBox.ignoreAllLogs(true);
 
 const Stack = createStackNavigator();
 const queryClient = new QueryClient();
